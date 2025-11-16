@@ -43,19 +43,6 @@
         <li>📫  Reach me at: <strong>rutts291@gmail.com</strong></li>
         <li>⚡  Love building with new model architectures, MLOps stacks, and full-stack AI workflows.</li>
       </ul>
-    </td>
-    <td width="40%" valign="center">
-      <div align="center">
-        <!-- GitHub Stats -->
-        <img src="https://github-readme-stats.vercel.app/api?username=rutts29&show_icons=true&theme=radical&hide_border=true" width="100%" alt="Rutts29 GitHub Stats" />
-        <br/><br/>
-        <!-- Top Langs -->
-        <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=rutts29&layout=compact&theme=radical&hide_border=true" width="100%" alt="Rutts29 Top Languages" />
-        <br/><br/>
-        <!-- Streak -->
-        <img src="https://github-readme-streak-stats.herokuapp.com/?user=rutts29&count_private=true&theme=radical&hide_border=true" width="100%" alt="Rutts29 Streak Stats" />
-      </div>
-    </td>
   </tr>
 </table>
 
