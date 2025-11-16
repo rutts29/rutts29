@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-accent: #38f29b;
+  --color-text-prompt: #38f29b;
+  --color-text-link: #7dd3fc;
+  --color-text-success: #38f29b;
+  --color-text-error: #ff6b6b;
+  --color-button-bg: rgba(56, 242, 155, 0.12);
+  --color-button-hover: rgba(56, 242, 155, 0.25);
+  --color-button-text: #e2e8f0;
+  --terminal-bg: rgba(7, 12, 10, 0.92);
+  --terminal-border: rgba(56, 242, 155, 0.25);
+  --terminal-glow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background-color: #020202;
+  background-image: radial-gradient(circle at 10% 20%, rgba(56, 242, 155, 0.15), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.15), transparent 35%),
+    radial-gradient(circle at 50% 80%, rgba(244, 114, 182, 0.08), transparent 40%);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans), "IBM Plex Sans", sans-serif;
+}
+
+::selection {
+  background: var(--color-text-accent);
+  color: #020617;
+}
+
+.terminal-cursor {
+  display: inline-block;
+  height: 1em;
+  width: 0.65ch;
+  background: var(--color-text-prompt);
+  animation: blink 1.05s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
