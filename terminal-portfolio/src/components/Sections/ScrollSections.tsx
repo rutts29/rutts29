@@ -65,16 +65,16 @@ export const ScrollSections = ({
   }, [onTrigger, orderedSections]);
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-16 py-20">
-      <div className="flex flex-col items-center gap-1 text-center">
-        <p className="text-xs uppercase tracking-[0.35em] text-[var(--color-text-secondary)]">
+    <div className="mx-auto w-full max-w-5xl space-y-10 sm:space-y-12 md:space-y-16 py-10 sm:py-12 md:py-20 px-3 sm:px-4 md:px-0">
+      <div className="flex flex-col items-center gap-1 text-center px-2 sm:px-4">
+        <p className="text-[0.6rem] sm:text-[0.65rem] md:text-xs uppercase tracking-[0.35em] text-[var(--color-text-secondary)]">
           Terminal showcase · commands unfold on scroll
         </p>
-        <p className="text-[0.8rem] text-[var(--color-text-secondary)]">
+        <p className="text-[0.65rem] sm:text-[0.7rem] md:text-[0.8rem] text-[var(--color-text-secondary)]">
           Watch each story block cue its terminal output as you move through the feed.
         </p>
       </div>
-      <div className="space-y-24">
+      <div className="space-y-16 sm:space-y-20 md:space-y-24">
         {orderedSections.map((section) => {
           const hasTimeline = !!section.timeline && section.timeline.length > 0;
           const isCompact =
@@ -85,7 +85,7 @@ export const ScrollSections = ({
           // fully visible once they mount, even if the intersection
           // observer is finicky on some viewports.
           const isVisible = hasTimeline || visibleSections.has(section.id);
-          const sectionPadding = isCompact ? "py-10" : "py-12";
+          const sectionPadding = isCompact ? "py-4 sm:py-6 md:py-8 lg:py-10" : "py-6 sm:py-8 md:py-10 lg:py-12";
           const contentSpacingClass =
             section.id === "contact"
               ? "space-y-1"
@@ -102,8 +102,8 @@ export const ScrollSections = ({
           }}
           data-section-id={section.id}
               className={`mx-auto flex ${
-                isCompact ? "min-h-[40vh]" : "min-h-[65vh]"
-              } w-full max-w-4xl flex-col justify-center rounded-[2.5rem] border px-8 ${sectionPadding} text-left shadow-[0_25px_120px_rgba(0,0,0,0.25)] backdrop-blur-2xl transition duration-700 ${
+                isCompact ? "min-h-[35vh] sm:min-h-[40vh]" : "min-h-[50vh] sm:min-h-[65vh]"
+              } w-full max-w-4xl flex-col justify-center rounded-2xl sm:rounded-[2.5rem] border px-3 sm:px-4 md:px-6 lg:px-8 ${sectionPadding} text-left shadow-[0_25px_120px_rgba(0,0,0,0.25)] backdrop-blur-2xl transition duration-700 ${
                 isVisible
                   ? "translate-y-0 opacity-100"
                   : "translate-y-16 opacity-0"
@@ -113,20 +113,21 @@ export const ScrollSections = ({
                 borderColor: "var(--surface-card-border)",
               }}
             >
-              <div className="mt-4 space-y-4">
-                <div className="space-y-3">
-                  <p className="font-mono text-sm uppercase tracking-[0.35em] text-[var(--color-text-accent)]">
+              <div className="mt-2 sm:mt-4 space-y-3 sm:space-y-4">
+                <div className="space-y-2 sm:space-y-3">
+                  <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.35em] text-[var(--color-text-accent)]">
                     $ {section.command}
                   </p>
-                  <p className="text-2xl font-semibold text-[var(--color-text-primary)]">
+                  <p className="text-lg sm:text-xl md:text-2xl font-semibold text-[var(--color-text-primary)]">
             {section.summary}
           </p>
                 </div>
                 {section.timeline && section.timeline.length > 0 && (
-                  <div className="mt-10 flex justify-center">
-                    <div className="relative w-full max-w-2xl px-2 py-2 md:px-4 md:py-4">
-                      <span className="pointer-events-none absolute left-1/2 top-6 bottom-2 w-px -translate-x-1/2 bg-[var(--surface-card-border)]" />
-                      <div className="space-y-10">
+                  <div className="mt-6 sm:mt-8 md:mt-10 flex justify-center">
+                    <div className="relative w-full max-w-2xl px-3 py-2 sm:px-4 md:px-6 md:py-4">
+                      {/* Spine line - hidden on mobile, visible on desktop */}
+                      <span className="hidden md:block pointer-events-none absolute left-1/2 top-6 bottom-6 w-px -translate-x-1/2 bg-[var(--surface-card-border)]" />
+                      <div className="space-y-6 sm:space-y-8 md:space-y-10">
                         {section.timeline.map((entry, index) => {
                           const showOnRight = index % 2 === 0;
                           return (
@@ -137,7 +138,7 @@ export const ScrollSections = ({
                               {/* Left side (desktop) */}
                               <div className="hidden text-left text-xs md:block" style={{ color: "var(--color-text-secondary)" }}>
                                 {!showOnRight && (
-                                  <div className="space-y-1">
+                                  <div className="space-y-1 pr-4">
                                     <p className="font-semibold leading-tight" style={{ color: "var(--color-text-primary)" }}>
                                       {entry.role}
                                     </p>
@@ -186,10 +187,10 @@ export const ScrollSections = ({
                                   </div>
                                 )}
                               </div>
-                              {/* Center dot */}
-                              <div className="relative flex items-center justify-center">
+                              {/* Center dot - always centered */}
+                              <div className="relative flex items-center justify-center mb-4 md:mb-0">
                                 <div
-                                  className={`h-3 w-3 rounded-full border transition ${
+                                  className={`h-3 w-3 rounded-full border transition z-10 ${
                                     entry.isCurrent
                                       ? "animate-pulse"
                                       : ""
@@ -203,7 +204,7 @@ export const ScrollSections = ({
                               {/* Right side (desktop) */}
                               <div className="hidden text-left text-xs md:block" style={{ color: "var(--color-text-secondary)" }}>
                                 {showOnRight && (
-                                  <div className="space-y-1">
+                                  <div className="space-y-1 pl-4">
                                     <p className="font-semibold leading-tight" style={{ color: "var(--color-text-primary)" }}>
                                       {entry.role}
                                     </p>
@@ -253,7 +254,7 @@ export const ScrollSections = ({
                                 )}
                               </div>
                               {/* Mobile: full-width content under dot */}
-                              <div className="mt-4 space-y-1 text-xs md:hidden" style={{ color: "var(--color-text-secondary)" }}>
+                              <div className="w-full space-y-1 text-xs md:hidden" style={{ color: "var(--color-text-secondary)" }}>
                                 <p className="font-semibold leading-tight" style={{ color: "var(--color-text-primary)" }}>
                                   {entry.role}
                                 </p>

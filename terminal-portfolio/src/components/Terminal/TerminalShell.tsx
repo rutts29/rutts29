@@ -27,26 +27,26 @@ const renderLine = (line: TerminalLine) => {
     case "heading":
       return (
         <p
-          className="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--color-text-secondary)]"
+          className="text-[0.65rem] sm:text-xs font-semibold uppercase tracking-[0.35em] text-[var(--color-text-secondary)]"
         >
           {line.text}
         </p>
       );
     case "text": {
       const toneClass = toneClassMap[line.tone ?? "default"];
-      return <p className={`text-sm leading-6 ${toneClass}`}>{line.text}</p>;
+      return <p className={`text-xs sm:text-sm leading-5 sm:leading-6 ${toneClass}`}>{line.text}</p>;
     }
     case "list":
       return (
-        <div className="text-sm leading-6 text-[var(--color-text-primary)]">
+        <div className="text-xs sm:text-sm leading-5 sm:leading-6 text-[var(--color-text-primary)]">
           {line.title && (
             <p className="font-semibold text-[var(--color-text-accent)]">
               {line.title}
             </p>
           )}
-          <ul className="mt-1 space-y-1 text-[var(--color-text-secondary)]">
+          <ul className="mt-1 space-y-0.5 sm:space-y-1 text-[var(--color-text-secondary)]">
             {line.items.map((item, index) => (
-              <li key={`${item}-${index}`} className="pl-4 text-sm">
+              <li key={`${item}-${index}`} className="pl-3 sm:pl-4 text-xs sm:text-sm">
                 — {item}
               </li>
             ))}
@@ -55,15 +55,15 @@ const renderLine = (line: TerminalLine) => {
       );
     case "columns":
       return (
-        <div className="grid gap-4 text-sm text-[var(--color-text-primary)] md:grid-cols-2">
+        <div className="grid gap-3 sm:gap-4 text-xs sm:text-sm text-[var(--color-text-primary)] md:grid-cols-2">
           {line.columns.map((column, columnIndex) => (
             <div key={`${column.title}-${columnIndex}`}>
-              <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+              <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
                 {column.title}
               </p>
-              <ul className="mt-2 space-y-1 text-[var(--color-text-primary)]">
+              <ul className="mt-1.5 sm:mt-2 space-y-0.5 sm:space-y-1 text-[var(--color-text-primary)]">
                 {column.items.map((item, itemIndex) => (
-                  <li key={`${column.title}-${item}-${itemIndex}`} className="pl-3 text-sm">
+                  <li key={`${column.title}-${item}-${itemIndex}`} className="pl-2 sm:pl-3 text-xs sm:text-sm">
                     • {item}
                   </li>
                 ))}
@@ -74,7 +74,7 @@ const renderLine = (line: TerminalLine) => {
       );
     case "link":
       return (
-        <p className="text-sm text-[var(--color-text-secondary)]">
+        <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] break-words">
           {line.prefix && (
             <span className="text-[var(--color-text-primary)]">{line.prefix}: </span>
           )}
@@ -82,7 +82,7 @@ const renderLine = (line: TerminalLine) => {
             href={line.href}
             target="_blank"
             rel="noreferrer"
-            className="text-[var(--color-text-link)] underline decoration-dotted underline-offset-4 transition hover:text-[var(--color-text-accent)]"
+            className="text-[var(--color-text-link)] underline decoration-dotted underline-offset-2 sm:underline-offset-4 transition hover:text-[var(--color-text-accent)] break-all"
           >
             {line.label}
           </a>
@@ -90,12 +90,12 @@ const renderLine = (line: TerminalLine) => {
       );
     case "ascii":
       return (
-        <pre className="overflow-x-auto whitespace-pre-wrap text-xs text-[var(--color-text-secondary)]">
+        <pre className="overflow-x-auto whitespace-pre text-[0.4rem] leading-[1.1] text-[var(--color-text-secondary)] sm:text-[0.5rem] md:text-xs sm:leading-normal">
           {line.lines.join("\n")}
         </pre>
       );
     case "spacer":
-      return <div className="h-4" />;
+      return <div className="h-3 sm:h-4" />;
     default:
       return null;
   }
@@ -144,40 +144,40 @@ export const TerminalShell = ({
 
   return (
     <div
-      className="rounded-3xl border p-6 shadow-2xl backdrop-blur-xl transition"
+      className="rounded-2xl sm:rounded-3xl border p-3 sm:p-4 md:p-6 shadow-2xl backdrop-blur-xl transition"
       style={{
         background: "var(--terminal-bg)",
         borderColor: "var(--terminal-border)",
         boxShadow: "var(--terminal-glow)",
       }}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-[#ff5f56]" />
-          <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
-          <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
-          <p className="ml-4 text-xs uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+          <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 rounded-full bg-[#ff5f56] flex-shrink-0" />
+          <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 rounded-full bg-[#ffbd2e] flex-shrink-0" />
+          <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 rounded-full bg-[#27c93f] flex-shrink-0" />
+          <p className="ml-2 sm:ml-4 text-[0.65rem] sm:text-xs uppercase tracking-[0.3em] text-[var(--color-text-secondary)] truncate">
             ~/portfolio
           </p>
         </div>
-        <span className="text-xs text-[var(--color-text-secondary)]">
+        <span className="text-[0.65rem] sm:text-xs text-[var(--color-text-secondary)] whitespace-nowrap flex-shrink-0">
           {mode === "interactive" ? "Interactive" : "Scroll Auto Mode"}
         </span>
       </div>
 
       <div
         ref={historyRef}
-        className="mt-6 h-[420px] overflow-y-auto pr-2 text-sm"
+        className="mt-4 sm:mt-6 h-[280px] sm:h-[360px] md:h-[420px] overflow-y-auto pr-1 sm:pr-2 text-xs sm:text-sm"
       >
         {history.map((entry) => (
-          <div key={entry.id} className="mb-4 space-y-3">
+          <div key={entry.id} className="mb-3 sm:mb-4 space-y-2 sm:space-y-3">
             {entry.kind === "command" ? (
-              <p className="font-mono text-sm text-[var(--color-text-primary)]">
+              <p className="font-mono text-xs sm:text-sm text-[var(--color-text-primary)] break-words">
                 <span className="text-[var(--color-text-prompt)]">
                   rutts@workspace
                 </span>
                 <span className="text-[var(--color-text-secondary)]"> $ </span>
-                {entry.text}
+                <span className="break-words">{entry.text}</span>
               </p>
             ) : (
               entry.lines.map((line, index) => (
@@ -188,13 +188,13 @@ export const TerminalShell = ({
         ))}
       </div>
 
-      <div className="mt-6 font-mono text-sm text-[var(--color-text-primary)]">
+      <div className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm text-[var(--color-text-primary)]">
         {mode === "interactive" ? (
           <form
             onSubmit={handleSubmit}
-            className="flex items-center gap-3 border-t border-white/10 pt-4"
+            className="flex items-center gap-2 sm:gap-3 border-t border-white/10 pt-3 sm:pt-4"
           >
-            <span className="text-[var(--color-text-prompt)]">
+            <span className="text-[var(--color-text-prompt)] whitespace-nowrap text-[0.7rem] sm:text-xs">
               rutts@workspace
             </span>
             <span className="text-[var(--color-text-secondary)]">$</span>
@@ -202,25 +202,25 @@ export const TerminalShell = ({
               ref={inputRef}
               value={currentInput}
               onChange={(event) => setCurrentInput(event.target.value)}
-              placeholder="Type a command (try `projects`)"
-              className="flex-1 bg-transparent text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-secondary)]"
+              placeholder="eg: 'about'"
+              className="flex-1 min-w-0 bg-transparent text-[0.7rem] sm:text-xs md:text-sm text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-secondary)]"
             />
           </form>
         ) : (
-          <div className="flex items-center gap-3 border-t border-white/5 pt-4">
-            <span className="text-[var(--color-text-prompt)]">
+          <div className="flex items-center gap-2 sm:gap-3 border-t border-white/5 pt-3 sm:pt-4">
+            <span className="text-[var(--color-text-prompt)] whitespace-nowrap text-[0.7rem] sm:text-xs">
               rutts@workspace
             </span>
             <span className="text-[var(--color-text-secondary)]">$</span>
-            <p className="flex-1 min-h-[1.5rem]">
+            <p className="flex-1 min-w-0 min-h-[1.25rem] sm:min-h-[1.5rem] break-words text-[0.7rem] sm:text-xs md:text-sm">
               {promptValue}
               {isTyping && <span className="terminal-cursor ml-1" />}
             </p>
           </div>
         )}
         {mode !== "interactive" && !isTyping && (
-          <p className="mt-3 text-xs text-[var(--color-text-secondary)]">
-            Scroll to reveal sections or click “Interactive Terminal” to type.
+          <p className="mt-2 sm:mt-3 text-[0.65rem] sm:text-xs text-[var(--color-text-secondary)]">
+            Scroll to reveal sections or click "Interactive Terminal" to type.
           </p>
         )}
       </div>
