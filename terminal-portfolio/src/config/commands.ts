@@ -37,12 +37,12 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
   welcome: [
     {
       type: "text",
-      text: "Type `help` to explore commands or scroll to auto-play the story.",
+      text: "yoo, I'm Rutts — AI engineer shipping secure AI systems & copilots.",
       tone: "accent",
     },
     {
       type: "text",
-      text: "You can toggle themes, run commands manually, or let the timeline handle it.",
+      text: "Scroll to explore the story or toggle interactive mode to type commands yourself.",
       tone: "muted",
     },
   ],

@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, useCallback, useEffect, useMemo } from "react";
+import { CSSProperties, useCallback, useMemo } from "react";
 
 import { scrollTimeline } from "@/config/scrollTimeline";
 import { ScrollTimelineEntry } from "@/types/scroll";
@@ -30,13 +30,6 @@ export const TerminalExperience = () => {
     themeName,
   });
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      enqueueAutoCommand("help");
-    }, 600);
-    return () => clearTimeout(timeout);
-  }, [enqueueAutoCommand]);
-
   const handleSubmit = useCallback(
     (command: string) => {
       const trimmed = command.trim();
@@ -57,6 +50,8 @@ export const TerminalExperience = () => {
     },
     [enqueueAutoCommand, mode],
   );
+
+  const storyCommands = scrollTimeline.map((section) => section.command);
 
   const themeVariables = useMemo(() => {
     const layeredBackground = theme.body.texture
@@ -82,21 +77,24 @@ export const TerminalExperience = () => {
     } as CSSProperties;
   }, [theme]);
 
+  const isInteractive = mode === "interactive";
+
   return (
     <div
-      className="min-h-screen px-4 py-10 transition-colors md:px-10"
+      className="min-h-screen px-4 py-12 transition-colors md:px-8"
       style={themeVariables}
     >
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 lg:flex-row">
-        <div className="flex-1 space-y-6">
-          <TopBar
-            themeLabel={theme.label}
-            onCycleTheme={cycleTheme}
-            soundEnabled={soundEnabled}
-            onToggleSound={toggleSound}
-            mode={mode}
-            onModeChange={setMode}
-          />
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-8 text-center">
+        <TopBar
+          themeLabel={theme.label}
+          onCycleTheme={cycleTheme}
+          soundEnabled={soundEnabled}
+          onToggleSound={toggleSound}
+          mode={mode}
+          onModeChange={setMode}
+        />
+
+        <div className="w-full max-w-4xl">
           <TerminalShell
             history={history}
             mode={mode}
@@ -107,15 +105,54 @@ export const TerminalExperience = () => {
             onSubmit={handleSubmit}
           />
         </div>
-        <div className="w-full lg:w-[320px]">
-          <ScrollSections
-            sections={scrollTimeline}
-            onTrigger={handleSectionTrigger}
-            initialTriggered={["hero"]}
-            disabled={mode !== "scrollAuto"}
-          />
-        </div>
+
+        {!isInteractive ? (
+          <div className="flex flex-col items-center gap-4 text-center text-[var(--color-text-secondary)]">
+            <p className="text-base text-[var(--color-text-primary)]">
+              Scroll to explore the story, or switch to interactive mode to type
+              commands yourself.
+            </p>
+            <button
+              type="button"
+              onClick={() => setMode("interactive")}
+              className="rounded-full border border-white/15 bg-black/40 px-6 py-3 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--color-text-primary)] transition hover:border-white/40 hover:text-[var(--color-text-accent)]"
+            >
+              Activate Interactive Terminal
+            </button>
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-xs uppercase tracking-[0.5em]">
+                Scroll to explore
+              </span>
+              <span className="text-3xl text-[var(--color-text-accent)] animate-bounce">
+                ↓
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-4 text-center text-sm text-[var(--color-text-secondary)]">
+            <p className="text-[var(--color-text-primary)]">
+              Interactive mode unlocked — try running these commands:
+            </p>
+            <p className="font-mono text-xs uppercase tracking-[0.4em] text-[var(--color-text-accent)]">
+              {storyCommands.join(" · ")}
+            </p>
+            <p>
+              Need a refresher? Type{" "}
+              <span className="font-mono text-[var(--color-text-primary)]">
+                help
+              </span>{" "}
+              to see everything available.
+            </p>
+          </div>
+        )}
       </div>
+
+      <ScrollSections
+        sections={scrollTimeline}
+        onTrigger={handleSectionTrigger}
+        initialTriggered={[]}
+        disabled={mode !== "scrollAuto"}
+      />
     </div>
   );
 };

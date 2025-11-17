@@ -57,7 +57,7 @@ export const TopBar = ({
           onClick={handleModeToggle}
           className="rounded-full bg-[var(--color-button-bg)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-button-text)] transition hover:bg-[var(--color-button-hover)]"
         >
-          {mode === "interactive" ? "Return to Story" : "Interactive Terminal"}
+          {mode === "interactive" ? "Return to Story" : "Activate Interactive"}
         </button>
       </div>
     </div>

@@ -2,12 +2,6 @@ import { ScrollTimelineEntry } from "@/types/scroll";
 
 export const scrollTimeline: ScrollTimelineEntry[] = [
   {
-    id: "hero",
-    label: "Welcome",
-    command: "help",
-    summary: "Start with the command reference and onboarding message.",
-  },
-  {
     id: "about",
     label: "About",
     command: "about",
