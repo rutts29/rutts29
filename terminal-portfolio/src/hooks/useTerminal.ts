@@ -32,7 +32,6 @@ const createInitialHistory = (): TerminalEntry[] =>
 const createInteractiveHistory = (): TerminalEntry[] => {
   const base = createInitialHistory();
   const bootCommands: Array<{ command: string; output: TerminalLine[] }> = [
-    { command: "about", output: staticCommandOutputs.about },
     { command: "help", output: getHelpLines() },
   ];
 
@@ -65,7 +64,6 @@ export const useTerminal = ({
   const [currentInput, setCurrentInput] = useState("");
   const [autoTypingText, setAutoTypingText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
 
   const commandLogRef = useRef<string[]>([]);
   const queueRef = useRef(Promise.resolve());
@@ -272,11 +270,6 @@ export const useTerminal = ({
     [executeCommand],
   );
 
-  const toggleSound = useCallback(
-    () => setSoundEnabled((prev) => !prev),
-    [],
-  );
-
   const enterInteractiveMode = useCallback(() => {
     setHistory(createInteractiveHistory());
     commandLogRef.current = ["about", "help"];
@@ -298,8 +291,6 @@ export const useTerminal = ({
       autoTypingText,
       runCommand,
       enqueueAutoCommand,
-      soundEnabled,
-      toggleSound,
       enterInteractiveMode,
     }),
     [
@@ -310,8 +301,6 @@ export const useTerminal = ({
       autoTypingText,
       runCommand,
       enqueueAutoCommand,
-      soundEnabled,
-      toggleSound,
       enterInteractiveMode,
     ],
   );

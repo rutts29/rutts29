@@ -4,6 +4,7 @@ import { CommandDefinition, TerminalLine } from "@/types/terminal";
 export const commandCatalog: CommandDefinition[] = [
   { key: "help", description: "List available commands", output: [] },
   { key: "about", description: "Who I am and what I do", output: [] },
+  { key: "education", description: "Where I studied", output: [] },
   { key: "skills", description: "Stacks, languages, and tooling", output: [] },
   { key: "experience", description: "Roles and impact", output: [] },
   { key: "projects", description: "Highlighted builds and repos", output: [] },
@@ -38,12 +39,12 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
   welcome: [
     {
       type: "text",
-      text: "yoo, I'm Rutts — AI engineer shipping secure AI systems & copilots.",
+      text: "yoo, I'm Rutts (Ruttansh Bhatelia) — Toronto-based AI engineer shipping secure copilots and automation.",
       tone: "accent",
     },
     {
       type: "text",
-      text: "Scroll to explore the story or toggle interactive mode to type commands yourself.",
+      text: "Scroll through the showcase or unlock interactive mode to run every command yourself.",
       tone: "muted",
     },
   ],
@@ -51,15 +52,27 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "heading", text: "About" },
     {
       type: "text",
-      text: "I'm Rutts — an AI engineer focused on code intelligence, smart contract security, and full stack AI systems.",
+      text: "I'm Ruttansh (Rutts) Bhatelia. I build production-ready AI/ML tooling that mixes rigorous research with practical engineering across security, code intelligence, and automation.",
     },
     {
       type: "text",
-      text: "I design and ship production-grade tooling that blends LLM research with practical infrastructure for secure automation.",
+      text: "My work covers vulnerability-aware copilots, RAG-enhanced workflows, and inference/training pipelines that prioritize reliability and observability.",
     },
     {
       type: "text",
-      text: "Currently building vulnerability-aware copilots, agentic workflows, and optimized inference/training pipelines.",
+      text: "I hold an Honours BSc in Computer Science (Data Analytics) and stay engaged with applied research partners to keep sharpening the stack.",
+    },
+  ],
+  education: [
+    { type: "heading", text: "Education" },
+    {
+      type: "text",
+      text: "Honours Bachelor of Science in Computer Science (Data Analytics)",
+    },
+    {
+      type: "text",
+      text: "Graduated 2025 · Toronto, Ontario · Focused on applied AI, data engineering, and collaborating with applied research programs.",
+      tone: "muted",
     },
   ],
   skills: [
@@ -68,33 +81,59 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
       type: "columns",
       columns: [
         {
-          title: "Core Stack",
-          items: ["AI Engineering", "LLM Agents", "Security", "Web3"],
-        },
-        {
-          title: "Languages",
-          items: ["Python", "TypeScript", "Rust", "Solidity", "C++"],
-        },
-        {
-          title: "Frameworks",
+          title: "Programming & Systems",
           items: [
-            "Next.js",
-            "React",
-            "FastAPI",
-            "Django",
-            "PyTorch",
-            "Transformers",
+            "Python",
+            "C#",
+            "JavaScript / TypeScript",
+            "C / C++",
+            "Scala",
+            "R",
+            "Java",
+            "Linux",
           ],
         },
         {
-          title: "Tools & Platforms",
+          title: "Web & Cloud",
           items: [
-            "vLLM",
-            "Unsloth",
-            "DeepSpeed",
+            "HTML",
+            "CSS",
+            "Node.js",
+            "Next.js",
+            "React",
+            "Flutter",
+            "Azure",
+            "Google Cloud",
             "AWS",
+          ],
+        },
+        {
+          title: "Data Science",
+          items: [
+            "TensorFlow",
+            "PyTorch",
+            "Transformers",
+            "Pandas",
+            "NumPy",
+            "Spark",
+            "Tableau",
+            "Power BI",
+            "Fume",
+          ],
+        },
+        {
+          title: "Tools & Practices",
+          items: [
+            "SQL",
+            "MongoDB",
+            "Hadoop",
             "Docker",
-            "Vercel",
+            "Git",
+            "JIRA",
+            "SCRUM",
+            "Data Structures",
+            "Algorithms",
+            ".NET Core",
           ],
         },
       ],
@@ -104,42 +143,58 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "heading", text: "Experience" },
     {
       type: "text",
-      text: "0xSecurity — Lead AI Security Engineer (2024 — Present)",
+      text: "CredShields — AI Engineer & ML Researcher · Contract / Remote (Singapore · Oakville)",
       tone: "accent",
     },
     {
       type: "list",
       items: [
-        "Shipped LLM-powered audits covering Solidity + Rust smart contracts.",
-        "Trained vulnerability reasoning models with long-context agents.",
-        "Owned infra for multi-model inference across GPU + serverless.",
+        "Led end-to-end AI/ML pipelines that detect smart contract vulnerabilities with LLM-assisted reasoning.",
+        "Built RAG-enabled workflows and custom knowledge bases to amplify code analysis copilots.",
+        "Finetuned PyTorch/Hugging Face models with prompt tuning for few-/zero-shot vulnerability queries.",
+        "Created ML modules for feature extraction, anomaly detection, and fix recommendation scoring.",
       ],
     },
     { type: "spacer" },
     {
       type: "text",
-      text: "Autonomi Labs — Founding AI Engineer (2022 — 2024)",
+      text: "TELUS — Machine Learning Researcher (Indoor Localization using Gen AI) · Contract, Oakville",
       tone: "accent",
     },
     {
       type: "list",
       items: [
-        "Built secure code copilots for enterprise teams.",
-        "Implemented RAG pipelines with custom embeddings and governance.",
-        "Scaled evaluation harnesses for agent workflows.",
+        "Architected a generative-AI indoor localization system in collaboration with applied research teams.",
+        "Synthesized RSSI data with VAEs to auto-generate virtual fingerprints and skip manual surveys.",
+        "Validated nearest-neighbor regression on 2D layouts to achieve high-precision positioning.",
       ],
     },
     { type: "spacer" },
     {
       type: "text",
-      text: "Freelance — AI/ML Consultant",
+      text: "McMaster University — Full Stack Developer, Cross Platform · Contract",
       tone: "accent",
     },
     {
       type: "list",
       items: [
-        "Delivered ML systems for fintech, gaming, and infra clients.",
-        "Set up observability stacks and cost-optimized deployments.",
+        "Ported a web application into a Flutter-powered iOS/Android experience in partnership with applied AI researchers.",
+        "Enhanced UX, enforced GDPR/HIPAA compliance, and integrated Strapi + SQL backends.",
+        "Drove iterative improvements through Figma prototypes, REST APIs, and Git-based review cycles.",
+      ],
+    },
+    { type: "spacer" },
+    {
+      type: "text",
+      text: "Osteoporosis Canada — Machine Learning Researcher · Co-op",
+      tone: "accent",
+    },
+    {
+      type: "list",
+      items: [
+        "Collaborated with Naryant and research partners on ML efforts to predict imminent fracture risk.",
+        "Engineered features, trained soft-voting ensembles, and lifted accuracy by 30–40%.",
+        "Documented findings for stakeholders and internal knowledge sharing.",
       ],
     },
   ],
@@ -215,7 +270,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     },
     {
       type: "text",
-      text: "Location: Bangalore ↔ Remote",
+      text: "Location: Toronto, Ontario · Open to relocate",
       tone: "muted",
     },
   ],
@@ -245,4 +300,5 @@ export const getInitialSystemOutputs = () => [
   staticCommandOutputs.banner,
   staticCommandOutputs.welcome,
 ];
+
 

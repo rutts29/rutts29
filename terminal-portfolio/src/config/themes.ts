@@ -19,7 +19,8 @@ export const themes: ThemeTokens[] = [
       secondary: "#6eedb4",
       prompt: "#7cffa9",
       accent: "#0cff98",
-      link: "#4affc2",
+      // Make links pop more in Matrix theme so company URLs stand out clearly.
+      link: "#0cff98",
     },
     controls: {
       buttonBg: "rgba(12, 255, 152, 0.12)",
@@ -139,7 +140,8 @@ export const themes: ThemeTokens[] = [
   },
 ];
 
-export const defaultTheme = themes[0];
+export const defaultTheme =
+  themes.find((theme) => theme.name === "gruvbox") ?? themes[0];
 
 export const themeMap = themes.reduce<Record<string, ThemeTokens>>(
   (acc, theme) => {
