@@ -50,6 +50,9 @@ export const TopBar = ({
               src="https://cdn.simpleicons.org/github/ffffff"
               alt="GitHub"
               className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+              style={{
+                filter: themeName === "light" ? "invert(1)" : "none",
+              }}
             />
           </a>
           <a
@@ -76,6 +79,9 @@ export const TopBar = ({
               src="https://cdn.simpleicons.org/x/ffffff"
               alt="X"
               className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+              style={{
+                filter: themeName === "light" ? "invert(1)" : "none",
+              }}
             />
           </a>
         </div>
