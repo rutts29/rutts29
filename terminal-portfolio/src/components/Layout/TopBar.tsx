@@ -1,14 +1,11 @@
 "use client";
 
-import { TerminalMode } from "@/types/terminal";
-
 type TopBarProps = {
   themeLabel: string;
   onCycleTheme: () => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
-  mode: TerminalMode;
-  onModeChange: (mode: TerminalMode) => void;
+  themeName: string;
 };
 
 export const TopBar = ({
@@ -16,15 +13,16 @@ export const TopBar = ({
   onCycleTheme,
   soundEnabled,
   onToggleSound,
-  mode,
-  onModeChange,
+  themeName,
 }: TopBarProps) => {
-  const handleModeToggle = () => {
-    onModeChange(mode === "interactive" ? "scrollAuto" : "interactive");
-  };
-
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 bg-black/40 px-6 py-4 backdrop-blur-lg">
+    <div
+      className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border px-6 py-4 backdrop-blur-lg"
+      style={{
+        background: "var(--surface-panel-bg)",
+        borderColor: "var(--surface-panel-border)",
+      }}
+    >
       <div>
         <p className="text-sm font-semibold text-[var(--color-text-primary)]">
           rutts@portfolio
@@ -33,34 +31,51 @@ export const TopBar = ({
           AI Engineer • LLM Researcher
         </p>
       </div>
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={onCycleTheme}
-          className="rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.2em] text-[var(--color-text-secondary)] transition hover:border-white/30 hover:text-[var(--color-text-primary)]"
+          className="flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-text-secondary)] transition"
+          style={{
+            background: "var(--surface-card-bg)",
+            borderColor: "var(--surface-card-border)",
+          }}
         >
-          Theme · {themeLabel}
+          <span className="relative flex h-5 w-10 items-center rounded-full bg-[var(--surface-panel-border)]/40 p-0.5">
+            <span
+              className="absolute h-4 w-4 rounded-full bg-[var(--color-text-accent)] shadow-[0_0_12px_rgba(0,0,0,0.35)] transition-transform"
+              style={{
+                transform:
+                  themeName === "light"
+                    ? "translateX(20px)"
+                    : themeName === "monokai"
+                      ? "translateX(10px)"
+                      : "translateX(0px)",
+              }}
+            />
+            <span className="sr-only">Theme toggle</span>
+          </span>
+          <span>{themeLabel}</span>
         </button>
         <button
           type="button"
           onClick={onToggleSound}
-          className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-widest transition ${
-            soundEnabled
-              ? "border-[var(--color-text-accent)] text-[var(--color-text-accent)]"
-              : "border-white/15 text-[var(--color-text-secondary)]"
-          }`}
+          className="rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-widest transition"
+          style={{
+            borderColor: soundEnabled
+              ? "var(--color-text-accent)"
+              : "var(--surface-card-border)",
+            color: soundEnabled
+              ? "var(--color-text-accent)"
+              : "var(--color-text-secondary)",
+            background: "var(--surface-card-bg)",
+          }}
         >
           {soundEnabled ? "Sound on" : "Sound off"}
-        </button>
-        <button
-          type="button"
-          onClick={handleModeToggle}
-          className="rounded-full bg-[var(--color-button-bg)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-button-text)] transition hover:bg-[var(--color-button-hover)]"
-        >
-          {mode === "interactive" ? "Return to Story" : "Activate Interactive"}
         </button>
       </div>
     </div>
   );
 };
+
 

@@ -29,6 +29,31 @@ const createInitialHistory = (): TerminalEntry[] =>
     lines,
   }));
 
+const createInteractiveHistory = (): TerminalEntry[] => {
+  const base = createInitialHistory();
+  const bootCommands: Array<{ command: string; output: TerminalLine[] }> = [
+    { command: "about", output: staticCommandOutputs.about },
+    { command: "help", output: getHelpLines() },
+  ];
+
+  const entries = [...base];
+
+  bootCommands.forEach(({ command, output }) => {
+    entries.push({
+      id: createEntryId(),
+      kind: "command",
+      text: command,
+    });
+    entries.push({
+      id: createEntryId(),
+      kind: "output",
+      lines: output,
+    });
+  });
+
+  return entries;
+};
+
 const TYPING_DELAY = 45;
 
 export const useTerminal = ({
@@ -252,11 +277,21 @@ export const useTerminal = ({
     [],
   );
 
+  const enterInteractiveMode = useCallback(() => {
+    setHistory(createInteractiveHistory());
+    commandLogRef.current = ["about", "help"];
+    queueRef.current = Promise.resolve();
+    clearTypingTimeout();
+    setIsTyping(false);
+    setAutoTypingText("");
+    setCurrentInput("");
+    setMode("interactive");
+  }, []);
+
   const terminalState = useMemo(
     () => ({
       history,
       mode,
-      setMode,
       currentInput,
       setCurrentInput,
       isTyping,
@@ -265,11 +300,11 @@ export const useTerminal = ({
       enqueueAutoCommand,
       soundEnabled,
       toggleSound,
+      enterInteractiveMode,
     }),
     [
       history,
       mode,
-      setMode,
       currentInput,
       isTyping,
       autoTypingText,
@@ -277,6 +312,7 @@ export const useTerminal = ({
       enqueueAutoCommand,
       soundEnabled,
       toggleSound,
+      enterInteractiveMode,
     ],
   );
 

@@ -23,5 +23,12 @@ export type ThemeTokens = {
     buttonText: string;
     icon: string;
   };
+  surfaces: {
+    panel: string;
+    panelBorder: string;
+    card: string;
+    cardBorder: string;
+    overlay: string;
+  };
 };
 

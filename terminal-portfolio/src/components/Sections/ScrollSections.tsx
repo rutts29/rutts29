@@ -93,11 +93,15 @@ export const ScrollSections = ({
                 sectionRefs.current[section.id] = node;
               }}
               data-section-id={section.id}
-              className={`mx-auto flex min-h-[65vh] w-full max-w-4xl flex-col justify-center rounded-[2.5rem] border border-white/10 bg-black/45 px-8 py-12 text-left shadow-[0_25px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition duration-700 ${
+              className={`mx-auto flex min-h-[65vh] w-full max-w-4xl flex-col justify-center rounded-[2.5rem] border px-8 py-12 text-left shadow-[0_25px_120px_rgba(0,0,0,0.25)] backdrop-blur-2xl transition duration-700 ${
                 isVisible
                   ? "translate-y-0 opacity-100"
                   : "translate-y-16 opacity-0"
               } ${disabled ? "opacity-40" : ""}`}
+              style={{
+                background: "var(--surface-card-bg)",
+                borderColor: "var(--surface-card-border)",
+              }}
             >
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--color-text-secondary)]">
                 {String(section.order).padStart(2, "0")} · {section.label}
