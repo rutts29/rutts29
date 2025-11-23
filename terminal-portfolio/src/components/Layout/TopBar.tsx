@@ -13,14 +13,15 @@ export const TopBar = ({
 }: TopBarProps) => {
   return (
     <div
-      className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 rounded-3xl border px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 backdrop-blur-lg"
+      className="w-full flex items-center justify-between gap-4 sm:gap-6 rounded-3xl border px-6 py-3 sm:px-8 sm:py-4 md:px-12 md:py-4 lg:px-16 lg:py-5 backdrop-blur-lg shadow-[0_25px_120px_rgba(0,0,0,0.25)]"
       style={{
         background: "var(--surface-panel-bg)",
         borderColor: "var(--surface-panel-border)",
+        boxShadow: "0 0 20px rgba(255, 255, 255, 0.1), 0 25px 120px rgba(0,0,0,0.25)",
       }}
     >
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-        <div className="relative h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 flex-shrink-0 overflow-hidden rounded-full border border-[var(--surface-panel-border)] bg-black/40">
+      <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+        <div className="relative h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 flex-shrink-0 overflow-hidden rounded-full border border-[var(--surface-panel-border)] bg-black/40">
           <img
             src="/core-image.jpg"
             alt="0xRutts avatar"
@@ -29,16 +30,16 @@ export const TopBar = ({
           />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[0.7rem] sm:text-xs md:text-sm font-semibold text-[var(--color-text-primary)] truncate">
+          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-text-primary)] truncate">
             0xRutts
           </p>
-          <p className="text-[0.6rem] sm:text-[0.65rem] md:text-xs text-[var(--color-text-secondary)] hidden sm:block">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-[var(--color-text-secondary)] hidden sm:block mt-2 sm:mt-2.5 md:mt-3">
             Full-Stack AI Engineer · ML Researcher
           </p>
         </div>
       </div>
-      <div className="relative flex items-center gap-1.5 sm:gap-2 md:gap-4 flex-shrink-0">
-        <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 text-[var(--color-text-secondary)]">
+      <div className="relative flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 text-[var(--color-text-secondary)]">
           <a
             href="https://github.com/rutts29"
             target="_blank"

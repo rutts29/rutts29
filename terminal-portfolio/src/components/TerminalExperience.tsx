@@ -155,6 +155,7 @@ export const TerminalExperience = () => {
     themeName,
   });
   const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   const handleSubmit = useCallback(
     (command: string) => {
@@ -201,6 +202,16 @@ export const TerminalExperience = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Detect mobile to disable transitions for smoother scrolling
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const themeVariables = useMemo(() => {
     const layeredBackground = theme.body.texture
       ? `${theme.body.texture}, ${theme.body.background}`
@@ -245,34 +256,38 @@ export const TerminalExperience = () => {
     </div>
   ) : undefined;
 
-  // Calculate parallax transforms
-  const topBarTransform = `translateY(${scrollY * 0.3}px)`;
+  // Calculate parallax transforms - use translate3d for hardware acceleration
+  const topBarTransform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
   // IntroPanel moves up (negative) to prevent overlap with sections
-  const introPanelTransform = `translateY(${-scrollY * 0.15}px)`;
+  const introPanelTransform = `translate3d(0, ${-scrollY * 0.15}px, 0)`;
 
   return (
     <div
-      className="min-h-screen px-3 py-8 sm:px-4 sm:py-12 transition-colors md:px-8"
+      className="min-h-screen transition-colors"
       style={themeVariables}
     >
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 sm:gap-6 md:gap-8">
-        <div
-          style={{
-            transform: topBarTransform,
-            transition: "transform 0.1s ease-out",
-          }}
-        >
+      <div
+        style={{
+          transform: topBarTransform,
+          willChange: "transform",
+          transition: isMobile ? "none" : "transform 0.1s ease-out",
+        }}
+        className="w-full px-3 py-8 sm:px-4 sm:py-12 md:px-8"
+      >
+        <div className="mx-auto w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] 3xl:max-w-none 3xl:px-16">
           <TopBar
             themeLabel={theme.label}
             onCycleTheme={cycleTheme}
             themeName={themeName}
           />
         </div>
-
+      </div>
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 sm:gap-6 md:gap-8 px-3 py-8 sm:px-4 sm:py-12 md:px-8">
         <div
           style={{
             transform: introPanelTransform,
-            transition: "transform 0.1s ease-out",
+            willChange: "transform",
+            transition: isMobile ? "none" : "transform 0.1s ease-out",
           }}
         >
           <IntroPanel

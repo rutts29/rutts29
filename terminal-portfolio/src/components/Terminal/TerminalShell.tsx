@@ -175,6 +175,22 @@ export const TerminalShell = ({
     }
     onSubmit(currentInput);
     setCurrentInput("");
+    // Blur input on mobile to trigger zoom-out, then re-focus for continued interaction
+    if (inputRef.current) {
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        inputRef.current.blur();
+        // Re-focus after a short delay to allow zoom-out, then enable continued typing
+        setTimeout(() => {
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        }, 100);
+      } else {
+        // On desktop, keep focus immediately for better UX
+        inputRef.current.focus();
+      }
+    }
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -226,9 +242,26 @@ export const TerminalShell = ({
     }
   };
 
+  const handleTerminalClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    // Only focus input if clicking on the terminal container itself or non-interactive areas
+    // Don't focus if clicking on buttons, links, or the input itself
+    const target = event.target as HTMLElement;
+    if (
+      mode === "interactive" &&
+      inputRef.current &&
+      !target.closest("button") &&
+      !target.closest("a") &&
+      target !== inputRef.current &&
+      !inputRef.current.contains(target)
+    ) {
+      inputRef.current.focus();
+    }
+  };
+
   return (
     <div
-      className="rounded-2xl sm:rounded-3xl border p-3 sm:p-4 md:p-6 shadow-2xl backdrop-blur-xl transition"
+      onClick={handleTerminalClick}
+      className="rounded-2xl sm:rounded-3xl border p-3 sm:p-4 md:p-6 shadow-2xl backdrop-blur-xl transition cursor-text"
       style={{
         background: "var(--terminal-bg)",
         borderColor: "var(--terminal-border)",
@@ -264,11 +297,26 @@ export const TerminalShell = ({
                 <span className="break-words">{entry.text}</span>
               </p>
             ) : (
-              entry.lines.map((line, index) => (
-                <div key={`${entry.id}-${index}`}>
-                  {renderLine(line, mode, mode === "interactive" ? setCurrentInput : undefined)}
-                </div>
-              ))
+              entry.lines.map((line, index) => {
+                // Create a wrapper function that sets input and focuses it
+                const handleCommandClick = (command: string) => {
+                  setCurrentInput(command);
+                  // Focus input and move cursor to end after setting command
+                  setTimeout(() => {
+                    if (inputRef.current) {
+                      inputRef.current.focus();
+                      // Move cursor to end of input
+                      const length = command.length;
+                      inputRef.current.setSelectionRange(length, length);
+                    }
+                  }, 0);
+                };
+                return (
+                  <div key={`${entry.id}-${index}`}>
+                    {renderLine(line, mode, mode === "interactive" ? handleCommandClick : undefined)}
+                  </div>
+                );
+              })
             )}
           </div>
         ))}
