@@ -1,29 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { defaultTheme, getThemeByName, themeNames } from "@/config/themes";
 
-const THEME_STORAGE_KEY = "terminal-theme";
-
 export const useThemeManager = () => {
+  // Always default to gruvbox on every visit (no persistence)
   const [themeName, setThemeName] = useState<string>(defaultTheme.name);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-    if (stored && themeNames.includes(stored)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setThemeName(stored);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    window.localStorage.setItem(THEME_STORAGE_KEY, themeName);
-  }, [themeName]);
 
   const theme = useMemo(() => getThemeByName(themeName), [themeName]);
 

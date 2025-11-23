@@ -42,6 +42,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://cdn.simpleicons.org" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined') {
+                if ('scrollRestoration' in window.history) {
+                  window.history.scrollRestoration = 'manual';
+                }
+                window.scrollTo(0, 0);
+              }
+            `,
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

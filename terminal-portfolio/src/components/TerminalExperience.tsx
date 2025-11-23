@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -157,6 +158,8 @@ export const TerminalExperience = () => {
   });
   const [scrollY, setScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const introPanelRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = useCallback(
     (command: string) => {
@@ -186,6 +189,22 @@ export const TerminalExperience = () => {
 
   const storyCommands = scrollTimeline.map((section) => section.command);
 
+  // Disable browser scroll restoration and force scroll to top on load/refresh
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Disable browser's automatic scroll restoration
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      // Force scroll to top immediately
+      window.scrollTo(0, 0);
+      // Also set it after a tiny delay to ensure it sticks
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 0);
+    }
+  }, []);
+
   // Parallax scroll effect with requestAnimationFrame for better performance
   useEffect(() => {
     let ticking = false;
@@ -193,6 +212,12 @@ export const TerminalExperience = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           setScrollY(window.scrollY);
+          // Check if scrolled past intro panel/terminal shell
+          if (introPanelRef.current) {
+            const rect = introPanelRef.current.getBoundingClientRect();
+            const isPastTerminal = window.scrollY > rect.bottom + 100;
+            setShowScrollToTop(isPastTerminal);
+          }
           ticking = false;
         });
         ticking = true;
@@ -200,7 +225,13 @@ export const TerminalExperience = () => {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    // Initial check
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   // Detect mobile to disable transitions for smoother scrolling
@@ -285,6 +316,7 @@ export const TerminalExperience = () => {
       </div>
       <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 sm:gap-6 md:gap-8 px-3 py-8 sm:px-4 sm:py-12 md:px-8">
         <div
+          ref={introPanelRef}
           style={{
             transform: introPanelTransform,
             willChange: "transform",
@@ -346,6 +378,35 @@ export const TerminalExperience = () => {
           © 2025 0xRutts
         </p>
       </div>
+      
+      {/* Scroll to Top Button */}
+      {showScrollToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-50 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border backdrop-blur-lg transition-all duration-300 hover:scale-110 hover:brightness-110"
+          style={{
+            background: "var(--surface-panel-bg)",
+            borderColor: "var(--color-text-accent)",
+            boxShadow: "0 0 15px var(--color-text-accent), 0 4px 20px rgba(0,0,0,0.3)",
+          }}
+          aria-label="Scroll to top"
+        >
+          <svg
+            className="h-5 w-5 sm:h-6 sm:w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            style={{ color: "var(--color-text-accent)" }}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 10l7-7m0 0l7 7m-7-7v18"
+            />
+          </svg>
+        </button>
+      )}
     </div>
   );
 };
