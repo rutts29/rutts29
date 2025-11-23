@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   title: "0xRutts Portfolio",
   description:
     "Interactive, scroll-synced terminal experience showcasing AI engineering experience, and flagship projects.",
+  icons: {
+    icon: "/core-image.jpg",
+    shortcut: "/core-image.jpg",
+    apple: "/core-image.jpg",
+  },
 };
 
 export default function RootLayout({
