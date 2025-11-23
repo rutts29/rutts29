@@ -20,15 +20,7 @@ export const TopBar = ({
         boxShadow: "0 0 20px rgba(255, 255, 255, 0.1), 0 25px 120px rgba(0,0,0,0.25)",
       }}
     >
-      <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-        <div className="relative h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 flex-shrink-0 overflow-hidden rounded-full border border-[var(--surface-panel-border)] bg-black/40">
-          <img
-            src="/core-image.jpg"
-            alt="0xRutts avatar"
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
-        </div>
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         <div className="min-w-0 flex-1">
           <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-text-primary)] truncate">
             0xRutts

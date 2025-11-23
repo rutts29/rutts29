@@ -34,7 +34,7 @@ export const themes: ThemeTokens[] = [
     card: "rgba(0, 0, 0, 0.35)",
     cardBorder: "rgba(255, 255, 255, 0.08)",
     overlay: "rgba(0, 0, 0, 0.45)",
-  },
+    },
   },
   {
     name: "gruvbox",
@@ -68,7 +68,7 @@ export const themes: ThemeTokens[] = [
     card: "rgba(28, 20, 12, 0.65)",
     cardBorder: "rgba(247, 171, 66, 0.2)",
     overlay: "rgba(20, 14, 9, 0.6)",
-  },
+    },
   },
   {
     name: "monokai",
@@ -102,7 +102,7 @@ export const themes: ThemeTokens[] = [
     card: "rgba(33, 32, 28, 0.65)",
     cardBorder: "rgba(255, 255, 255, 0.08)",
     overlay: "rgba(20, 19, 17, 0.6)",
-  },
+    },
   },
   {
     name: "light",
@@ -136,7 +136,7 @@ export const themes: ThemeTokens[] = [
     card: "rgba(255, 255, 255, 0.9)",
     cardBorder: "rgba(12, 41, 87, 0.12)",
     overlay: "rgba(255, 255, 255, 0.88)",
-  },
+    },
   },
 ];
 

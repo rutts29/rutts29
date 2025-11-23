@@ -324,15 +324,21 @@ export const TerminalExperience = () => {
         />
 
         <div className="mt-16 sm:mt-20 md:mt-24 flex w-full justify-center border-t border-[var(--surface-card-border)] pt-8">
-          <div className="relative h-48 w-full max-w-[1200px] md:h-52">
-            <Image
-              src="/image.png"
-              alt="0xRutts footer banner"
-              fill
-              sizes="(max-width: 1024px) 1024px, 1400px"
-              className="object-cover opacity-80"
-              priority={false}
-            />
+          <div className="relative h-48 w-full max-w-[1200px] md:h-52 flex items-center justify-center">
+            <div className="relative h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48 rounded-full border-2 overflow-hidden"
+              style={{
+                borderColor: "var(--surface-panel-border)",
+              }}
+            >
+              <Image
+                src="/core-image.jpg"
+                alt="0xRutts avatar"
+                fill
+                sizes="(max-width: 768px) 128px, 192px"
+                className="object-cover"
+                priority={false}
+              />
+            </div>
           </div>
         </div>
         <p className="mt-6 text-center text-[0.75rem] uppercase tracking-[0.4em] text-[var(--color-text-secondary)]">
