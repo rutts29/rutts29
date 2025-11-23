@@ -56,6 +56,10 @@ const IntroPanel = ({
   interactiveComponent,
 }: IntroPanelProps) => {
   const [slideValue, setSlideValue] = useState(0);
+  const [showTypewriter, setShowTypewriter] = useState(false);
+  const [typewriterText, setTypewriterText] = useState("");
+  const fullText = "Want to explore specifics yourself? Enter interactive mode";
+  const hasAnimatedRef = useRef(false);
 
   const handleSlide = (event: ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
@@ -68,6 +72,63 @@ const IntroPanel = ({
 
   const sliderProgress = Math.max(0, slideValue - 5);
   const knobLeft = `calc(${slideValue}% - 24px)`;
+
+  // Typewriter effect - only trigger on mount or when scrolled to top
+  useEffect(() => {
+    if (interactiveComponent) {
+      setShowTypewriter(false);
+      setTypewriterText(fullText);
+      hasAnimatedRef.current = false;
+      return;
+    }
+
+    let typeInterval: NodeJS.Timeout | null = null;
+
+    const startTypewriter = () => {
+      if (hasAnimatedRef.current) return;
+      
+      hasAnimatedRef.current = true;
+      setShowTypewriter(true);
+      setTypewriterText("");
+      let currentIndex = 0;
+      
+      typeInterval = setInterval(() => {
+        if (currentIndex < fullText.length) {
+          setTypewriterText(fullText.slice(0, currentIndex + 1));
+          currentIndex++;
+        } else {
+          if (typeInterval) clearInterval(typeInterval);
+        }
+      }, 20); // Adjust speed here (lower = faster)
+    };
+
+    // Check on mount if at top
+    const isAtTop = typeof window !== "undefined" && window.scrollY < 50;
+    if (isAtTop && !hasAnimatedRef.current) {
+      // Small delay to ensure page is loaded
+      const timeoutId = setTimeout(() => {
+        startTypewriter();
+      }, 300);
+      return () => {
+        clearTimeout(timeoutId);
+        if (typeInterval) clearInterval(typeInterval);
+      };
+    }
+
+    // Listen for scroll to top
+    const scrollHandler = () => {
+      const isAtTopNow = window.scrollY < 50;
+      if (isAtTopNow && !hasAnimatedRef.current) {
+        startTypewriter();
+      }
+    };
+
+    window.addEventListener("scroll", scrollHandler, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", scrollHandler);
+      if (typeInterval) clearInterval(typeInterval);
+    };
+  }, [interactiveComponent, fullText]);
 
   return (
     <div
@@ -120,7 +181,12 @@ const IntroPanel = ({
                 rutts@workspace
               </span>
               <span className="text-[var(--color-text-secondary)]">$</span>
-            <span className="flex-1 min-w-0 break-words">Want to explore specifics yourself? Enter interactive mode</span>
+            <span className="flex-1 min-w-0 break-words">
+              {typewriterText || fullText}
+              {showTypewriter && typewriterText.length < fullText.length && (
+                <span className="terminal-cursor ml-1" />
+              )}
+            </span>
               <span className="ml-auto flex h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-text-accent)]/10 text-[var(--color-text-accent)] transition-all duration-300 group-hover:translate-x-1 group-hover:bg-[var(--color-text-accent)]/20">
                 →
               </span>
