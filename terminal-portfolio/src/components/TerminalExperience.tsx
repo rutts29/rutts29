@@ -108,10 +108,11 @@ const IntroPanel = ({
             <button
               type="button"
               onClick={onActivateInteractive}
-              className="group flex w-full max-w-[960px] cursor-pointer items-center gap-2 sm:gap-3 rounded-2xl border px-3 py-2.5 sm:px-6 sm:py-4 font-mono text-[0.7rem] sm:text-sm text-[var(--color-text-primary)] transition-all duration-300 hover:border-[var(--color-text-accent)]/60 hover:shadow-[0_25px_60px_rgba(0,0,0,0.35)]"
+              className="group flex w-full max-w-[960px] cursor-pointer items-center gap-2 sm:gap-3 rounded-2xl border px-3 py-2.5 sm:px-6 sm:py-4 font-mono text-[0.7rem] sm:text-sm text-[var(--color-text-primary)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 animate-subtle-border-glow"
               style={{
                 background: "var(--surface-overlay-bg)",
-                borderColor: "var(--surface-card-border)",
+                borderColor: "var(--color-text-accent)",
+                boxShadow: `${panelGlow}, 0 25px 60px rgba(0,0,0,0.16)`,
               }}
             >
               <span className="text-[var(--color-text-prompt)] whitespace-nowrap">
