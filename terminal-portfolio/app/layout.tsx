@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rutts • Terminal Portfolio",
+  title: "0xRutts Portfolio",
   description:
-    "Interactive, scroll-synced terminal experience showcasing AI engineering, security work, and flagship projects.",
+    "Interactive, scroll-synced terminal experience showcasing AI engineering experience, and flagship projects.",
 };
 
 export default function RootLayout({

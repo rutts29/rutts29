@@ -81,16 +81,13 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
       type: "columns",
       columns: [
         {
-          title: "Programming & Systems",
+          title: "Programming Languages",
           items: [
             "Python",
             "C#",
             "JavaScript / TypeScript",
-            "C / C++",
-            "Scala",
+            "Rust",
             "R",
-            "Java",
-            "Linux",
           ],
         },
         {
@@ -103,7 +100,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
             "React",
             "Flutter",
             "Azure",
-            "Google Cloud",
+            "GCP",
             "AWS",
           ],
         },
@@ -118,7 +115,6 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
             "Spark",
             "Tableau",
             "Power BI",
-            "Fume",
           ],
         },
         {

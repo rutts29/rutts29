@@ -5,6 +5,7 @@ import {
   ChangeEvent,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -69,32 +70,32 @@ const IntroPanel = ({
 
   return (
     <div
-      className="w-full max-w-4xl rounded-[2.5rem] border p-8 text-left shadow-[0_25px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-colors"
+      className="w-full max-w-4xl rounded-[2.5rem] border p-3 sm:p-6 md:p-8 text-left shadow-[0_25px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-colors"
       style={{
         background: themeBackground,
         borderColor: panelBorder,
         boxShadow: panelGlow,
       }}
     >
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {!interactiveComponent && (
           <>
-            <pre className="overflow-x-auto whitespace-pre-wrap text-xs text-[var(--color-text-secondary)]">
+            <pre className="overflow-x-auto whitespace-pre text-[0.4rem] leading-[1.1] text-[var(--color-text-secondary)] sm:text-[0.5rem] md:text-xs sm:leading-normal px-2 py-2 sm:px-0 sm:py-0">
               {bannerLines.join("\n")}
             </pre>
             {aboutLines.length > 0 && (
               <div
-                className="rounded-2xl border p-4 text-[var(--color-text-primary)]"
+                className="rounded-2xl border p-3 sm:p-4 text-[var(--color-text-primary)]"
                 style={{
                   background: "var(--surface-card-bg)",
                   borderColor: "var(--surface-card-border)",
                 }}
               >
-                <p className="text-xs uppercase tracking-[0.4em] text-[var(--color-text-secondary)]">
+                <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.4em] text-[var(--color-text-secondary)]">
                   About
                 </p>
                 {aboutLines.map((line) => (
-                  <p key={line} className="mt-2 text-sm leading-6">
+                  <p key={line} className="mt-1.5 sm:mt-2 text-xs sm:text-sm leading-5 sm:leading-6">
                     {line}
                   </p>
                 ))}
@@ -107,24 +108,24 @@ const IntroPanel = ({
             <button
               type="button"
               onClick={onActivateInteractive}
-              className="group flex w-full max-w-[960px] cursor-pointer items-center gap-3 rounded-2xl border px-6 py-4 font-mono text-sm text-[var(--color-text-primary)] transition-all duration-300 hover:border-[var(--color-text-accent)]/60 hover:shadow-[0_25px_60px_rgba(0,0,0,0.35)]"
+              className="group flex w-full max-w-[960px] cursor-pointer items-center gap-2 sm:gap-3 rounded-2xl border px-3 py-2.5 sm:px-6 sm:py-4 font-mono text-[0.7rem] sm:text-sm text-[var(--color-text-primary)] transition-all duration-300 hover:border-[var(--color-text-accent)]/60 hover:shadow-[0_25px_60px_rgba(0,0,0,0.35)]"
               style={{
                 background: "var(--surface-overlay-bg)",
                 borderColor: "var(--surface-card-border)",
               }}
             >
-              <span className="text-[var(--color-text-prompt)]">
+              <span className="text-[var(--color-text-prompt)] whitespace-nowrap">
                 rutts@workspace
               </span>
               <span className="text-[var(--color-text-secondary)]">$</span>
-            <span>Want to explore specifics yourself? Enter interactive mode</span>
-              <span className="ml-auto flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-text-accent)]/10 text-[var(--color-text-accent)] transition-all duration-300 group-hover:translate-x-1 group-hover:bg-[var(--color-text-accent)]/20">
+            <span className="flex-1 min-w-0 break-words">Want to explore specifics yourself? Enter interactive mode</span>
+              <span className="ml-auto flex h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-text-accent)]/10 text-[var(--color-text-accent)] transition-all duration-300 group-hover:translate-x-1 group-hover:bg-[var(--color-text-accent)]/20">
                 →
               </span>
             </button>
-            <div className="flex flex-col items-center gap-1 text-xs uppercase tracking-[0.5em] text-[var(--color-text-secondary)]">
-              <span>Scroll to continue exploring the showcase</span>
-              <span className="mt-2 text-3xl text-[var(--color-text-accent)] animate-bounce">
+            <div className="flex flex-col items-center gap-1 text-[0.65rem] sm:text-xs uppercase tracking-[0.5em] text-[var(--color-text-secondary)]">
+              <span className="text-center px-2">Scroll to continue exploring the showcase</span>
+              <span className="mt-1 sm:mt-2 text-2xl sm:text-3xl text-[var(--color-text-accent)] animate-bounce">
                 ↓
               </span>
             </div>
@@ -153,6 +154,7 @@ export const TerminalExperience = () => {
     onThemeChange: setTheme,
     themeName,
   });
+  const [scrollY, setScrollY] = useState(0);
 
   const handleSubmit = useCallback(
     (command: string) => {
@@ -181,6 +183,23 @@ export const TerminalExperience = () => {
   );
 
   const storyCommands = scrollTimeline.map((section) => section.command);
+
+  // Parallax scroll effect with requestAnimationFrame for better performance
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const themeVariables = useMemo(() => {
     const layeredBackground = theme.body.texture
@@ -226,26 +245,45 @@ export const TerminalExperience = () => {
     </div>
   ) : undefined;
 
+  // Calculate parallax transforms
+  const topBarTransform = `translateY(${scrollY * 0.3}px)`;
+  // IntroPanel moves up (negative) to prevent overlap with sections
+  const introPanelTransform = `translateY(${-scrollY * 0.15}px)`;
+
   return (
     <div
-      className="min-h-screen px-4 py-12 transition-colors md:px-8"
+      className="min-h-screen px-3 py-8 sm:px-4 sm:py-12 transition-colors md:px-8"
       style={themeVariables}
     >
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-8">
-        <TopBar
-          themeLabel={theme.label}
-          onCycleTheme={cycleTheme}
-          themeName={themeName}
-        />
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 sm:gap-6 md:gap-8">
+        <div
+          style={{
+            transform: topBarTransform,
+            transition: "transform 0.1s ease-out",
+          }}
+        >
+          <TopBar
+            themeLabel={theme.label}
+            onCycleTheme={cycleTheme}
+            themeName={themeName}
+          />
+        </div>
 
-        <IntroPanel
-          onActivateInteractive={handleActivateInteractive}
-          aboutLines={aboutPreviewLines}
-          themeBackground={`linear-gradient(135deg, ${theme.terminal.background}, ${theme.body.background})`}
-          panelBorder={theme.terminal.border}
-          panelGlow={theme.terminal.glow}
-          interactiveComponent={interactiveComponent}
-        />
+        <div
+          style={{
+            transform: introPanelTransform,
+            transition: "transform 0.1s ease-out",
+          }}
+        >
+          <IntroPanel
+            onActivateInteractive={handleActivateInteractive}
+            aboutLines={aboutPreviewLines}
+            themeBackground={`linear-gradient(135deg, ${theme.terminal.background}, ${theme.body.background})`}
+            panelBorder={theme.terminal.border}
+            panelGlow={theme.terminal.glow}
+            interactiveComponent={interactiveComponent}
+          />
+        </div>
 
         {isInteractive && (
           <div className="flex flex-col items-center gap-4 text-center text-sm text-[var(--color-text-secondary)]">
@@ -270,7 +308,7 @@ export const TerminalExperience = () => {
           initialTriggered={[]}
         />
 
-        <div className="mt-8 flex w-full justify-center border-t border-[var(--surface-card-border)] pt-8">
+        <div className="mt-16 sm:mt-20 md:mt-24 flex w-full justify-center border-t border-[var(--surface-card-border)] pt-8">
           <div className="relative h-48 w-full max-w-[1200px] md:h-52">
             <Image
               src="/image.png"

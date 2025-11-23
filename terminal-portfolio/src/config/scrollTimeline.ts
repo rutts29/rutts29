@@ -19,9 +19,21 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
     summary: "See the grouped stack and tooling.",
     iconGroups: [
       {
-        title: "AI, Data & ML Stack",
+        title: "Programming Languages",
         items: [
           { label: "Python", badgeSrc: "/badges/python.svg" },
+          { label: "JavaScript", badgeSrc: "/badges/javascript.svg" },
+          { label: "TypeScript", badgeSrc: "/badges/typescript.svg" },
+          { label: "Solidity", badgeSrc: "/badges/solidity.svg" },
+          { label: "Rust", badgeSrc: "/badges/rust.svg" },
+          { label: "C#", badgeSrc: "/badges/csharp.svg" },
+          { label: "R", badgeSrc: "/badges/r.svg" },
+
+        ],
+      },
+      {
+        title: "AI, Data & ML Stack",
+        items: [
           { label: "PyTorch", badgeSrc: "/badges/pytorch.svg" },
           { label: "TensorFlow", badgeSrc: "/badges/tensorflow.svg" },
           { label: "Hugging Face", badgeSrc: "/badges/hugging-face.svg" },
@@ -31,20 +43,15 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
           { label: "DeepSpeed", badgeSrc: "/badges/deepspeed.svg" },
           { label: "Pandas", badgeSrc: "/badges/pandas.svg" },
           { label: "NumPy", badgeSrc: "/badges/numpy.svg" },
-          { label: "Apache Spark", badgeSrc: "/badges/apache-spark.svg" },
-          { label: "C++", badgeSrc: "/badges/c.svg" },
-          { label: "R", badgeSrc: "/badges/r.svg" },
           { label: "Tableau", badgeSrc: "/badges/tableau.svg" },
           { label: "Power BI", badgeSrc: "/badges/power-bi.svg" },
         ],
       },
       {
-        title: "Full Stack & Languages",
+        title: "Full Stack",
         items: [
           { label: "HTML5", badgeSrc: "/badges/html5.svg" },
           { label: "CSS3", badgeSrc: "/badges/css3.svg" },
-          { label: "JavaScript", badgeSrc: "/badges/javascript.svg" },
-          { label: "TypeScript", badgeSrc: "/badges/typescript.svg" },
           { label: "React", badgeSrc: "/badges/react.svg" },
           { label: "Next.js", badgeSrc: "/badges/next-js.svg" },
           { label: "Node.js", badgeSrc: "/badges/node-js.svg" },
@@ -52,8 +59,6 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
           { label: "FastAPI", badgeSrc: "/badges/fastapi.svg" },
           { label: "Django", badgeSrc: "/badges/django.svg" },
           { label: "Flask", badgeSrc: "/badges/flask.svg" },
-          { label: "Solidity", badgeSrc: "/badges/solidity.svg" },
-          { label: "Rust", badgeSrc: "/badges/rust.svg" },
           { label: "PostgreSQL", badgeSrc: "/badges/postgresql.svg" },
           { label: "MongoDB", badgeSrc: "/badges/mongodb.svg" },
           { label: "MySQL", badgeSrc: "/badges/mysql.svg" },
