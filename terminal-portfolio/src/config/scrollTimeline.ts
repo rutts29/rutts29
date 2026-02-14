@@ -99,7 +99,7 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
         companyUrl: "https://credshields.com/",
         role: "AI Engineer & ML Researcher",
         duration: "Apr 2025 – Present",
-        location: "Part-time · Remote (Singapore / Oakville)",
+        location: "Part-time · Remote (Singapore)",
         isCurrent: true,
         details: [
           "Led LLM-assisted pipelines that spot smart contract vulnerabilities.",
@@ -112,7 +112,7 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
         companyUrl: "https://www.telus.com/en",
         role: "Machine Learning Researcher",
         duration: "Jan 2025 – Apr 2025",
-        location: "Part-time · Oakville",
+        location: "Part-time · Oakville, Ontario",
         details: [
           "Architected a generative-AI indoor localization system with research partners.",
           "Synthesized RSSI data with VAEs to auto-generate virtual fingerprints.",
@@ -122,9 +122,9 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
       {
         company: "McMaster University",
         companyUrl: "https://www.mcmaster.ca/",
-        role: "Full Stack Developer, Cross Platform",
+        role: "Full Stack Developer",
         duration: "Sep 2024 – Dec 2024",
-        location: "Part-time · Ontario",
+        location: "Part-time · Oakville, Ontario",
         details: [
           "Ported a web experience into a Flutter-powered iOS/Android build.",
           "Enhanced UX, enforced GDPR/HIPAA compliance, and integrated Strapi + SQL.",
@@ -137,7 +137,7 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
         partnerUrl: "https://naryant.com/",
         role: "Machine Learning Researcher",
         duration: "May 2024 – Aug 2024",
-        location: "Co-op · Ontario",
+        location: "Co-op · Oakville, Ontario",
         details: [
           "Collaborated on ML research and imminent fracture risk prediction.",
           "Engineered features, trained ensembles, and raised accuracy 30–40%.",
@@ -163,22 +163,59 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
     label: "Projects",
     command: "projects",
     summary: "Selected builds with stack and links.",
-    content: [
-      "The terminal-first portfolio highlights recent builds and research. Dive in to explore SentinelCopilot, ForgeTrace, AtlasOps, and other active investigations.",
-      "Each story section cues a command that streams the project output into the interactive shell for you to replay or extend.",
+    projects: [
+      {
+        name: "Loan Referral Automation",
+        description:
+          "Multi-tenant SaaS platform for a commercial loan broker. Referral partners submit deals through a portal while the broker manages the full pipeline. Borrowers get view-only access to their loan status.",
+        stack: ["TypeScript", "Next.js", "Docker"],
+        repoUrl: "https://github.com/rutts29/loan-referral-automation",
+        liveUrl: "https://loan-ref.vercel.app/",
+        image: "/projects/loan-ref-landing.png",
+      },
+      {
+        name: "Keyed",
+        description:
+          "Decentralized social media platform built on Solana with AI-powered content discovery, creator monetization, and privacy tipping.",
+        stack: ["TypeScript", "Rust", "Python", "Solana", "PostgreSQL"],
+        repoUrl: "https://github.com/rutts29/Keyed",
+        liveUrl: "https://frontend-beryl-omega-38.vercel.app/",
+        image: "/projects/keyed-landing.png",
+      },
     ],
+    content: [],
   },
   {
     id: "contact",
     label: "Contact",
     command: "contact",
     summary: "Reach out via email or socials.",
-    content: [
-      "Email: rutts291@gmail.com",
-      "LinkedIn: linkedin.com/in/ruttansh-bhatelia",
-      "GitHub: github.com/rutts29",
-      "X: x.com/0xRutts",
-      "Location: Toronto, Ontario · Open to relocate",
+    content: [],
+    contactLinks: [
+      {
+        label: "rutts291@gmail.com",
+        href: "mailto:rutts291@gmail.com",
+        icon: "email",
+      },
+      {
+        label: "linkedin.com/in/ruttansh-bhatelia",
+        href: "https://www.linkedin.com/in/ruttansh-bhatelia",
+        icon: "linkedin",
+      },
+      {
+        label: "github.com/rutts29",
+        href: "https://github.com/rutts29",
+        icon: "github",
+      },
+      {
+        label: "x.com/0xRutts",
+        href: "https://x.com/0xRutts",
+        icon: "x",
+      },
+      {
+        label: "Toronto, Ontario · Open to relocate",
+        icon: "location",
+      },
     ],
   },
 ];

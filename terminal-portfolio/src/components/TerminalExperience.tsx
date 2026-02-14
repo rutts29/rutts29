@@ -2,7 +2,6 @@
 
 import {
   CSSProperties,
-  ChangeEvent,
   ReactNode,
   useCallback,
   useEffect,
@@ -55,23 +54,10 @@ const IntroPanel = ({
   panelGlow,
   interactiveComponent,
 }: IntroPanelProps) => {
-  const [slideValue, setSlideValue] = useState(0);
   const [showTypewriter, setShowTypewriter] = useState(false);
   const [typewriterText, setTypewriterText] = useState("");
   const fullText = "Want to explore specifics yourself? Enter interactive mode";
   const hasAnimatedRef = useRef(false);
-
-  const handleSlide = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value);
-    setSlideValue(value);
-    if (value >= 95) {
-      onActivateInteractive();
-      setTimeout(() => setSlideValue(0), 300);
-    }
-  };
-
-  const sliderProgress = Math.max(0, slideValue - 5);
-  const knobLeft = `calc(${slideValue}% - 24px)`;
 
   // Typewriter effect - only trigger on mount or when scrolled to top
   useEffect(() => {
@@ -132,7 +118,7 @@ const IntroPanel = ({
 
   return (
     <div
-      className="w-full max-w-4xl rounded-[2.5rem] border p-3 sm:p-6 md:p-8 text-left shadow-[0_25px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-colors"
+      className="w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl rounded-[2.5rem] border p-3 sm:p-6 md:p-8 2xl:p-12 text-left shadow-[0_25px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-colors"
       style={{
         background: themeBackground,
         borderColor: panelBorder,
@@ -236,11 +222,6 @@ export const TerminalExperience = () => {
       runCommand(trimmed).finally(() => setCurrentInput(""));
     },
     [runCommand, setCurrentInput],
-  );
-
-  const handleActivateInteractive = useCallback(
-    () => enterInteractiveMode(),
-    [enterInteractiveMode],
   );
 
   const handleSectionTrigger = useCallback(
@@ -380,7 +361,7 @@ export const TerminalExperience = () => {
           />
         </div>
       </div>
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 sm:gap-6 md:gap-8 px-3 py-8 sm:px-4 sm:py-12 md:px-8">
+      <div className="mx-auto flex w-full max-w-5xl xl:max-w-6xl 2xl:max-w-7xl flex-col items-center gap-4 sm:gap-6 md:gap-8 px-3 py-8 sm:px-4 sm:py-12 md:px-8">
         <div
           ref={introPanelRef}
           style={{
@@ -390,7 +371,7 @@ export const TerminalExperience = () => {
           }}
         >
           <IntroPanel
-            onActivateInteractive={handleActivateInteractive}
+            onActivateInteractive={enterInteractiveMode}
             aboutLines={aboutPreviewLines}
             themeBackground={`linear-gradient(135deg, ${theme.terminal.background}, ${theme.body.background})`}
             panelBorder={theme.terminal.border}
@@ -435,7 +416,7 @@ export const TerminalExperience = () => {
                 fill
                 sizes="(max-width: 768px) 128px, 192px"
                 className="object-cover"
-                priority={false}
+
               />
             </div>
           </div>

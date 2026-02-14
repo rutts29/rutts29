@@ -37,7 +37,6 @@ export type TerminalLine =
 export type CommandDefinition = {
   key: string;
   description: string;
-  output: TerminalLine[];
 };
 
 export type TerminalEntry =

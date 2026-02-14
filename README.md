@@ -1,6 +1,6 @@
 <div align="center">
   <h2>Yoo 👋 I'm Rutts </h2>
-  <h3>AI Engineer • LLM Researcher • Full Stack AI App Dev</h3>
+  <h3>Agentic Engineer • ML Researcher • Full Stack AI App Dev</h3>
 
   <br/>
 
@@ -25,23 +25,22 @@
 <table>
   <tr>
     <td width="60%" valign="top">
-      <h3>👨‍💻 About Me</h3>
+      <h3>About Me</h3>
       <p>
-        I am an <strong>AI Engineer and Researcher</strong> passionate about building production-grade, intelligent systems. My core focus lies at the intersection of:
+        Agentic engineer. Researching ML models. Micromanaging Claude and Cursor agents on my devices. Published in <strong><a href="https://ieeexplore.ieee.org/document/11309178">IEEE MSWiM 2025</a></strong>.
       </p>
       <ul>
-        <li>🤖 <strong>LLMs for Code Intelligence:</strong> Security, refactoring, and generation.</li>
-        <li>🛡️ <strong>Smart Contract Security:</strong> Vulnerability detection and automated reasoning.</li>
-        <li>🚀 <strong>Full Stack AI Systems:</strong> Building end-to-end AI/ML applications with robust infrastructure.</li>
+        <li><strong>LLMs & Agentic Systems:</strong> RAG workflows, fine-tuning transformers, prompt engineering, and LLM-driven code analysis.</li>
+        <li><strong>ML Research:</strong> Co-authored IEEE publication on generative AI for indoor positioning (VAEs, DDPMs). Thesis on vulnerability detection using CodeBERT & GNNs.</li>
+        <li><strong>Full Stack AI:</strong> End-to-end AI/ML pipelines, Web3 platforms, and cross-platform applications.</li>
       </ul>
       <br/>
       <ul>
-        <li>🔭  Working on <strong>LLM-powered vulnerability detection</strong> & secure code generation.</li>
-        <li>🧠  Interested in <strong>long-context LLMs, RAG, agentic workflows, and inference optimization (vLLM, TGI)</strong>.</li>
-        <li>🌱  Exploring optimized training pipelines (<strong>Unsloth, DeepSpeed</strong>) for program analysis models.</li>
-        <li>👯  Open to collaborating on <strong>AI dev tools, security research, and scalable AI systems</strong>.</li>
-        <li>📫  Reach me at: <strong>rutts291@gmail.com</strong></li>
-        <li>⚡  Love building with new model architectures, MLOps stacks, and full-stack AI workflows.</li>
+        <li>Currently working on <strong>agentic workflows, LLM pipelines, and smart contract security tooling</strong>.</li>
+        <li>Previously researched <strong>healthcare ML</strong> (fracture risk prediction) and <strong>generative AI for indoor positioning</strong>.</li>
+        <li>Building <strong>SolShare</strong> — a decentralized social platform combining Solana blockchain with AI content moderation.</li>
+        <li>Open to collaborating on <strong>AI dev tools, security research, and scalable AI systems</strong>.</li>
+        <li>Reach me at: <strong>rutts291@gmail.com</strong></li>
       </ul>
   </tr>
 </table>
@@ -49,56 +48,59 @@
 <br/>
 
 <!-- Tech Stack Section -->
-<div align="center"> 
-  <h2>AI, Data & ML Stack</h2>
+<div align="center">
+  <h2>Programming Languages</h2>
   <p>
     <img alt="Python" src="https://img.shields.io/badge/Python-14354C.svg?style=flat-square&logo=python&logoColor=white">
+    <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat-square&logo=javascript&logoColor=black">
+    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-007ACC.svg?style=flat-square&logo=typescript&logoColor=white">
+    <img alt="Solidity" src="https://img.shields.io/badge/Solidity-363636.svg?style=flat-square&logo=solidity&logoColor=white">
+    <img alt="Rust" src="https://img.shields.io/badge/Rust-000000.svg?style=flat-square&logo=rust&logoColor=white">
+    <img alt="C#" src="https://img.shields.io/badge/C%23-239120.svg?style=flat-square&logo=csharp&logoColor=white">
+    <img alt="R" src="https://img.shields.io/badge/R-276DC3.svg?style=flat-square&logo=r&logoColor=white">
+  </p>
+
+  <br/>
+
+  <h2>AI, Data & ML Stack</h2>
+  <p>
     <img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-EE4C2C.svg?style=flat-square&logo=pytorch&logoColor=white">
     <img alt="TensorFlow" src="https://img.shields.io/badge/TensorFlow-FF6F00.svg?style=flat-square&logo=tensorflow&logoColor=white">
     <img alt="Hugging Face" src="https://img.shields.io/badge/HuggingFace-FFCC4D.svg?style=flat-square&logo=huggingface&logoColor=000">
     <img alt="Transformers" src="https://img.shields.io/badge/Transformers-FFBE0B.svg?style=flat-square&logo=python&logoColor=black">
-    <br/>
     <img alt="Unsloth" src="https://img.shields.io/badge/Unsloth-000000.svg?style=flat-square&logo=github&logoColor=white">
     <img alt="vLLM" src="https://img.shields.io/badge/vLLM-0A0A0A.svg?style=flat-square&logo=lightning&logoColor=white">
+    <br/>
     <img alt="DeepSpeed" src="https://img.shields.io/badge/DeepSpeed-007ACC.svg?style=flat-square&logo=azurepipelines&logoColor=white">
     <img alt="Pandas" src="https://img.shields.io/badge/Pandas-150458.svg?style=flat-square&logo=pandas&logoColor=white">
     <img alt="NumPy" src="https://img.shields.io/badge/NumPy-013243.svg?style=flat-square&logo=numpy&logoColor=white">
-    <img alt="Apache Spark" src="https://img.shields.io/badge/Spark-E25A1C.svg?style=flat-square&logo=apache-spark&logoColor=white">
-    <br/>
-    <img alt="C++" src="https://img.shields.io/badge/C++-00599C.svg?style=flat-square&logo=cplusplus&logoColor=white">
-    <img alt="R" src="https://img.shields.io/badge/R-276DC3.svg?style=flat-square&logo=r&logoColor=white">
     <img alt="Tableau" src="https://img.shields.io/badge/Tableau-E97627.svg?style=flat-square&logo=tableau&logoColor=white">
     <img alt="Power BI" src="https://img.shields.io/badge/PowerBI-F2C811.svg?style=flat-square&logo=powerbi&logoColor=black">
   </p>
 
   <br/>
 
-  <h2>Full Stack & Languages</h2>
+  <h2>Full Stack</h2>
   <p>
     <img alt="HTML5" src="https://img.shields.io/badge/HTML5-E34F26.svg?style=flat-square&logo=html5&logoColor=white">
     <img alt="CSS3" src="https://img.shields.io/badge/CSS3-1572B6.svg?style=flat-square&logo=css3&logoColor=white">
-    <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat-square&logo=javascript&logoColor=black">
-    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-007ACC.svg?style=flat-square&logo=typescript&logoColor=white">
     <img alt="React" src="https://img.shields.io/badge/React-20232A.svg?style=flat-square&logo=react&logoColor=61DAFB">
     <img alt="Next.js" src="https://img.shields.io/badge/Next.js-000000.svg?style=flat-square&logo=nextdotjs&logoColor=white">
-    <br/>
     <img alt="Node.js" src="https://img.shields.io/badge/Node.js-43853D.svg?style=flat-square&logo=node.js&logoColor=white">
     <img alt="Express.js" src="https://img.shields.io/badge/Express.js-000000.svg?style=flat-square&logo=express&logoColor=white">
+    <br/>
     <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688.svg?style=flat-square&logo=fastapi&logoColor=white">
     <img alt="Django" src="https://img.shields.io/badge/Django-092E20.svg?style=flat-square&logo=django&logoColor=white">
     <img alt="Flask" src="https://img.shields.io/badge/Flask-000000.svg?style=flat-square&logo=flask&logoColor=white">
-    <img alt="Solidity" src="https://img.shields.io/badge/Solidity-363636.svg?style=flat-square&logo=solidity&logoColor=white">
-    <img alt="Rust" src="https://img.shields.io/badge/Rust-000000.svg?style=flat-square&logo=rust&logoColor=white">
-    <br/>
     <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-316192.svg?style=flat-square&logo=postgresql&logoColor=white">
     <img alt="MongoDB" src="https://img.shields.io/badge/MongoDB-47A248.svg?style=flat-square&logo=mongodb&logoColor=white">
     <img alt="MySQL" src="https://img.shields.io/badge/MySQL-4479A1.svg?style=flat-square&logo=mysql&logoColor=white">
+    <br/>
     <img alt="SQLite" src="https://img.shields.io/badge/SQLite-003B57.svg?style=flat-square&logo=sqlite&logoColor=white">
     <img alt="Milvus" src="https://img.shields.io/badge/Milvus-52C41A.svg?style=flat-square&logo=apache&logoColor=white">
-    <br/>
     <img alt="Flutter" src="https://img.shields.io/badge/Flutter-02569B.svg?style=flat-square&logo=flutter&logoColor=white">
   </p>
-  
+
   <br/>
 
   <h2>Infra, DevOps & Tooling</h2>

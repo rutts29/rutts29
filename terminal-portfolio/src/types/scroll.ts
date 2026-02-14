@@ -4,10 +4,17 @@ export type ScrollTimelineEntry = {
   command: string;
   summary: string;
   content: string[];
-  icons?: { label: string; iconSrc: string }[];
   iconGroups?: {
     title: string;
     items: { label: string; iconSrc?: string; badgeSrc?: string }[];
+  }[];
+  projects?: {
+    name: string;
+    description: string;
+    stack: string[];
+    repoUrl: string;
+    liveUrl?: string;
+    image?: string;
   }[];
   timeline?: {
     company: string;
@@ -18,6 +25,11 @@ export type ScrollTimelineEntry = {
     location: string;
     details: string[];
     isCurrent?: boolean;
+  }[];
+  contactLinks?: {
+    label: string;
+    href?: string;
+    icon: "email" | "linkedin" | "github" | "x" | "location";
   }[];
 };
 

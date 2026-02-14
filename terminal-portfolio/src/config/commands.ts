@@ -2,22 +2,18 @@ import { themeNames } from "@/config/themes";
 import { CommandDefinition, TerminalLine } from "@/types/terminal";
 
 export const commandCatalog: CommandDefinition[] = [
-  { key: "help", description: "List available commands", output: [] },
-  { key: "about", description: "Who I am and what I do", output: [] },
-  { key: "education", description: "Where I studied", output: [] },
-  { key: "skills", description: "Stacks, languages, and tooling", output: [] },
-  { key: "experience", description: "Roles and impact", output: [] },
-  { key: "projects", description: "Highlighted builds and repos", output: [] },
-  { key: "contact", description: "How to reach me", output: [] },
-  { key: "theme list", description: "Show supported themes", output: [] },
-  {
-    key: "theme set <name>",
-    description: "Switch the terminal theme",
-    output: [],
-  },
-  { key: "clear", description: "Reset the terminal history", output: [] },
-  { key: "history", description: "Show recent commands", output: [] },
-  { key: "banner", description: "Print the ASCII welcome banner", output: [] },
+  { key: "help", description: "List available commands" },
+  { key: "about", description: "Who I am and what I do" },
+  { key: "education", description: "Where I studied" },
+  { key: "skills", description: "Stacks, languages, and tooling" },
+  { key: "experience", description: "Roles and impact" },
+  { key: "projects", description: "Highlighted builds and repos" },
+  { key: "contact", description: "How to reach me" },
+  { key: "theme list", description: "Show supported themes" },
+  { key: "theme set <name>", description: "Switch the terminal theme" },
+  { key: "clear", description: "Reset the terminal history" },
+  { key: "history", description: "Show recent commands" },
+  { key: "banner", description: "Print the ASCII welcome banner" },
 ];
 
 export const staticCommandOutputs: Record<string, TerminalLine[]> = {
@@ -139,7 +135,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "heading", text: "Experience" },
     {
       type: "text",
-      text: "CredShields — AI Engineer & ML Researcher · Contract / Remote (Singapore · Oakville)",
+      text: "CredShields — AI Engineer & ML Researcher · Part-time · Remote (Singapore)",
       tone: "accent",
     },
     {
@@ -154,7 +150,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "spacer" },
     {
       type: "text",
-      text: "TELUS — Machine Learning Researcher (Indoor Localization using Gen AI) · Contract, Oakville",
+      text: "TELUS — Machine Learning Researcher · Part-time · Oakville, Ontario",
       tone: "accent",
     },
     {
@@ -168,7 +164,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "spacer" },
     {
       type: "text",
-      text: "McMaster University — Full Stack Developer, Cross Platform · Contract",
+      text: "McMaster University — Full Stack Developer · Part-time · Oakville, Ontario",
       tone: "accent",
     },
     {
@@ -182,7 +178,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "spacer" },
     {
       type: "text",
-      text: "Osteoporosis Canada — Machine Learning Researcher · Co-op",
+      text: "Osteoporosis Canada — Machine Learning Researcher · Co-op · Oakville, Ontario",
       tone: "accent",
     },
     {
@@ -198,49 +194,33 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "heading", text: "Projects" },
     {
       type: "text",
-      text: "SentinelCopilot — LLM agent that triages Solidity + Rust smart contracts.",
+      text: "Loan Referral Automation — Multi-tenant SaaS platform for a commercial loan broker with referral partner portal and deal pipeline management.",
     },
     {
       type: "text",
-      text: "Stack: vLLM, LangGraph, PostgreSQL, Foundry, Rust",
+      text: "Stack: TypeScript, Next.js, Docker",
       tone: "muted",
     },
     {
       type: "link",
-      label: "github.com/rutts29/sentinel-copilot",
-      href: "https://github.com/rutts29/sentinel-copilot",
+      label: "github.com/rutts29/loan-referral-automation",
+      href: "https://github.com/rutts29/loan-referral-automation",
       prefix: "Repo",
     },
     { type: "spacer" },
     {
       type: "text",
-      text: "ForgeTrace — production-ready pipeline for secure code search + diffing.",
+      text: "Keyed — Decentralized social media platform on Solana with AI-powered content discovery and creator monetization.",
     },
     {
       type: "text",
-      text: "Stack: Next.js, OpenSearch, LangChain, Supabase",
+      text: "Stack: TypeScript, Rust, Python, Solana, PostgreSQL",
       tone: "muted",
     },
     {
       type: "link",
-      label: "github.com/rutts29/forgetrace",
-      href: "https://github.com/rutts29/forgetrace",
-      prefix: "Repo",
-    },
-    { type: "spacer" },
-    {
-      type: "text",
-      text: "AtlasOps — autonomous infra agent orchestrating GPU workloads.",
-    },
-    {
-      type: "text",
-      text: "Stack: Go, Python, Temporal, Kubernetes, Grafana",
-      tone: "muted",
-    },
-    {
-      type: "link",
-      label: "github.com/rutts29/atlas-ops",
-      href: "https://github.com/rutts29/atlas-ops",
+      label: "github.com/rutts29/Keyed",
+      href: "https://github.com/rutts29/Keyed",
       prefix: "Repo",
     },
   ],

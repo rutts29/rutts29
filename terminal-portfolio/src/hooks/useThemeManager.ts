@@ -25,6 +25,5 @@ export const useThemeManager = () => {
     theme,
     setTheme,
     cycleTheme,
-    themeNames,
   };
 };

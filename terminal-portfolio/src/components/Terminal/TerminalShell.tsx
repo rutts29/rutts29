@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef } from "react";
 
 import { commandCatalog } from "@/config/commands";
 import { TerminalEntry, TerminalLine, TerminalMode } from "@/types/terminal";
@@ -163,10 +163,7 @@ export const TerminalShell = ({
     }
   }, [mode]);
 
-  const promptValue = useMemo(
-    () => (mode === "interactive" ? currentInput : autoTypingText),
-    [autoTypingText, currentInput, mode],
-  );
+  const promptValue = mode === "interactive" ? currentInput : autoTypingText;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
