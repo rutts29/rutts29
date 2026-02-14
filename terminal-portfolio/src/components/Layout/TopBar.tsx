@@ -25,8 +25,9 @@ export const TopBar = ({
           <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-text-primary)] truncate">
             0xRutts
           </p>
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-[var(--color-text-secondary)] hidden sm:block mt-2 sm:mt-2.5 md:mt-3">
-            Agentic Engineer · ML Researcher · Micromanaging Claude & Cursor Agents
+          <p className="text-[0.6rem] sm:text-sm md:text-base lg:text-lg text-[var(--color-text-secondary)] mt-1 sm:mt-2.5 md:mt-3">
+            <span className="sm:hidden">Agentic Engineer · ML Researcher</span>
+            <span className="hidden sm:inline">Agentic Engineer · ML Researcher · Micromanaging Claude & Cursor Agents</span>
           </p>
         </div>
       </div>

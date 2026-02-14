@@ -245,8 +245,8 @@ export const ScrollSections = ({
                                       : "none",
                                   }}
                                 />
-                                {/* Labels */}
-                                <div className="flex flex-col items-center gap-0.5 w-full">
+                                {/* Labels — hidden on mobile, visible from sm up */}
+                                <div className="hidden sm:flex flex-col items-center gap-0.5 w-full">
                                   <span
                                     className="text-xs sm:text-sm 2xl:text-base font-semibold leading-snug text-center w-full transition-colors"
                                     style={{
@@ -258,7 +258,7 @@ export const ScrollSections = ({
                                     {entry.company}
                                   </span>
                                   <span
-                                    className="hidden sm:block text-[0.7rem] sm:text-xs 2xl:text-sm leading-snug text-center w-full transition-colors"
+                                    className="text-[0.7rem] sm:text-xs 2xl:text-sm leading-snug text-center w-full transition-colors"
                                     style={{
                                       color: isActive
                                         ? "var(--color-text-secondary)"

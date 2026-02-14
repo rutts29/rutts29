@@ -297,16 +297,8 @@ export const TerminalShell = ({
               entry.lines.map((line, index) => {
                 // Create a wrapper function that sets input and focuses it
                 const handleCommandClick = (command: string) => {
-                  setCurrentInput(command);
-                  // Focus input and move cursor to end after setting command
-                  setTimeout(() => {
-                    if (inputRef.current) {
-                      inputRef.current.focus();
-                      // Move cursor to end of input
-                      const length = command.length;
-                      inputRef.current.setSelectionRange(length, length);
-                    }
-                  }, 0);
+                  onSubmit(command);
+                  setCurrentInput("");
                 };
                 return (
                   <div key={`${entry.id}-${index}`}>
