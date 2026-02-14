@@ -89,6 +89,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="google-site-verification" content="RSyOabK11drnh_q3AKVZsECax5d06kYUYOlF94gHHRo" />
         <link rel="preconnect" href="https://img.shields.io" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://cdn.simpleicons.org" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />

@@ -11,7 +11,7 @@
 <!-- Social Links -->
 <div align="center">
 
-[![X](https://img.shields.io/badge/X-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/0xRutts) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ruttansh-bhatelia) [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/rutts29)
+[![X](https://img.shields.io/badge/X-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/0xRutts) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ruttansh-bhatelia) [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/rutts29) [![Website](https://img.shields.io/badge/0xrutts.com-FF5722?style=flat-square&logo=googlechrome&logoColor=white)](https://www.0xrutts.com/)
 
 </div>
 
@@ -25,20 +25,15 @@
 <table>
   <tr>
     <td width="60%" valign="top">
-      <h3>About Me</h3>
+      <h3>👨‍💻 About Me</h3>
       <p>
         Agentic engineer. Researching ML models. Micromanaging Claude and Cursor agents on my devices. Published in <strong><a href="https://ieeexplore.ieee.org/document/11309178">IEEE MSWiM 2025</a></strong>.
       </p>
       <ul>
-        <li><strong>LLMs & Agentic Systems:</strong> RAG workflows, fine-tuning transformers, prompt engineering, and LLM-driven code analysis.</li>
-        <li><strong>ML Research:</strong> Co-authored IEEE publication on generative AI for indoor positioning (VAEs, DDPMs). Thesis on vulnerability detection using CodeBERT & GNNs.</li>
-        <li><strong>Full Stack AI:</strong> End-to-end AI/ML pipelines, Web3 platforms, and cross-platform applications.</li>
-      </ul>
-      <br/>
-      <ul>
-        <li>Currently working on <strong>agentic workflows, LLM pipelines, and smart contract security tooling</strong>.</li>
-        <li>Previously researched <strong>healthcare ML</strong> (fracture risk prediction) and <strong>generative AI for indoor positioning</strong>.</li>
-        <li>Building <strong>SolShare</strong> — a decentralized social platform combining Solana blockchain with AI content moderation.</li>
+        <li>I design and deploy <strong>multi-agent systems</strong> in production — custom tooling, memory layers, retrieval pipelines, the whole stack.</li>
+        <li>I fine-tune LLMs and build <strong>inference pipelines</strong> for code analysis, healthcare, and signal modeling.</li>
+        <li>Wrote my thesis on <strong>smart contract vulnerability detection</strong> using CodeBERT & GNNs.</li>
+        <li>Co-authored an <strong>IEEE MSWiM 2025</strong> paper on indoor positioning using synthetic RSSI augmentation with VAEs and DDPMs.</li>
         <li>Open to collaborating on <strong>AI dev tools, security research, and scalable AI systems</strong>.</li>
         <li>Reach me at: <strong>rutts291@gmail.com</strong></li>
       </ul>

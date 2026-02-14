@@ -26,7 +26,7 @@ export const TopBar = ({
             0xRutts
           </p>
           <p className="text-xs sm:text-sm md:text-base lg:text-lg text-[var(--color-text-secondary)] hidden sm:block mt-2 sm:mt-2.5 md:mt-3">
-            Full-Stack AI Engineer · ML Researcher
+            Agentic Engineer · ML Researcher · Micromanaging Claude & Cursor Agents
           </p>
         </div>
       </div>
