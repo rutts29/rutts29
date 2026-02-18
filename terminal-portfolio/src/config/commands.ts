@@ -35,7 +35,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
   welcome: [
     {
       type: "text",
-      text: "yoo, I'm Rutts (Ruttansh Bhatelia) — Toronto-based AI engineer shipping secure copilots and automation.",
+      text: "yoo, I'm Rutts (Ruttansh) — Toronto-based AI engineer shipping secure copilots and automation.",
       tone: "accent",
     },
     {
@@ -48,7 +48,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "heading", text: "About" },
     {
       type: "text",
-      text: "I'm Ruttansh (Rutts) Bhatelia. I build production-ready AI/ML tooling that mixes rigorous research with practical engineering across security, code intelligence, and automation.",
+      text: "I'm Ruttansh (Rutts). I build production-ready AI/ML tooling that mixes rigorous research with practical engineering across security, code intelligence, and automation.",
     },
     {
       type: "text",
@@ -194,7 +194,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "heading", text: "Projects" },
     {
       type: "text",
-      text: "Loan Referral Automation — Multi-tenant SaaS platform for a commercial loan broker with referral partner portal and deal pipeline management.",
+      text: "Loan Referral Automation — Automated a 40–50 min manual loan-deal workflow to under a minute with AI-assisted deal submission and real-time pipeline tracking.",
     },
     {
       type: "text",

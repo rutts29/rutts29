@@ -167,7 +167,7 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
       {
         name: "Loan Referral Automation",
         description:
-          "Multi-tenant SaaS platform for a commercial loan broker. Referral partners submit deals through a portal while the broker manages the full pipeline. Borrowers get view-only access to their loan status.",
+          "Automated a 40–50 minute manual loan-deal workflow down to under a minute. AI assists referral partners through deal submission while the broker manages the full pipeline with real-time status tracking.",
         stack: ["TypeScript", "Next.js", "Docker"],
         repoUrl: "https://github.com/rutts29/loan-referral-automation",
         liveUrl: "https://loan-ref.vercel.app/",

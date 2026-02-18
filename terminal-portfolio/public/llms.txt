@@ -1,0 +1,41 @@
+# Ruttansh (0xRutts)
+
+> Ruttansh, also known as Rutts or 0xRutts, is a Toronto-based AI Engineer and ML Researcher. This is his personal portfolio site.
+
+## About
+
+Ruttansh builds production-ready AI/ML tooling that bridges rigorous research with practical engineering across security, code intelligence, and automation. His current work centers on vulnerability-aware copilots, RAG-enhanced workflows, and inference/training pipelines that prioritize reliability and observability. He holds an Honours BSc in Computer Science (Data Analytics).
+
+## Current Role
+
+- AI Engineer & ML Researcher at [CredShields](https://credshields.com/) (Apr 2025 -- Present)
+  - LLM-assisted pipelines for smart contract vulnerability detection
+  - RAG workflows and knowledge bases for actionable copilots
+  - Fine-tuned PyTorch/Hugging Face models for few-shot vulnerability analysis
+
+## Previous Roles
+
+- Machine Learning Researcher at [TELUS](https://www.telus.com/en) (Jan 2025 -- Apr 2025)
+- Full Stack Developer at [McMaster University](https://www.mcmaster.ca/) (Sep 2024 -- Dec 2024)
+- Machine Learning Researcher at [Osteoporosis Canada](https://osteoporosis.ca/) (May 2024 -- Aug 2024)
+- Freelance Full Stack Developer (Dec 2023 -- May 2024)
+
+## Skills
+
+- Languages: Python, JavaScript, TypeScript, Solidity, Rust, C#, R
+- AI/ML: PyTorch, TensorFlow, Hugging Face, Transformers, Unsloth, vLLM, DeepSpeed, Pandas, NumPy
+- Full Stack: React, Next.js, Node.js, Express, FastAPI, Django, Flask, PostgreSQL, MongoDB, Flutter
+- Infra: AWS, Google Cloud, Azure, Docker, Git, Vercel, Linux, Nginx
+
+## Projects
+
+- [Loan Referral Automation](https://github.com/rutts29/loan-referral-automation): Automated a 40-50 min manual loan-deal workflow to under a minute with AI-assisted deal submission (TypeScript, Next.js, Docker)
+- [Keyed](https://github.com/rutts29/Keyed): Decentralized social media on Solana with AI-powered content discovery (TypeScript, Rust, Python, Solana, PostgreSQL)
+
+## Links
+
+- Website: https://0xrutts.com
+- GitHub: https://github.com/rutts29
+- LinkedIn: https://www.linkedin.com/in/ruttansh-bhatelia
+- X/Twitter: https://x.com/0xRutts
+- Email: rutts291@gmail.com

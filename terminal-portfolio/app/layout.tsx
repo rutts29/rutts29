@@ -13,14 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ruttansh Bhatelia (0xRutts) — AI Engineer & ML Researcher",
+  title: "Ruttansh (0xRutts) — AI Engineer & ML Researcher",
   description:
-    "Ruttansh Bhatelia (Rutts / 0xRutts) — Toronto-based AI Engineer & ML Researcher. Building production-ready AI/ML tooling across security, code intelligence, and automation.",
+    "Ruttansh (Rutts / 0xRutts) — Toronto-based AI Engineer & ML Researcher. Building production-ready AI/ML tooling across security, code intelligence, and automation.",
   keywords: [
-    "Ruttansh Bhatelia",
+    "Ruttansh",
     "Rutts",
     "0xRutts",
-    "Ruttansh",
     "AI Engineer",
     "ML Researcher",
     "Machine Learning",
@@ -28,8 +27,8 @@ export const metadata: Metadata = {
     "Toronto",
     "portfolio",
   ],
-  authors: [{ name: "Ruttansh Bhatelia", url: "https://0xrutts.com" }],
-  creator: "Ruttansh Bhatelia",
+  authors: [{ name: "Ruttansh", url: "https://0xrutts.com" }],
+  creator: "Ruttansh",
   metadataBase: new URL("https://0xrutts.com"),
   alternates: {
     canonical: "/",
@@ -39,7 +38,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://0xrutts.com",
     siteName: "0xRutts",
-    title: "Ruttansh Bhatelia (0xRutts) — AI Engineer & ML Researcher",
+    title: "Ruttansh (0xRutts) — AI Engineer & ML Researcher",
     description:
       "Toronto-based AI Engineer & ML Researcher. Building production-ready AI/ML tooling across security, code intelligence, and automation.",
     images: [
@@ -47,13 +46,13 @@ export const metadata: Metadata = {
         url: "/core-image.jpg",
         width: 800,
         height: 800,
-        alt: "Ruttansh Bhatelia — 0xRutts",
+        alt: "Ruttansh — 0xRutts",
       },
     ],
   },
   twitter: {
     card: "summary",
-    title: "Ruttansh Bhatelia (0xRutts) — AI Engineer & ML Researcher",
+    title: "Ruttansh (0xRutts) — AI Engineer & ML Researcher",
     description:
       "Toronto-based AI Engineer & ML Researcher. Building production-ready AI/ML tooling across security, code intelligence, and automation.",
     creator: "@0xRutts",
@@ -113,7 +112,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
-              name: "Ruttansh Bhatelia",
+              name: "Ruttansh",
               alternateName: ["Rutts", "0xRutts"],
               url: "https://0xrutts.com",
               image: "https://0xrutts.com/core-image.jpg",
