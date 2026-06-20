@@ -164,13 +164,13 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
     summary: "Selected builds with stack and links.",
     projects: [
       {
-        name: "Loan Referral Automation",
+        name: "SolProbe",
         description:
-          "Automated a 40–50 minute manual loan-deal workflow down to under a minute. AI assists referral partners through deal submission while the broker manages the full pipeline with real-time status tracking.",
-        stack: ["TypeScript", "Next.js", "Docker"],
-        repoUrl: "https://github.com/rutts29/loan-referral-automation",
-        liveUrl: "https://loan-ref.vercel.app/",
-        image: "/projects/loan-ref-landing.png",
+          "Autonomous fault detection and recovery system for distributed AI training, with GPU sidecars, real-time diagnosis, Colab/T4 telemetry, and Solana attestations.",
+        stack: ["Rust", "FastAPI", "Next.js", "PyTorch", "Kubernetes", "Solana"],
+        repoUrl: "https://github.com/rutts29/solprobe",
+        liveUrl: "https://landing-alpha-beryl.vercel.app/",
+        image: "/projects/solprobe-landing.png",
       },
       {
         name: "Keyed",
