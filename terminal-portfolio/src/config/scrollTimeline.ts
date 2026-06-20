@@ -16,7 +16,7 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
     id: "skills",
     label: "Skills",
     command: "skills",
-    summary: "See the grouped stack and tooling.",
+    summary: "See the grouped stack behind the systems I build.",
     iconGroups: [
       {
         title: "Programming Languages",

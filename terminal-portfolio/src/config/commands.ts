@@ -5,7 +5,7 @@ export const commandCatalog: CommandDefinition[] = [
   { key: "help", description: "List available commands" },
   { key: "about", description: "Who I am and what I do" },
   { key: "education", description: "Where I studied" },
-  { key: "skills", description: "Stacks, languages, and tooling" },
+  { key: "skills", description: "Stacks, languages, and systems I build with" },
   { key: "experience", description: "Roles and impact" },
   { key: "projects", description: "Highlighted builds and repos" },
   { key: "contact", description: "How to reach me" },
