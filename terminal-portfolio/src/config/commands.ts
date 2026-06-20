@@ -227,8 +227,36 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     },
     {
       type: "link",
+      label: "frontend-beryl-omega-38.vercel.app",
+      href: "https://frontend-beryl-omega-38.vercel.app",
+      prefix: "Landing",
+    },
+    {
+      type: "link",
       label: "github.com/rutts29/Keyed",
       href: "https://github.com/rutts29/Keyed",
+      prefix: "Repo",
+    },
+    { type: "spacer" },
+    {
+      type: "text",
+      text: "Loan Referral Automation — Automated a 40–50 min manual loan-deal workflow to under a minute with AI-assisted deal submission and real-time pipeline tracking.",
+    },
+    {
+      type: "text",
+      text: "Stack: TypeScript, Next.js, Docker",
+      tone: "muted",
+    },
+    {
+      type: "link",
+      label: "loan-ref.vercel.app",
+      href: "https://loan-ref.vercel.app",
+      prefix: "Landing",
+    },
+    {
+      type: "link",
+      label: "github.com/rutts29/loan-referral-automation",
+      href: "https://github.com/rutts29/loan-referral-automation",
       prefix: "Repo",
     },
     { type: "spacer" },
