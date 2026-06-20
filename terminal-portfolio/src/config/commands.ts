@@ -194,17 +194,23 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "heading", text: "Projects" },
     {
       type: "text",
-      text: "Loan Referral Automation — Automated a 40–50 min manual loan-deal workflow to under a minute with AI-assisted deal submission and real-time pipeline tracking.",
+      text: "SolProbe — Autonomous fault detection and recovery system for distributed AI training, with GPU sidecars, real-time diagnosis, Colab/T4 telemetry, and Solana attestations.",
     },
     {
       type: "text",
-      text: "Stack: TypeScript, Next.js, Docker",
+      text: "Stack: Rust, FastAPI, Next.js, PyTorch, Kubernetes, Solana",
       tone: "muted",
     },
     {
       type: "link",
-      label: "github.com/rutts29/loan-referral-automation",
-      href: "https://github.com/rutts29/loan-referral-automation",
+      label: "landing-alpha-beryl.vercel.app",
+      href: "https://landing-alpha-beryl.vercel.app",
+      prefix: "Landing",
+    },
+    {
+      type: "link",
+      label: "github.com/rutts29/solprobe",
+      href: "https://github.com/rutts29/solprobe",
       prefix: "Repo",
     },
     { type: "spacer" },
@@ -223,6 +229,23 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
       href: "https://github.com/rutts29/Keyed",
       prefix: "Repo",
     },
+    { type: "spacer" },
+    {
+      type: "text",
+      text: "Loan Referral Automation — Automated a 40–50 min manual loan-deal workflow to under a minute with AI-assisted deal submission and real-time pipeline tracking.",
+    },
+    {
+      type: "text",
+      text: "Stack: TypeScript, Next.js, Docker",
+      tone: "muted",
+    },
+    {
+      type: "link",
+      label: "github.com/rutts29/loan-referral-automation",
+      href: "https://github.com/rutts29/loan-referral-automation",
+      prefix: "Repo",
+    },
+    { type: "spacer" },
   ],
   contact: [
     { type: "heading", text: "Contact" },
@@ -276,5 +299,3 @@ export const getInitialSystemOutputs = () => [
   staticCommandOutputs.banner,
   staticCommandOutputs.welcome,
 ];
-
-

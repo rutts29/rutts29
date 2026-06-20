@@ -25,9 +25,6 @@ export const ScrollSections = ({
     viewportHeight:
       typeof window !== "undefined" ? window.innerHeight : 0,
   }));
-  const [parallaxReady, setParallaxReady] = useState(
-    typeof window === "undefined",
-  );
   const [activeTimelineIndex, setActiveTimelineIndex] = useState(0);
 
   const orderedSections = useMemo(
@@ -61,8 +58,6 @@ export const ScrollSections = ({
 
     // Initialize immediately so returning visitors get parallax without refresh.
     updateScrollState();
-    setParallaxReady(true);
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", updateScrollState);
 
@@ -133,21 +128,18 @@ export const ScrollSections = ({
               ? "space-y-1.5"
               : "space-y-2";
 
-          const sectionNode = sectionRefs.current[section.id];
           const parallaxSpeed = 0.08 + section.order * 0.03;
-          let parallaxOffset = 0;
-
-          if (sectionNode && scrollState.viewportHeight) {
-            const rect = sectionNode.getBoundingClientRect();
-            const sectionCenter = rect.top + rect.height / 2;
-            const viewportCenter = scrollState.viewportHeight / 2;
-            const distanceFromCenter = viewportCenter - sectionCenter;
-            parallaxOffset = distanceFromCenter * parallaxSpeed;
-          }
+          const parallaxOffset =
+            scrollState.viewportHeight > 0
+              ? Math.sin((scrollState.y + section.order * 120) * 0.002) *
+                140 *
+                parallaxSpeed
+              : 0;
 
           const clampedOffset = Math.max(Math.min(parallaxOffset, 28), -28);
           const entranceOffset = isVisible ? 0 : 40;
-          const parallaxContribution = parallaxReady ? clampedOffset : 0;
+          const parallaxContribution =
+            scrollState.viewportHeight > 0 ? clampedOffset : 0;
           const totalOffset = parallaxContribution + entranceOffset;
 
           return (
@@ -559,4 +551,3 @@ export const ScrollSections = ({
     </div>
   );
 };
-
