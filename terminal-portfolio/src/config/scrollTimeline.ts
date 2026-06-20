@@ -24,7 +24,6 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
           { label: "Python", badgeSrc: "/badges/python.svg" },
           { label: "JavaScript", badgeSrc: "/badges/javascript.svg" },
           { label: "TypeScript", badgeSrc: "/badges/typescript.svg" },
-          { label: "Solidity", badgeSrc: "/badges/solidity.svg" },
           { label: "Rust", badgeSrc: "/badges/rust.svg" },
           { label: "C#", badgeSrc: "/badges/csharp.svg" },
           { label: "R", badgeSrc: "/badges/r.svg" },

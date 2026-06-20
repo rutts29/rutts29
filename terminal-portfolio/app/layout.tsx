@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Ruttansh (0xRutts) — AI Engineer & ML Researcher",
   description:
-    "Ruttansh (Rutts / 0xRutts) — Toronto-based AI Engineer & ML Researcher. Building production-ready AI/ML tooling across security, code intelligence, and automation.",
+    "Ruttansh (Rutts / 0xRutts) — Toronto-based AI Engineer & ML Researcher building production-grade AI systems across security, code intelligence, and automation.",
   keywords: [
     "Ruttansh",
     "Rutts",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "0xRutts",
     title: "Ruttansh (0xRutts) — AI Engineer & ML Researcher",
     description:
-      "Toronto-based AI Engineer & ML Researcher. Building production-ready AI/ML tooling across security, code intelligence, and automation.",
+      "Toronto-based AI Engineer & ML Researcher building production-grade AI systems across security, code intelligence, and automation.",
     images: [
       {
         url: "/core-image.jpg",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Ruttansh (0xRutts) — AI Engineer & ML Researcher",
     description:
-      "Toronto-based AI Engineer & ML Researcher. Building production-ready AI/ML tooling across security, code intelligence, and automation.",
+      "Toronto-based AI Engineer & ML Researcher building production-grade AI systems across security, code intelligence, and automation.",
     creator: "@0xRutts",
     images: ["/core-image.jpg"],
   },
