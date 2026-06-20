@@ -48,11 +48,11 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "heading", text: "About" },
     {
       type: "text",
-      text: "I'm Ruttansh (Rutts). I build production-ready AI/ML tooling that mixes rigorous research with practical engineering across security, code intelligence, and automation.",
+      text: "I'm Ruttansh (Rutts), an AI engineer and ML researcher building production-grade agentic systems, code intelligence platforms, and automation for security-heavy workflows.",
     },
     {
       type: "text",
-      text: "My work covers vulnerability-aware copilots, RAG-enhanced workflows, and inference/training pipelines that prioritize reliability and observability.",
+      text: "My work spans backend AI systems, RAG and tool-using agents, model training and finetuning, and inference pipelines that prioritize reliability and observability.",
     },
     {
       type: "text",
@@ -142,6 +142,8 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
       type: "list",
       items: [
         "Led end-to-end AI/ML pipelines that detect smart contract vulnerabilities with LLM-assisted reasoning.",
+        "Built backend and AI systems end to end for CredShields One, the unified security workspace at https://one.credshields.com/.",
+        "Built AI components for SolidityScan, CredShields' smart contract vulnerability scanner at https://solidityscan.com/.",
         "Built RAG-enabled workflows and custom knowledge bases to amplify code analysis copilots.",
         "Finetuned PyTorch/Hugging Face models with prompt tuning for few-/zero-shot vulnerability queries.",
         "Created ML modules for feature extraction, anomaly detection, and fix recommendation scoring.",

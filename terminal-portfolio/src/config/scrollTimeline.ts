@@ -7,8 +7,8 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
     command: "about",
     summary: "Get the quick story and focus areas.",
     content: [
-      "I build production-ready AI/ML tooling that bridges rigorous research with practical engineering across security, code intelligence, and automation.",
-      "Current work centers on vulnerability-aware copilots, RAG-enhanced workflows, and inference/training pipelines that prioritize reliability and observability.",
+      "I am an AI engineer and ML researcher building production-grade agentic systems, code intelligence platforms, and automation for security-heavy workflows.",
+      "Current work spans backend AI systems, RAG and tool-using agents, model training and finetuning, and inference pipelines that prioritize reliability and observability.",
       "I hold an Honours BSc in Computer Science (Data Analytics) and stay embedded with applied research partners.",
     ],
   },
@@ -102,9 +102,9 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
         location: "Part-time · Remote (Singapore)",
         isCurrent: true,
         details: [
-          "Led LLM-assisted pipelines that spot smart contract vulnerabilities.",
-          "Built RAG workflows and knowledge bases to make copilots actionable.",
-          "Fine-tuned PyTorch/Hugging Face models for few-shot vulnerability questions.",
+          "Built backend and AI systems end to end for CredShields One: https://one.credshields.com/.",
+          "Built AI components for SolidityScan, CredShields' smart contract vulnerability scanner: https://solidityscan.com/.",
+          "Led LLM-assisted pipelines, RAG workflows, and finetuned models for smart contract vulnerability analysis.",
         ],
       },
       {
@@ -219,4 +219,3 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
     ],
   },
 ];
-
