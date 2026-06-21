@@ -44,7 +44,7 @@ export const BootSequence = ({ onDone }: BootSequenceProps) => {
       ))}
 
       <div
-        className="fade-up pt-4 font-mono text-xs sm:text-sm"
+        className="fade-up pt-4 font-mono text-sm sm:text-base"
         style={{ animationDelay: `${IDENTITY_DELAY}ms` }}
       >
         <span className="text-[var(--color-text-prompt)]">rutts@workspace</span>
@@ -53,13 +53,13 @@ export const BootSequence = ({ onDone }: BootSequenceProps) => {
       </div>
 
       <div className="fade-up" style={{ animationDelay: `${IDENTITY_DELAY + 180}ms` }}>
-        <p className="chroma text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight text-[var(--color-text-primary)]">
+        <p className="chroma text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-[var(--color-text-primary)]">
           Ruttansh Bhatelia
         </p>
-        <p className="mt-1 text-xs sm:text-sm text-[var(--color-text-accent)]">
+        <p className="mt-1.5 text-sm sm:text-base text-[var(--color-text-accent)]">
           AI Engineer · ML Researcher — Toronto
         </p>
-        <p className="mt-1 flex items-center text-xs sm:text-sm text-[var(--color-text-secondary)]">
+        <p className="mt-1.5 flex items-center text-sm sm:text-base text-[var(--color-text-secondary)]">
           building agentic systems &amp; code intelligence that ship.
           <span className="terminal-cursor ml-1.5" />
         </p>

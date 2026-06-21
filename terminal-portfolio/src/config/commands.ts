@@ -9,7 +9,6 @@ export const commandCatalog: CommandDefinition[] = [
   { key: "experience", description: "Roles and impact" },
   { key: "projects", description: "Highlighted builds and repos" },
   { key: "contact", description: "How to reach me" },
-  { key: "theme list", description: "Show supported themes" },
   { key: "theme set <name>", description: "Switch the terminal theme" },
   { key: "clear", description: "Reset the terminal history" },
   { key: "history", description: "Show recent commands" },
@@ -308,9 +307,14 @@ export const getHelpLines = (): TerminalLine[] => [
 export const getThemeListLines = (activeTheme?: string): TerminalLine[] => [
   { type: "heading", text: "Themes" },
   {
+    type: "text",
+    text: "Click a theme below, or type one of these commands.",
+    tone: "muted",
+  },
+  {
     type: "list",
     items: themeNames.map((name) =>
-      name === activeTheme ? `${name}  ← current` : name,
+      `theme set ${name} — ${name === activeTheme ? `${name} (current)` : name}`,
     ),
   },
 ];

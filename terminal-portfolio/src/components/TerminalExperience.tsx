@@ -64,6 +64,12 @@ const IntroPanel = ({
     let frame = 0;
 
     const onMove = (event: MouseEvent) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest(".terminal-cta")) {
+        targetRx = 0;
+        targetRy = 0;
+        return;
+      }
       const rect = el.getBoundingClientRect();
       const dx = (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
       const dy = (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
@@ -88,7 +94,7 @@ const IntroPanel = ({
 
   return (
     <div
-      className="relative mx-auto w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl"
+      className="relative mx-auto w-full max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
       style={{ perspective: "1400px" }}
     >
       <div
@@ -112,26 +118,26 @@ const IntroPanel = ({
         }}
       >
         <div
-          className="overflow-hidden rounded-[2rem] border backdrop-blur-2xl sm:rounded-[2.5rem]"
+          className="terminal-frame overflow-hidden rounded-[2rem] border backdrop-blur-2xl sm:rounded-[2.5rem]"
           style={{
             background: themeBackground,
             borderColor: panelBorder,
             boxShadow: panelGlow,
           }}
         >
-          <div className="flex items-center gap-1.5 border-b border-[var(--surface-card-border)] px-3 py-2.5 sm:gap-2 sm:px-5 sm:py-3">
+          <div className="flex items-center gap-1.5 border-b border-[var(--surface-card-border)] px-3 py-2.5 sm:gap-2 sm:px-5 sm:py-3.5">
             <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f56] sm:h-3 sm:w-3" />
             <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e] sm:h-3 sm:w-3" />
             <span className="h-2.5 w-2.5 rounded-full bg-[#27c93f] sm:h-3 sm:w-3" />
-            <p className="ml-2 truncate text-[0.6rem] uppercase tracking-[0.3em] text-[var(--color-text-secondary)] sm:ml-4 sm:text-xs">
+            <p className="ml-2 truncate text-[0.65rem] uppercase tracking-[0.3em] text-[var(--color-text-secondary)] sm:ml-4 sm:text-sm">
               rutts@workspace — ~/portfolio
             </p>
-            <span className="ml-auto whitespace-nowrap text-[0.6rem] text-[var(--color-text-success)] sm:text-xs">
+            <span className="ml-auto whitespace-nowrap text-[0.65rem] text-[var(--color-text-success)] sm:text-sm">
               {interactiveComponent ? "● interactive" : "● ready"}
             </span>
           </div>
 
-          <div className="crt-screen flex h-[64vh] min-h-[460px] max-h-[620px] flex-col px-4 py-5 sm:px-7 sm:py-7">
+          <div className="crt-screen flex h-[66vh] min-h-[500px] max-h-[680px] flex-col rounded-b-[2rem] px-4 py-5 sm:rounded-b-[2.5rem] sm:px-8 sm:py-8">
             {interactiveComponent ? (
               <div className="min-h-0 min-w-0 flex-1">{interactiveComponent}</div>
             ) : (
@@ -141,11 +147,10 @@ const IntroPanel = ({
                 <button
                   type="button"
                   onClick={onActivateInteractive}
-                  className="fade-up group flex w-full max-w-[960px] cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 font-mono text-[0.7rem] text-[var(--color-text-primary)] transition-all duration-300 hover:scale-[1.01] hover:brightness-110 sm:gap-3 sm:px-6 sm:py-4 sm:text-sm"
+                  className="terminal-cta fade-up group flex w-full max-w-[1080px] cursor-pointer items-center gap-2 rounded-xl border px-3 py-3 font-mono text-xs text-[var(--color-text-primary)] transition-all duration-300 hover:brightness-110 sm:gap-3 sm:px-6 sm:py-[1.125rem] sm:text-base"
                   style={{
                     background: "var(--surface-overlay-bg)",
                     borderColor: "var(--color-text-accent)",
-                    boxShadow: `${panelGlow}, 0 20px 50px rgba(0,0,0,0.18)`,
                     animationDelay: "180ms",
                   }}
                 >
@@ -156,19 +161,16 @@ const IntroPanel = ({
                   <span className="min-w-0 flex-1 break-words">
                     unlock interactive mode — run every command yourself
                   </span>
-                  <span className="ml-auto flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-text-accent)]/10 text-[var(--color-text-accent)] transition-all duration-300 group-hover:translate-x-1 group-hover:bg-[var(--color-text-accent)]/20 sm:h-6 sm:w-6">
-                    →
-                  </span>
                 </button>
 
                 <div
-                  className="fade-up flex flex-col items-center gap-1 text-[0.6rem] uppercase tracking-[0.5em] text-[var(--color-text-secondary)] sm:text-xs"
+                  className="fade-up flex flex-col items-center gap-1 text-[0.65rem] uppercase tracking-[0.5em] text-[var(--color-text-secondary)] sm:text-sm"
                   style={{ animationDelay: "260ms" }}
                 >
                   <span className="px-2 text-center">
                     Scroll to continue exploring the showcase
                   </span>
-                  <span className="mt-1 animate-bounce text-2xl text-[var(--color-text-accent)] sm:mt-2 sm:text-3xl">
+                  <span className="mt-1 animate-bounce text-3xl text-[var(--color-text-accent)] sm:mt-2 sm:text-4xl">
                     ↓
                   </span>
                 </div>
@@ -356,7 +358,7 @@ export const TerminalExperience = () => {
           </GsapReveal>
         </div>
       </div>
-      <div className="mx-auto flex w-full max-w-5xl xl:max-w-6xl 2xl:max-w-7xl flex-col items-center gap-4 sm:gap-6 md:gap-8 px-3 py-8 sm:px-4 sm:py-12 md:px-8">
+      <div className="mx-auto flex w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] flex-col items-center gap-4 sm:gap-6 md:gap-8 px-3 py-8 sm:px-4 sm:py-12 md:px-8">
         <div
           ref={introPanelRef}
           className="w-full"

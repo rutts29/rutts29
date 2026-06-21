@@ -3,6 +3,7 @@
 import { FormEvent, KeyboardEvent, useEffect, useRef } from "react";
 
 import { commandCatalog } from "@/config/commands";
+import { themeNames } from "@/config/themes";
 import { TerminalEntry, TerminalLine, TerminalMode } from "@/types/terminal";
 
 type TerminalShellProps = {
@@ -24,6 +25,16 @@ const toneClassMap = {
   error: "text-[var(--color-text-error)]",
 };
 
+const autocompleteCommands = [
+  ...commandCatalog
+    .filter((command) => !command.key.includes("<"))
+    .map((command) => command.key),
+  ...themeNames.map((name) => `theme set ${name}`),
+];
+
+const canAutoFocusInput = () =>
+  typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches;
+
 const renderLine = (
   line: TerminalLine,
   mode: TerminalMode,
@@ -33,18 +44,18 @@ const renderLine = (
     case "heading":
       return (
         <p
-          className="text-[0.65rem] sm:text-xs font-semibold uppercase tracking-[0.35em] text-[var(--color-text-secondary)]"
+          className="text-xs sm:text-sm font-semibold uppercase tracking-[0.35em] text-[var(--color-text-secondary)]"
         >
           {line.text}
         </p>
       );
     case "text": {
       const toneClass = toneClassMap[line.tone ?? "default"];
-      return <p className={`text-xs sm:text-sm leading-5 sm:leading-6 ${toneClass}`}>{line.text}</p>;
+      return <p className={`text-sm sm:text-base leading-6 sm:leading-7 ${toneClass}`}>{line.text}</p>;
     }
     case "list":
       return (
-        <div className="text-xs sm:text-sm leading-5 sm:leading-6 text-[var(--color-text-primary)]">
+        <div className="text-sm sm:text-base leading-6 sm:leading-7 text-[var(--color-text-primary)]">
           {line.title && (
             <p className="font-semibold text-[var(--color-text-accent)]">
               {line.title}
@@ -65,7 +76,7 @@ const renderLine = (
                   const commandName = parts[0].trim();
                   const description = parts.slice(1).join(" — ");
                   return (
-                    <li key={`${item}-${index}`} className="pl-3 sm:pl-4 text-xs sm:text-sm">
+                    <li key={`${item}-${index}`} className="pl-3 sm:pl-4 text-sm sm:text-base">
                       —{" "}
                       <button
                         type="button"
@@ -81,7 +92,7 @@ const renderLine = (
                 }
               }
               return (
-                <li key={`${item}-${index}`} className="pl-3 sm:pl-4 text-xs sm:text-sm">
+                <li key={`${item}-${index}`} className="pl-3 sm:pl-4 text-sm sm:text-base">
                   — {item}
                 </li>
               );
@@ -91,15 +102,15 @@ const renderLine = (
       );
     case "columns":
       return (
-        <div className="grid gap-3 sm:gap-4 text-xs sm:text-sm text-[var(--color-text-primary)] md:grid-cols-2">
+        <div className="grid gap-3 sm:gap-4 text-sm sm:text-base text-[var(--color-text-primary)] md:grid-cols-2">
           {line.columns.map((column, columnIndex) => (
             <div key={`${column.title}-${columnIndex}`}>
-              <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
+              <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-[var(--color-text-secondary)]">
                 {column.title}
               </p>
               <ul className="mt-1.5 sm:mt-2 space-y-0.5 sm:space-y-1 text-[var(--color-text-primary)]">
                 {column.items.map((item, itemIndex) => (
-                  <li key={`${column.title}-${item}-${itemIndex}`} className="pl-2 sm:pl-3 text-xs sm:text-sm">
+                  <li key={`${column.title}-${item}-${itemIndex}`} className="pl-2 sm:pl-3 text-sm sm:text-base">
                     • {item}
                   </li>
                 ))}
@@ -110,7 +121,7 @@ const renderLine = (
       );
     case "link":
       return (
-        <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] break-words">
+        <p className="text-sm sm:text-base text-[var(--color-text-secondary)] break-words">
           {line.prefix && (
             <span className="text-[var(--color-text-primary)]">{line.prefix}: </span>
           )}
@@ -126,7 +137,7 @@ const renderLine = (
       );
     case "ascii":
       return (
-        <pre className="overflow-x-auto whitespace-pre text-[0.4rem] leading-[1.1] text-[var(--color-text-secondary)] sm:text-[0.5rem] md:text-xs sm:leading-normal">
+        <pre className="overflow-x-auto whitespace-pre text-[0.45rem] leading-[1.1] text-[var(--color-text-secondary)] sm:text-[0.6rem] md:text-sm sm:leading-normal">
           {line.lines.join("\n")}
         </pre>
       );
@@ -160,7 +171,7 @@ export const TerminalShell = ({
   }, [history]);
 
   useEffect(() => {
-    if (mode === "interactive" && inputRef.current) {
+    if (mode === "interactive" && inputRef.current && canAutoFocusInput()) {
       inputRef.current.focus();
     }
   }, [mode]);
@@ -174,22 +185,26 @@ export const TerminalShell = ({
     }
     onSubmit(currentInput);
     setCurrentInput("");
-    // Blur input on mobile to trigger zoom-out, then re-focus for continued interaction
-    if (inputRef.current) {
-      const isMobile = window.innerWidth < 768;
-      if (isMobile) {
-        inputRef.current.blur();
-        // Re-focus after a short delay to allow zoom-out, then enable continued typing
-        setTimeout(() => {
-          if (inputRef.current) {
-            inputRef.current.focus();
-          }
-        }, 100);
-      } else {
-        // On desktop, keep focus immediately for better UX
-        inputRef.current.focus();
-      }
+    if (!inputRef.current) {
+      return;
     }
+
+    const shell = inputRef.current.closest("[data-terminal-shell]");
+    if (canAutoFocusInput()) {
+      inputRef.current.focus();
+      return;
+    }
+
+    inputRef.current.blur();
+    requestAnimationFrame(() => {
+      if (!inputRef.current) {
+        return;
+      }
+      inputRef.current.blur();
+      if (shell) {
+        shell.scrollIntoView({ block: "end", behavior: "auto" });
+      }
+    });
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -200,11 +215,8 @@ export const TerminalShell = ({
         return;
       }
 
-      // Get all available commands
-      const availableCommands = commandCatalog.map((cmd) => cmd.key);
-      
       // Filter commands that start with the current input
-      const matches = availableCommands.filter((cmd) =>
+      const matches = autocompleteCommands.filter((cmd) =>
         cmd.toLowerCase().startsWith(trimmed.toLowerCase()),
       );
 
@@ -241,13 +253,26 @@ export const TerminalShell = ({
     }
   };
 
+  const normalizedInput = currentInput.trim().toLowerCase();
+  const autocompleteSuggestion =
+    mode === "interactive" && normalizedInput
+      ? autocompleteCommands.find(
+          (command) =>
+            command.toLowerCase().startsWith(normalizedInput) &&
+            command.toLowerCase() !== normalizedInput,
+        )
+      : undefined;
+  const autocompleteSuffix =
+    autocompleteSuggestion && currentInput.length < autocompleteSuggestion.length
+      ? autocompleteSuggestion.slice(currentInput.length)
+      : "";
+
   const handleTerminalClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    // Only focus input if clicking on the terminal container itself or non-interactive areas
-    // Don't focus if clicking on buttons, links, or the input itself
     const target = event.target as HTMLElement;
     if (
       mode === "interactive" &&
       inputRef.current &&
+      canAutoFocusInput() &&
       !target.closest("button") &&
       !target.closest("a") &&
       target !== inputRef.current &&
@@ -259,6 +284,7 @@ export const TerminalShell = ({
 
   return (
     <div
+      data-terminal-shell
       onClick={handleTerminalClick}
       className={
         embedded
@@ -294,12 +320,12 @@ export const TerminalShell = ({
       <div
         ref={historyRef}
         data-lenis-prevent
-        className="mt-4 sm:mt-6 no-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 sm:pr-2 text-xs sm:text-sm"
+        className="mt-4 sm:mt-6 no-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 sm:pr-2 text-sm sm:text-base"
       >
         {history.map((entry) => (
           <div key={entry.id} className="mb-3 sm:mb-4 space-y-2 sm:space-y-3">
             {entry.kind === "command" ? (
-              <p className="font-mono text-xs sm:text-sm text-[var(--color-text-primary)] break-words">
+              <p className="font-mono text-sm sm:text-base text-[var(--color-text-primary)] break-words">
                 <span className="text-[var(--color-text-prompt)]">
                   rutts@workspace
                 </span>
@@ -324,39 +350,51 @@ export const TerminalShell = ({
         ))}
       </div>
 
-      <div className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm text-[var(--color-text-primary)]">
+      <div className="mt-4 sm:mt-6 font-mono text-sm sm:text-base text-[var(--color-text-primary)]">
         {mode === "interactive" ? (
           <form
             onSubmit={handleSubmit}
             className="flex items-center gap-2 sm:gap-3 border-t border-white/10 pt-3 sm:pt-4"
           >
-            <span className="text-[var(--color-text-prompt)] whitespace-nowrap text-[0.7rem] sm:text-xs">
+            <span className="text-[var(--color-text-prompt)] whitespace-nowrap text-xs sm:text-sm">
               rutts@workspace
             </span>
             <span className="text-[var(--color-text-secondary)]">$</span>
-            <input
-              ref={inputRef}
-              value={currentInput}
-              onChange={(event) => setCurrentInput(event.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="eg: 'about'"
-              className="flex-1 min-w-0 bg-transparent text-[0.7rem] sm:text-xs md:text-sm text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-secondary)]"
-            />
+            <div className="relative min-w-0 flex-1">
+              {autocompleteSuffix && (
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 hidden whitespace-pre font-mono text-xs text-[var(--color-text-secondary)] opacity-55 sm:block sm:text-sm md:text-base"
+                >
+                  <span className="invisible">{currentInput}</span>
+                  <span>{autocompleteSuffix}</span>
+                </div>
+              )}
+              <input
+                ref={inputRef}
+                value={currentInput}
+                onChange={(event) => setCurrentInput(event.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="eg: 'about'"
+                style={{ fontSize: 16 }}
+                className="relative w-full min-w-0 bg-transparent text-base sm:text-sm md:text-base text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-secondary)]"
+              />
+            </div>
           </form>
         ) : (
           <div className="flex items-center gap-2 sm:gap-3 border-t border-white/5 pt-3 sm:pt-4">
-            <span className="text-[var(--color-text-prompt)] whitespace-nowrap text-[0.7rem] sm:text-xs">
+            <span className="text-[var(--color-text-prompt)] whitespace-nowrap text-xs sm:text-sm">
               rutts@workspace
             </span>
             <span className="text-[var(--color-text-secondary)]">$</span>
-            <p className="flex-1 min-w-0 min-h-[1.25rem] sm:min-h-[1.5rem] break-words text-[0.7rem] sm:text-xs md:text-sm">
+            <p className="flex-1 min-w-0 min-h-[1.25rem] sm:min-h-[1.5rem] break-words text-xs sm:text-sm md:text-base">
               {promptValue}
               {isTyping && <span className="terminal-cursor ml-1" />}
             </p>
           </div>
         )}
         {mode !== "interactive" && !isTyping && (
-          <p className="mt-2 sm:mt-3 text-[0.65rem] sm:text-xs text-[var(--color-text-secondary)]">
+          <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-[var(--color-text-secondary)]">
             Scroll to reveal sections or click &quot;Interactive Terminal&quot; to type.
           </p>
         )}

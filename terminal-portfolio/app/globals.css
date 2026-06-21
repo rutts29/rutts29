@@ -86,6 +86,17 @@ body {
 
 /* ---------- CRT / hi-tech terminal layer (token-driven) ---------- */
 
+.terminal-frame {
+  clip-path: inset(0 round 2rem);
+  transform: translateZ(0);
+}
+
+@media (min-width: 640px) {
+  .terminal-frame {
+    clip-path: inset(0 round 2.5rem);
+  }
+}
+
 .crt-screen {
   position: relative;
   overflow: hidden;
@@ -170,7 +181,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   opacity: 0;
   animation: boot-in 0.4s ease forwards;
 }
@@ -198,6 +209,25 @@ body {
   animation: fade-up 0.5s ease forwards;
 }
 
+.terminal-cta {
+  position: relative;
+  box-shadow: var(--terminal-glow), 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+
+.terminal-cta::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--color-text-accent);
+  border-radius: inherit;
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--color-text-accent) 35%, transparent),
+    inset 0 0 16px color-mix(in srgb, var(--color-text-accent) 18%, transparent);
+  opacity: 0.35;
+  pointer-events: none;
+  animation: terminal-cta-breathe 2.4s ease-in-out infinite;
+}
+
 @keyframes boot-in {
   from {
     opacity: 0;
@@ -220,6 +250,16 @@ body {
   }
 }
 
+@keyframes terminal-cta-breathe {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
 /* depth glow layers that parallax behind the terminal */
 .depth-glow {
   position: absolute;
@@ -237,7 +277,8 @@ body {
     animation: none !important;
   }
   .boot-row,
-  .fade-up {
+  .fade-up,
+  .terminal-cta::after {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

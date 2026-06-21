@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
+  commandCatalog,
   getHelpLines,
   getInitialSystemOutputs,
   getThemeListLines,
@@ -54,6 +55,54 @@ const createInteractiveHistory = (): TerminalEntry[] => {
 };
 
 const TYPING_DELAY = 45;
+const suggestedCommands = [
+  ...commandCatalog
+    .filter((command) => !command.key.includes("<"))
+    .map((command) => ({
+      command: command.key,
+      description: command.description,
+    })),
+  { command: "commands", description: "List available commands" },
+  ...themeNames.map((name) => ({
+    command: `theme set ${name}`,
+    description: `Switch to ${name}`,
+  })),
+];
+
+const getEditDistance = (a: string, b: string) => {
+  const previous = Array.from({ length: b.length + 1 }, (_, index) => index);
+  const current = Array.from({ length: b.length + 1 }, () => 0);
+
+  for (let i = 1; i <= a.length; i += 1) {
+    current[0] = i;
+    for (let j = 1; j <= b.length; j += 1) {
+      current[j] =
+        a[i - 1] === b[j - 1]
+          ? previous[j - 1]
+          : Math.min(previous[j - 1], previous[j], current[j - 1]) + 1;
+    }
+    for (let j = 0; j <= b.length; j += 1) {
+      previous[j] = current[j];
+    }
+  }
+
+  return previous[b.length];
+};
+
+const getClosestCommand = (input: string) => {
+  if (input.length < 2) {
+    return undefined;
+  }
+
+  const [best] = suggestedCommands
+    .map((suggestion) => ({
+      ...suggestion,
+      distance: getEditDistance(input, suggestion.command),
+    }))
+    .sort((a, b) => a.distance - b.distance);
+  const threshold = Math.max(2, Math.floor(input.length * 0.35));
+  return best.distance <= threshold ? best : undefined;
+};
 
 export const useTerminal = ({
   onThemeChange,
@@ -198,14 +247,8 @@ export const useTerminal = ({
 
       if (normalized.startsWith("theme set")) {
         const target = normalized.replace("theme set", "").trim();
-        if (!target.length) {
-          appendOutputEntry([
-            {
-              type: "text",
-              text: "Specify a theme name e.g. `theme set monokai`.",
-              tone: "error",
-            },
-          ]);
+        if (!target.length || target === "<name>") {
+          appendOutputEntry(getThemeListLines(themeName));
           return;
         }
 
@@ -213,9 +256,10 @@ export const useTerminal = ({
           appendOutputEntry([
             {
               type: "text",
-              text: `Theme "${target}" not found. Try \`theme list\`.`,
+              text: `Theme "${target}" not found. Pick one below.`,
               tone: "error",
             },
+            ...getThemeListLines(themeName),
           ]);
           return;
         }
@@ -238,13 +282,28 @@ export const useTerminal = ({
         return;
       }
 
-      appendOutputEntry([
-        {
-          type: "text",
-          text: `Unknown command "${trimmed}". Type \`help\` to see options.`,
-          tone: "error",
-        },
-      ]);
+      const suggestion = getClosestCommand(normalized);
+      appendOutputEntry(
+        suggestion
+          ? [
+              {
+                type: "text",
+                text: `Unknown command "${trimmed}". Did you mean?`,
+                tone: "error",
+              },
+              {
+                type: "list",
+                items: [`${suggestion.command} — ${suggestion.description}`],
+              },
+            ]
+          : [
+              {
+                type: "text",
+                text: `Unknown command "${trimmed}". Type \`help\` to see options.`,
+                tone: "error",
+              },
+            ],
+      );
     },
     [
       appendCommandEntry,
@@ -252,6 +311,7 @@ export const useTerminal = ({
       onThemeChange,
       resolveStaticOutput,
       simulateTyping,
+      themeName,
     ],
   );
 
@@ -307,4 +367,3 @@ export const useTerminal = ({
 
   return terminalState;
 };
-

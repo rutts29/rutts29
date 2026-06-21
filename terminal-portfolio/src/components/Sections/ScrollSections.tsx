@@ -167,7 +167,7 @@ export const ScrollSections = ({
             >
               <div className="mt-2 sm:mt-4 space-y-3 sm:space-y-4">
                 <div className="space-y-2 sm:space-y-3">
-                  <p className="font-mono text-xs sm:text-sm 2xl:text-base uppercase tracking-[0.35em] text-[var(--color-text-accent)]">
+                  <p className="font-mono text-sm sm:text-base 2xl:text-lg uppercase tracking-[0.35em] text-[var(--color-text-accent)]">
                     $ {section.command}
                   </p>
                 </div>
@@ -239,7 +239,7 @@ export const ScrollSections = ({
                                 {/* Labels — hidden on mobile, visible from sm up */}
                                 <div className="hidden sm:flex flex-col items-center gap-0.5 w-full">
                                   <span
-                                    className="text-xs sm:text-sm 2xl:text-base font-semibold leading-snug text-center w-full transition-colors"
+                                    className="text-sm sm:text-base 2xl:text-lg font-semibold leading-snug text-center w-full transition-colors"
                                     style={{
                                       color: isActive
                                         ? "var(--color-text-primary)"
@@ -249,7 +249,7 @@ export const ScrollSections = ({
                                     {entry.company}
                                   </span>
                                   <span
-                                    className="text-[0.7rem] sm:text-xs 2xl:text-sm leading-snug text-center w-full transition-colors"
+                                    className="text-xs sm:text-sm 2xl:text-base leading-snug text-center w-full transition-colors"
                                     style={{
                                       color: isActive
                                         ? "var(--color-text-secondary)"
@@ -259,7 +259,7 @@ export const ScrollSections = ({
                                     {entry.role}
                                   </span>
                                   <span
-                                    className="text-[0.6rem] sm:text-[0.7rem] 2xl:text-xs uppercase tracking-[0.15em] leading-snug text-center w-full transition-colors"
+                                    className="text-[0.7rem] sm:text-xs 2xl:text-sm uppercase tracking-[0.15em] leading-snug text-center w-full transition-colors"
                                     style={{
                                       color: isActive
                                         ? "color-mix(in srgb, var(--color-text-accent) 80%, var(--color-text-secondary))"
@@ -284,10 +284,10 @@ export const ScrollSections = ({
                         }}
                       >
                         <div className="space-y-1">
-                          <p className="text-sm sm:text-base 2xl:text-lg font-semibold" style={{ color: "var(--color-text-primary)" }}>
+                          <p className="text-base sm:text-lg 2xl:text-xl font-semibold" style={{ color: "var(--color-text-primary)" }}>
                             {active.role}
                           </p>
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs 2xl:text-sm" style={{ color: "var(--color-text-secondary)" }}>
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm 2xl:text-base" style={{ color: "var(--color-text-secondary)" }}>
                             <span>
                               {active.companyUrl ? (
                                 <a
@@ -323,7 +323,7 @@ export const ScrollSections = ({
                             <span>{active.location}</span>
                           </div>
                         </div>
-                        <ul className="list-disc pl-4 space-y-1 text-xs sm:text-sm 2xl:text-base" style={{ color: "var(--color-text-secondary)" }}>
+                        <ul className="list-disc pl-4 space-y-1.5 text-sm sm:text-base 2xl:text-lg" style={{ color: "var(--color-text-secondary)" }}>
                           {active.details.map((detail) => (
                             <li key={detail}>{detail}</li>
                           ))}
@@ -345,7 +345,7 @@ export const ScrollSections = ({
                       >
                         <div className="px-4 py-4 sm:px-5 sm:py-5 space-y-3">
                           <div className="flex items-center justify-between gap-2 flex-wrap">
-                            <p className="text-sm sm:text-base 2xl:text-lg font-semibold text-[var(--color-text-primary)]">
+                            <p className="text-base sm:text-lg 2xl:text-xl font-semibold text-[var(--color-text-primary)]">
                               {project.name}
                             </p>
                             <div className="flex items-center gap-2">
@@ -379,7 +379,7 @@ export const ScrollSections = ({
                               </a>
                             </div>
                           </div>
-                          <p className="text-xs sm:text-sm 2xl:text-base text-[var(--color-text-secondary)]">
+                          <p className="text-sm sm:text-base 2xl:text-lg text-[var(--color-text-secondary)]">
                             {project.description}
                           </p>
                           <div className="flex flex-wrap gap-1.5">
@@ -429,7 +429,7 @@ export const ScrollSections = ({
                           background: "var(--surface-overlay-bg)",
                         }}
                       >
-                        <p className="text-xs uppercase tracking-[0.35em] text-[var(--color-text-secondary)]">
+                        <p className="text-sm uppercase tracking-[0.35em] text-[var(--color-text-secondary)]">
                           {group.title}
                         </p>
                         <div className="flex flex-wrap items-center gap-2">
@@ -504,7 +504,7 @@ export const ScrollSections = ({
                       };
 
                       const inner = (
-                        <span className="inline-flex items-center gap-2 text-sm 2xl:text-base text-[var(--color-text-secondary)]">
+                        <span className="inline-flex items-center gap-2 text-base 2xl:text-lg text-[var(--color-text-secondary)]">
                           <span className="text-[var(--color-text-accent)]">{iconMap[link.icon]}</span>
                           {link.label}
                         </span>
@@ -535,7 +535,7 @@ export const ScrollSections = ({
                 )}
                 {section.content.length > 0 && !section.timeline && !section.contactLinks && (
                   <div
-                    className={`${contentSpacingClass} text-sm 2xl:text-base text-[var(--color-text-secondary)]`}
+                    className={`${contentSpacingClass} text-base leading-7 sm:text-lg sm:leading-8 2xl:text-xl text-[var(--color-text-secondary)]`}
                   >
                     {section.content.map((line) => (
                       <p key={line}>{line}</p>
