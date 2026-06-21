@@ -21,9 +21,8 @@ export const ScrollSections = ({
     new Set(initialTriggered),
   );
   const [scrollState, setScrollState] = useState(() => ({
-    y: typeof window !== "undefined" ? window.scrollY : 0,
-    viewportHeight:
-      typeof window !== "undefined" ? window.innerHeight : 0,
+    y: 0,
+    viewportHeight: 0,
   }));
   const [activeTimelineIndex, setActiveTimelineIndex] = useState(0);
 

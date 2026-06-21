@@ -13,33 +13,18 @@ import {
 import Image from "next/image";
 
 import { scrollTimeline } from "@/config/scrollTimeline";
-import { staticCommandOutputs } from "@/config/commands";
 import { ScrollTimelineEntry } from "@/types/scroll";
-import { TerminalLine } from "@/types/terminal";
 import { useThemeManager } from "@/hooks/useThemeManager";
 import { useTerminal } from "@/hooks/useTerminal";
 
 import { TopBar } from "./Layout/TopBar";
 import { ScrollSections } from "./Sections/ScrollSections";
+import { BootSequence } from "./Terminal/BootSequence";
 import { TerminalShell } from "./Terminal/TerminalShell";
-
-const bannerLines =
-  staticCommandOutputs.banner.find(
-    (line) => line.type === "ascii",
-  )?.lines ?? [];
-
-const isTextLine = (
-  line: TerminalLine,
-): line is Extract<TerminalLine, { type: "text" }> => line.type === "text";
-
-const aboutPreviewLines = staticCommandOutputs.about
-  .filter(isTextLine)
-  .map((line) => line.text)
-  .slice(0, 2);
+import { GsapReveal } from "./GsapReveal";
 
 type IntroPanelProps = {
   onActivateInteractive: () => void;
-  aboutLines: string[];
   themeBackground: string;
   panelBorder: string;
   panelGlow: string;
@@ -48,145 +33,154 @@ type IntroPanelProps = {
 
 const IntroPanel = ({
   onActivateInteractive,
-  aboutLines,
   themeBackground,
   panelBorder,
   panelGlow,
   interactiveComponent,
 }: IntroPanelProps) => {
-  const [showTypewriter, setShowTypewriter] = useState(false);
-  const [typewriterText, setTypewriterText] = useState("");
-  const fullText = "Want to explore specifics yourself? Enter interactive mode";
-  const hasAnimatedRef = useRef(false);
+  const tiltRef = useRef<HTMLDivElement>(null);
 
-  // Typewriter effect - only trigger on mount or when scrolled to top
+  // Subtle 3D tilt on the terminal window — spatial depth, no objects.
+  // Disabled while reading/typing in the live terminal so text stays flat.
   useEffect(() => {
+    const el = tiltRef.current;
+    if (!el) {
+      return;
+    }
     if (interactiveComponent) {
-      setShowTypewriter(false);
-      setTypewriterText(fullText);
-      hasAnimatedRef.current = false;
+      el.style.transform = "";
+      return;
+    }
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    if (reduced || !finePointer) {
       return;
     }
 
-    let typeInterval: NodeJS.Timeout | null = null;
+    let rx = 0;
+    let ry = 0;
+    let targetRx = 0;
+    let targetRy = 0;
+    let frame = 0;
 
-    const startTypewriter = () => {
-      if (hasAnimatedRef.current) return;
-      
-      hasAnimatedRef.current = true;
-      setShowTypewriter(true);
-      setTypewriterText("");
-      let currentIndex = 0;
-      
-      typeInterval = setInterval(() => {
-        if (currentIndex < fullText.length) {
-          setTypewriterText(fullText.slice(0, currentIndex + 1));
-          currentIndex++;
-        } else {
-          if (typeInterval) clearInterval(typeInterval);
-        }
-      }, 20); // Adjust speed here (lower = faster)
+    const onMove = (event: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const dx = (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+      const dy = (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+      targetRy = Math.max(-1, Math.min(1, dx)) * 2.5;
+      targetRx = Math.max(-1, Math.min(1, dy)) * -2.5;
     };
 
-    // Check on mount if at top
-    const isAtTop = typeof window !== "undefined" && window.scrollY < 50;
-    if (isAtTop && !hasAnimatedRef.current) {
-      // Small delay to ensure page is loaded
-      const timeoutId = setTimeout(() => {
-        startTypewriter();
-      }, 300);
-      return () => {
-        clearTimeout(timeoutId);
-        if (typeInterval) clearInterval(typeInterval);
-      };
-    }
-
-    // Listen for scroll to top
-    const scrollHandler = () => {
-      const isAtTopNow = window.scrollY < 50;
-      if (isAtTopNow && !hasAnimatedRef.current) {
-        startTypewriter();
-      }
+    const loop = () => {
+      rx += (targetRx - rx) * 0.08;
+      ry += (targetRy - ry) * 0.08;
+      el.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+      frame = window.requestAnimationFrame(loop);
     };
 
-    window.addEventListener("scroll", scrollHandler, { passive: true });
+    window.addEventListener("mousemove", onMove);
+    loop();
     return () => {
-      window.removeEventListener("scroll", scrollHandler);
-      if (typeInterval) clearInterval(typeInterval);
+      window.removeEventListener("mousemove", onMove);
+      window.cancelAnimationFrame(frame);
     };
-  }, [interactiveComponent, fullText]);
+  }, [interactiveComponent]);
 
   return (
     <div
-      className="w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl rounded-[2.5rem] border p-3 sm:p-6 md:p-8 2xl:p-12 text-left shadow-[0_25px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-colors"
-      style={{
-        background: themeBackground,
-        borderColor: panelBorder,
-        boxShadow: panelGlow,
-      }}
+      className="relative mx-auto w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl"
+      style={{ perspective: "1400px" }}
     >
-      <div className="space-y-4 sm:space-y-6">
-        {!interactiveComponent && (
-          <>
-            <pre className="overflow-x-auto whitespace-pre text-[0.4rem] leading-[1.1] text-[var(--color-text-secondary)] sm:text-[0.5rem] md:text-xs sm:leading-normal px-2 py-2 sm:px-0 sm:py-0">
-              {bannerLines.join("\n")}
-            </pre>
-            {aboutLines.length > 0 && (
-              <div
-                className="rounded-2xl border p-3 sm:p-4 text-[var(--color-text-primary)]"
-                style={{
-                  background: "var(--surface-card-bg)",
-                  borderColor: "var(--surface-card-border)",
-                }}
-              >
-                <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.4em] text-[var(--color-text-secondary)]">
-                  About
-                </p>
-                {aboutLines.map((line) => (
-                  <p key={line} className="mt-1.5 sm:mt-2 text-xs sm:text-sm leading-5 sm:leading-6">
-                    {line}
-                  </p>
-                ))}
+      <div
+        className="depth-glow"
+        style={{
+          width: "80%",
+          height: "86%",
+          left: "10%",
+          top: "8%",
+          background:
+            "radial-gradient(circle, color-mix(in srgb, var(--color-text-accent) 30%, transparent), transparent 62%)",
+        }}
+      />
+      <div
+        ref={tiltRef}
+        className="relative"
+        style={{
+          transformStyle: "preserve-3d",
+          transition: "transform .12s ease-out",
+          willChange: "transform",
+        }}
+      >
+        <div
+          className="overflow-hidden rounded-[2rem] border backdrop-blur-2xl sm:rounded-[2.5rem]"
+          style={{
+            background: themeBackground,
+            borderColor: panelBorder,
+            boxShadow: panelGlow,
+          }}
+        >
+          <div className="flex items-center gap-1.5 border-b border-[var(--surface-card-border)] px-3 py-2.5 sm:gap-2 sm:px-5 sm:py-3">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f56] sm:h-3 sm:w-3" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e] sm:h-3 sm:w-3" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#27c93f] sm:h-3 sm:w-3" />
+            <p className="ml-2 truncate text-[0.6rem] uppercase tracking-[0.3em] text-[var(--color-text-secondary)] sm:ml-4 sm:text-xs">
+              rutts@workspace — ~/portfolio
+            </p>
+            <span className="ml-auto whitespace-nowrap text-[0.6rem] text-[var(--color-text-success)] sm:text-xs">
+              {interactiveComponent ? "● interactive" : "● ready"}
+            </span>
+          </div>
+
+          <div className="crt-screen flex h-[64vh] min-h-[460px] max-h-[620px] flex-col px-4 py-5 sm:px-7 sm:py-7">
+            {interactiveComponent ? (
+              <div className="min-h-0 min-w-0 flex-1">{interactiveComponent}</div>
+            ) : (
+              <div className="no-scrollbar flex min-h-0 flex-1 flex-col space-y-4 overflow-y-auto sm:space-y-5">
+                <BootSequence />
+
+                <button
+                  type="button"
+                  onClick={onActivateInteractive}
+                  className="fade-up group flex w-full max-w-[960px] cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 font-mono text-[0.7rem] text-[var(--color-text-primary)] transition-all duration-300 hover:scale-[1.01] hover:brightness-110 sm:gap-3 sm:px-6 sm:py-4 sm:text-sm"
+                  style={{
+                    background: "var(--surface-overlay-bg)",
+                    borderColor: "var(--color-text-accent)",
+                    boxShadow: `${panelGlow}, 0 20px 50px rgba(0,0,0,0.18)`,
+                    animationDelay: "180ms",
+                  }}
+                >
+                  <span className="whitespace-nowrap text-[var(--color-text-prompt)]">
+                    rutts@workspace
+                  </span>
+                  <span className="text-[var(--color-text-secondary)]">$</span>
+                  <span className="min-w-0 flex-1 break-words">
+                    unlock interactive mode — run every command yourself
+                  </span>
+                  <span className="ml-auto flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-text-accent)]/10 text-[var(--color-text-accent)] transition-all duration-300 group-hover:translate-x-1 group-hover:bg-[var(--color-text-accent)]/20 sm:h-6 sm:w-6">
+                    →
+                  </span>
+                </button>
+
+                <div
+                  className="fade-up flex flex-col items-center gap-1 text-[0.6rem] uppercase tracking-[0.5em] text-[var(--color-text-secondary)] sm:text-xs"
+                  style={{ animationDelay: "260ms" }}
+                >
+                  <span className="px-2 text-center">
+                    Scroll to continue exploring the showcase
+                  </span>
+                  <span className="mt-1 animate-bounce text-2xl text-[var(--color-text-accent)] sm:mt-2 sm:text-3xl">
+                    ↓
+                  </span>
+                </div>
               </div>
             )}
-          </>
-        )}
-        {!interactiveComponent ? (
-          <>
-            <button
-              type="button"
-              onClick={onActivateInteractive}
-              className="group flex w-full max-w-[960px] cursor-pointer items-center gap-2 sm:gap-3 rounded-2xl border px-3 py-2.5 sm:px-6 sm:py-4 font-mono text-[0.7rem] sm:text-sm text-[var(--color-text-primary)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 animate-subtle-border-glow"
-              style={{
-                background: "var(--surface-overlay-bg)",
-                borderColor: "var(--color-text-accent)",
-                boxShadow: `${panelGlow}, 0 25px 60px rgba(0,0,0,0.16)`,
-              }}
-            >
-              <span className="text-[var(--color-text-prompt)] whitespace-nowrap">
-                rutts@workspace
-              </span>
-              <span className="text-[var(--color-text-secondary)]">$</span>
-            <span className="flex-1 min-w-0 break-words">
-              {typewriterText || fullText}
-              {showTypewriter && typewriterText.length < fullText.length && (
-                <span className="terminal-cursor ml-1" />
-              )}
-            </span>
-              <span className="ml-auto flex h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-text-accent)]/10 text-[var(--color-text-accent)] transition-all duration-300 group-hover:translate-x-1 group-hover:bg-[var(--color-text-accent)]/20">
-                →
-              </span>
-            </button>
-            <div className="flex flex-col items-center gap-1 text-[0.65rem] sm:text-xs uppercase tracking-[0.5em] text-[var(--color-text-secondary)]">
-              <span className="text-center px-2">Scroll to continue exploring the showcase</span>
-              <span className="mt-1 sm:mt-2 text-2xl sm:text-3xl text-[var(--color-text-accent)] animate-bounce">
-                ↓
-              </span>
-            </div>
-          </>
-        ) : (
-          <div className="mt-6 w-full">{interactiveComponent}</div>
-        )}
+
+            <div className="crt-scanlines" />
+            <div className="crt-beam" />
+            <div className="crt-vignette" />
+            <div className="crt-flicker" />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -322,17 +316,16 @@ export const TerminalExperience = () => {
 
   const isInteractive = mode === "interactive";
   const interactiveComponent = isInteractive ? (
-    <div className="w-full">
-      <TerminalShell
-        history={history}
-        mode={mode}
-        currentInput={currentInput}
-        setCurrentInput={setCurrentInput}
-        autoTypingText={autoTypingText}
-        isTyping={isTyping}
-        onSubmit={handleSubmit}
-      />
-    </div>
+    <TerminalShell
+      embedded
+      history={history}
+      mode={mode}
+      currentInput={currentInput}
+      setCurrentInput={setCurrentInput}
+      autoTypingText={autoTypingText}
+      isTyping={isTyping}
+      onSubmit={handleSubmit}
+    />
   ) : undefined;
 
   // Calculate parallax transforms - use translate3d for hardware acceleration
@@ -354,16 +347,19 @@ export const TerminalExperience = () => {
         className="w-full px-3 py-8 sm:px-4 sm:py-12 md:px-8"
       >
         <div className="mx-auto w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] 3xl:max-w-none 3xl:px-16">
-          <TopBar
-            themeLabel={theme.label}
-            onCycleTheme={cycleTheme}
-            themeName={themeName}
-          />
+          <GsapReveal>
+            <TopBar
+              themeLabel={theme.label}
+              onCycleTheme={cycleTheme}
+              themeName={themeName}
+            />
+          </GsapReveal>
         </div>
       </div>
       <div className="mx-auto flex w-full max-w-5xl xl:max-w-6xl 2xl:max-w-7xl flex-col items-center gap-4 sm:gap-6 md:gap-8 px-3 py-8 sm:px-4 sm:py-12 md:px-8">
         <div
           ref={introPanelRef}
+          className="w-full"
           style={{
             transform: introPanelTransform,
             willChange: "transform",
@@ -372,7 +368,6 @@ export const TerminalExperience = () => {
         >
           <IntroPanel
             onActivateInteractive={enterInteractiveMode}
-            aboutLines={aboutPreviewLines}
             themeBackground={`linear-gradient(135deg, ${theme.terminal.background}, ${theme.body.background})`}
             panelBorder={theme.terminal.border}
             panelGlow={theme.terminal.glow}
@@ -403,7 +398,7 @@ export const TerminalExperience = () => {
           initialTriggered={[]}
         />
 
-        <div className="mt-16 sm:mt-20 md:mt-24 flex w-full justify-center border-t border-[var(--surface-card-border)] pt-8">
+        <GsapReveal className="mt-16 sm:mt-20 md:mt-24 flex w-full justify-center border-t border-[var(--surface-card-border)] pt-8">
           <div className="relative h-48 w-full max-w-[1200px] md:h-52 flex items-center justify-center">
             <div className="relative h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48 rounded-full border-2 overflow-hidden"
               style={{
@@ -420,9 +415,9 @@ export const TerminalExperience = () => {
               />
             </div>
           </div>
-        </div>
+        </GsapReveal>
         <p className="mt-6 text-center text-[0.75rem] uppercase tracking-[0.4em] text-[var(--color-text-secondary)]">
-          © 2025 0xRutts
+          © 2026 0xRutts
         </p>
       </div>
       
@@ -457,4 +452,3 @@ export const TerminalExperience = () => {
     </div>
   );
 };
-

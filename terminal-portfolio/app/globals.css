@@ -83,3 +83,190 @@ body {
   animation: subtle-border-glow 3s ease-in-out infinite;
   box-shadow: 0 0 4px var(--color-text-accent);
 }
+
+/* ---------- CRT / hi-tech terminal layer (token-driven) ---------- */
+
+.crt-screen {
+  position: relative;
+  overflow: hidden;
+}
+
+.crt-scanlines,
+.crt-beam,
+.crt-vignette,
+.crt-flicker {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.crt-scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0 2px,
+    rgba(0, 0, 0, 0.16) 2px 3px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+.crt-beam {
+  top: -140px;
+  bottom: auto;
+  height: 140px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--color-text-accent) 10%, transparent),
+    transparent
+  );
+  animation: crt-beam 7s linear infinite;
+}
+
+.crt-vignette {
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.6);
+}
+
+.crt-flicker {
+  background: color-mix(in srgb, var(--color-text-accent) 4%, transparent);
+  animation: crt-flicker 6s ease-in-out infinite;
+}
+
+@keyframes crt-beam {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(calc(100% + 280px));
+  }
+}
+
+@keyframes crt-flicker {
+  0%,
+  98% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* phosphor + chromatic-aberration text, both tinted by the active theme */
+.phosphor {
+  text-shadow:
+    0 0 6px color-mix(in srgb, var(--color-text-accent) 55%, transparent),
+    0 0 18px color-mix(in srgb, var(--color-text-accent) 30%, transparent);
+}
+
+.chroma {
+  text-shadow:
+    1.4px 0 color-mix(in srgb, var(--color-text-error) 50%, transparent),
+    -1.4px 0 color-mix(in srgb, var(--color-text-accent) 45%, transparent),
+    0 0 16px color-mix(in srgb, var(--color-text-accent) 28%, transparent);
+}
+
+/* boot log rows */
+.boot-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  opacity: 0;
+  animation: boot-in 0.4s ease forwards;
+}
+
+.boot-label {
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.boot-leader {
+  flex: 1;
+  height: 0;
+  transform: translateY(-3px);
+  border-bottom: 1px dotted
+    color-mix(in srgb, var(--color-text-accent) 22%, transparent);
+}
+
+.boot-ok {
+  color: var(--color-text-success);
+  white-space: nowrap;
+}
+
+.fade-up {
+  opacity: 0;
+  animation: fade-up 0.5s ease forwards;
+}
+
+@keyframes boot-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* depth glow layers that parallax behind the terminal */
+.depth-glow {
+  position: absolute;
+  border-radius: 24px;
+  filter: blur(70px);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-beam,
+  .crt-flicker {
+    animation: none !important;
+  }
+  .boot-row,
+  .fade-up {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ---------- Lenis smooth scroll ---------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* hide every scrollbar — clean smooth-scroll aesthetic, scroll still works */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}

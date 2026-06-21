@@ -42,3 +42,9 @@ next-env.d.ts
 
 public/badges
 package-lock.json
+.superpowers/
+.playwright-cli/
+.playwright-mcp/
+/experience-*.png
+/projects-*.png
+/revamp-hero*.png

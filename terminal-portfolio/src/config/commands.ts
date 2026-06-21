@@ -282,6 +282,12 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
       prefix: "GitHub",
     },
     {
+      type: "link",
+      label: "x.com/0xRutts",
+      href: "https://x.com/0xRutts",
+      prefix: "X",
+    },
+    {
       type: "text",
       text: "Location: Toronto, Ontario · Open to relocate",
       tone: "muted",

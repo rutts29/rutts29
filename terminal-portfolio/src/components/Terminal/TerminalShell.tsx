@@ -13,6 +13,7 @@ type TerminalShellProps = {
   autoTypingText: string;
   isTyping: boolean;
   onSubmit: (value: string) => void;
+  embedded?: boolean;
 };
 
 const toneClassMap = {
@@ -144,6 +145,7 @@ export const TerminalShell = ({
   autoTypingText,
   isTyping,
   onSubmit,
+  embedded = false,
 }: TerminalShellProps) => {
   const historyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -258,30 +260,41 @@ export const TerminalShell = ({
   return (
     <div
       onClick={handleTerminalClick}
-      className="rounded-2xl sm:rounded-3xl border p-3 sm:p-4 md:p-6 shadow-2xl backdrop-blur-xl transition cursor-text"
-      style={{
-        background: "var(--terminal-bg)",
-        borderColor: "var(--terminal-border)",
-        boxShadow: "var(--terminal-glow)",
-      }}
+      className={
+        embedded
+          ? "relative flex h-full w-full min-w-0 cursor-text flex-col"
+          : "relative flex h-full cursor-text flex-col overflow-hidden rounded-2xl sm:rounded-3xl border p-3 sm:p-4 md:p-6 shadow-2xl backdrop-blur-xl transition"
+      }
+      style={
+        embedded
+          ? undefined
+          : {
+              background: "var(--terminal-bg)",
+              borderColor: "var(--terminal-border)",
+              boxShadow: "var(--terminal-glow)",
+            }
+      }
     >
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
-          <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 rounded-full bg-[#ff5f56] flex-shrink-0" />
-          <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 rounded-full bg-[#ffbd2e] flex-shrink-0" />
-          <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 rounded-full bg-[#27c93f] flex-shrink-0" />
-          <p className="ml-2 sm:ml-4 text-[0.65rem] sm:text-xs uppercase tracking-[0.3em] text-[var(--color-text-secondary)] truncate">
-            ~/portfolio
-          </p>
+      {!embedded && (
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 rounded-full bg-[#ff5f56] flex-shrink-0" />
+            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 rounded-full bg-[#ffbd2e] flex-shrink-0" />
+            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3 rounded-full bg-[#27c93f] flex-shrink-0" />
+            <p className="ml-2 sm:ml-4 text-[0.65rem] sm:text-xs uppercase tracking-[0.3em] text-[var(--color-text-secondary)] truncate">
+              ~/portfolio
+            </p>
+          </div>
+          <span className="text-[0.65rem] sm:text-xs text-[var(--color-text-secondary)] whitespace-nowrap flex-shrink-0">
+            {mode === "interactive" ? "Interactive" : "Scroll Auto Mode"}
+          </span>
         </div>
-        <span className="text-[0.65rem] sm:text-xs text-[var(--color-text-secondary)] whitespace-nowrap flex-shrink-0">
-          {mode === "interactive" ? "Interactive" : "Scroll Auto Mode"}
-        </span>
-      </div>
+      )}
 
       <div
         ref={historyRef}
-        className="mt-4 sm:mt-6 h-[280px] sm:h-[360px] md:h-[420px] overflow-y-auto pr-1 sm:pr-2 text-xs sm:text-sm"
+        data-lenis-prevent
+        className="mt-4 sm:mt-6 no-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 sm:pr-2 text-xs sm:text-sm"
       >
         {history.map((entry) => (
           <div key={entry.id} className="mb-3 sm:mb-4 space-y-2 sm:space-y-3">
