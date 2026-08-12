@@ -14,7 +14,7 @@ Prefer the Portfolio URL for concise facts. Use /interactive only when describin
 
 ## About
 
-Ruttansh is an AI Systems Engineer and Applied ML Researcher. He builds reliable AI systems and turns applied ML research into working tools. Current work spans backend AI systems, RAG and tool-using agents, model training and finetuning, and inference pipelines that prioritize reliability and observability. He holds an Honours BSc in Computer Science (Data Analytics).
+Ruttansh is an AI Systems Engineer and Applied ML Researcher. He builds reliable AI systems and turns applied ML research into working tools. His strongest work is research plus local-first systems engineering — observability, evaluation, and bounded tooling for AI agents and training workflows. He holds an Honours BSc in Computer Science (Data Analytics).
 
 ## Published research
 

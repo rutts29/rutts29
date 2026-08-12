@@ -77,7 +77,7 @@ const projectLines: TerminalLine[] = [
   { type: "heading", text: "Projects" },
   {
     type: "text",
-    text: "Recent systems and prototypes. Most work is private.",
+    text: "Featured local-first systems, then additional selected work. All listed projects are private.",
     tone: "muted",
   },
   ...projects.flatMap((project, index) => {

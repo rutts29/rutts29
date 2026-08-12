@@ -118,21 +118,21 @@ export const portfolioContent: PortfolioContent = {
     hero: "I build reliable AI systems and turn applied ML research into working tools.",
     about: [
       "I am an AI Systems Engineer and Applied ML Researcher. I build reliable AI systems and turn applied ML research into working tools.",
-      "Current work spans backend AI systems, RAG and tool-using agents, model training and finetuning, and inference pipelines that prioritize reliability and observability.",
-      "I hold an Honours BSc in Computer Science (Data Analytics) and stay embedded with applied research partners.",
+      "My strongest work is research plus local-first systems engineering — observability, evaluation, and bounded tooling for AI agents and training workflows.",
+      "I hold an Honours BSc in Computer Science (Data Analytics) and stay engaged with applied research partners.",
     ],
     education: {
       degree:
         "Honours Bachelor of Science in Computer Science (Data Analytics)",
       detail:
-        "Graduated 2025 · Toronto, Ontario · Focused on applied AI, data engineering, and collaborating with applied research programs.",
+        "Graduated 2025 · Toronto, Ontario · Applied AI, data engineering, and research collaboration.",
     },
   },
 
   proofFacts: [
     { label: "Based in", value: "Toronto" },
-    { label: "Focus", value: "AI systems · ML research" },
-    { label: "Track", value: "Research + systems" },
+    { label: "Focus", value: "AI systems · applied ML" },
+    { label: "Evidence", value: "Research + local systems" },
     { label: "Building at", value: "CredShields" },
   ],
 
@@ -143,7 +143,7 @@ export const portfolioContent: PortfolioContent = {
         "Low-Error Indoor Positioning via Synthetic RSSI Augmentation and Zx–WKNN Hybrid Model",
       label: "IEEE MSWiM 2025 · Conference paper",
       summary:
-        "IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
+        "Co-authored an IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
       links: [
         {
           label: "10.1109/MSWiM67937.2025.11309178",
@@ -167,7 +167,7 @@ export const portfolioContent: PortfolioContent = {
       summary:
         "Local-first observability and evaluation for AI coding agents.",
       description:
-        "Normalizes local harness artifacts into a provenance-aware SQLite ledger and revalidates source-backed transcript content before serving it. Includes a CLI, loopback dashboard, and read-only MCP tools.",
+        "agentlog normalizes local harness artifacts into a provenance-aware SQLite ledger and revalidates source-backed transcript content before serving it. Six harness adapters; CLI, loopback dashboard, and read-only MCP tools with source identity checks.",
       stack: ["Python", "TypeScript", "SQLite", "MCP"],
       status: "Private",
       visibility: "private",
@@ -177,9 +177,9 @@ export const portfolioContent: PortfolioContent = {
       name: "SolProbe",
       featured: true,
       summary:
-        "Local observability for AI-training telemetry and anomaly workflows.",
+        "Local observability prototype for AI-training telemetry and anomaly workflows.",
       description:
-        "A Rust sidecar, FastAPI service, and Next.js dashboard for on-device collection and repeatable fault simulation on Apple Silicon.",
+        "A Rust sidecar, FastAPI service, and Next.js dashboard cover Apple Silicon collection and repeatable simulated faults.",
       stack: ["Rust", "FastAPI", "Next.js", "PyTorch"],
       status: "Private",
       visibility: "private",
@@ -191,7 +191,7 @@ export const portfolioContent: PortfolioContent = {
       featured: true,
       summary: "A bounded local bridge from ChatGPT to Codex.",
       description:
-        "Rust MCP server with OAuth/PKCE, workspace allowlists, managed worktrees, audit records, and explicit approval boundaries — without a raw shell by default.",
+        "The Rust MCP server combines OAuth/PKCE, workspace allowlists, managed worktrees, audit records, and explicit approval boundaries without exposing a raw shell by default.",
       stack: ["Rust", "MCP", "OAuth"],
       status: "Private",
       visibility: "private",
@@ -201,9 +201,9 @@ export const portfolioContent: PortfolioContent = {
       name: "Founder Intelligence",
       featured: false,
       summary:
-        "Founder research plugin with bounded tools and explicit approvals.",
+        "Local-first founder-intelligence plugin with bounded tools and approvals.",
       description:
-        "Nine tools, approval before paid X collection, SQLite persistence, and monthly credit controls.",
+        "Nine bounded tools, explicit approval before paid X collection, SQLite persistence, and monthly credit controls.",
       stack: ["TypeScript", "SQLite"],
       status: "Private",
       visibility: "private",
@@ -212,9 +212,10 @@ export const portfolioContent: PortfolioContent = {
       id: "local-sec",
       name: "local-sec",
       featured: false,
-      summary: "Package-install guard for local developer tooling.",
+      summary:
+        "Local-first package-install guard for developer-tool installs.",
       description:
-        "Version selection, advisory checks, artifact scanning where supported, explicit approvals, and metadata inventory before selected installs.",
+        "Applies mature-version selection, advisory checks, supported-flow artifact scanning, explicit approvals, and metadata inventory before selected installs.",
       stack: ["Go"],
       status: "Private",
       visibility: "private",
@@ -224,9 +225,9 @@ export const portfolioContent: PortfolioContent = {
       name: "Keyed",
       featured: false,
       summary:
-        "Solana social prototype with wallet identity and creator monetization.",
+        "Privacy-aware Solana social prototype exploring wallet identity and creator monetization.",
       description:
-        "Wallet identity, creator monetization, token-gated access, AI-assisted discovery, and tipping integrations.",
+        "Explores wallet identity, creator monetization, token-gated access, AI-assisted discovery, and tipping integrations.",
       stack: ["TypeScript", "Rust", "Python", "Solana", "PostgreSQL"],
       status: "Private",
       visibility: "private",
@@ -372,9 +373,9 @@ export const portfolioContent: PortfolioContent = {
       title:
         "Low-Error Indoor Positioning via Synthetic RSSI Augmentation and Zx–WKNN Hybrid Model",
       summary:
-        "IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
+        "Co-authored an IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
       status: "published",
-      meta: "IEEE MSWiM 2025",
+      meta: "IEEE MSWiM 2025 · Conference paper",
       href: "https://doi.org/10.1109/MSWiM67937.2025.11309178",
     },
     {

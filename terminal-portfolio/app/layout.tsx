@@ -45,7 +45,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Ruttansh Bhatelia — AI Systems Engineer · Applied ML Researcher",
   description:
-    "Ruttansh Bhatelia is a Toronto-based AI Systems Engineer and Applied ML Researcher. He builds reliable AI systems and turns applied ML research into working tools.",
+    "Ruttansh Bhatelia is a Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems, applied ML research, and local-first tooling.",
   keywords: [
     "Ruttansh",
     "Rutts",
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     siteName: "Ruttansh Bhatelia",
     title: "Ruttansh Bhatelia — AI Systems Engineer · Applied ML Researcher",
     description:
-      "Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems and applied research turned into working tools.",
+      "Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems, applied ML research, and local-first tooling.",
     images: [
       {
         url: "/core-image.jpg",
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Ruttansh Bhatelia — AI Systems Engineer · Applied ML Researcher",
     description:
-      "Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems and applied research turned into working tools.",
+      "Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems, applied ML research, and local-first tooling.",
     creator: "@0xRutts",
     images: ["/core-image.jpg"],
   },
