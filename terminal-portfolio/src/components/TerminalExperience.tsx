@@ -234,18 +234,15 @@ export const TerminalExperience = () => {
 
   // Disable browser scroll restoration and force scroll to top on load/refresh
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      // Disable browser's automatic scroll restoration
-      if ("scrollRestoration" in window.history) {
-        window.history.scrollRestoration = "manual";
-      }
-      // Force scroll to top immediately
-      window.scrollTo(0, 0);
-      // Also set it after a tiny delay to ensure it sticks
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 0);
-    }
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    const scrollReset = window.setTimeout(() => window.scrollTo(0, 0), 0);
+
+    return () => {
+      window.clearTimeout(scrollReset);
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
   }, []);
 
   // Parallax scroll effect with requestAnimationFrame for better performance
@@ -337,7 +334,7 @@ export const TerminalExperience = () => {
 
   return (
     <div
-      className="min-h-screen transition-colors"
+      className="terminal-experience min-h-screen transition-colors"
       style={themeVariables}
     >
       <div

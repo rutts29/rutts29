@@ -30,6 +30,12 @@ export const SmoothScroll = ({ children }: SmoothScrollProps) => {
     return () => {
       gsap.ticker.remove(onTick);
       lenis.destroy();
+      document.documentElement.classList.remove(
+        "lenis",
+        "lenis-smooth",
+        "lenis-scrolling",
+        "lenis-stopped",
+      );
     };
   }, []);
 

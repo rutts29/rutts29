@@ -17,8 +17,8 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-portfolio-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 body {
@@ -29,7 +29,7 @@ body {
     radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.15), transparent 35%),
     radial-gradient(circle at 50% 80%, rgba(244, 114, 182, 0.08), transparent 40%);
   color: var(--color-text-primary);
-  font-family: var(--font-sans), "IBM Plex Sans", sans-serif;
+  font-family: var(--font-portfolio-sans), var(--font-sans), "IBM Plex Sans", sans-serif;
 }
 
 ::selection {
@@ -303,11 +303,239 @@ html.lenis body {
   pointer-events: none;
 }
 
-/* hide every scrollbar — clean smooth-scroll aesthetic, scroll still works */
-* {
+/* Keep the immersive terminal chrome clean without hiding page affordances elsewhere. */
+html:has(.terminal-experience),
+body:has(.terminal-experience),
+.terminal-experience * {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-*::-webkit-scrollbar {
+html:has(.terminal-experience)::-webkit-scrollbar,
+body:has(.terminal-experience)::-webkit-scrollbar,
+.terminal-experience *::-webkit-scrollbar {
   display: none;
+}
+
+/* Section jumps are handled in JS (snappy). Keep auto so CSS doesn't double-slow. */
+html:has(.simple-portfolio) {
+  scroll-behavior: auto;
+}
+
+html:has(.simple-portfolio),
+body:has(.simple-portfolio) {
+  background: #f7f7f5;
+  transition: background-color 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html[data-simple-resolved="dark"]:has(.simple-portfolio),
+html[data-simple-resolved="dark"] body:has(.simple-portfolio),
+html[data-simple-theme="dark"]:has(.simple-portfolio),
+html[data-simple-theme="dark"] body:has(.simple-portfolio) {
+  background: #0c0c0b;
+}
+
+/* Header control cluster — globals so Next Link never falls back to display:block */
+.simple-portfolio .simple-controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.simple-portfolio .portfolio-theme-toggle,
+.simple-portfolio .simple-interactive {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-portfolio-sans), ui-sans-serif, system-ui, sans-serif;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 220ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease;
+}
+
+.simple-portfolio .portfolio-theme-toggle {
+  position: relative;
+  width: 40px;
+  padding: 0;
+  overflow: hidden;
+  color: var(--simple-text, #141413);
+  border-color: color-mix(in srgb, var(--simple-line, #e2e0da) 55%, transparent);
+  background: transparent;
+}
+
+.simple-portfolio .simple-interactive {
+  padding: 0 14px 0 12px;
+  border-color: color-mix(in srgb, var(--simple-line, #e2e0da) 55%, transparent);
+  background: transparent;
+  color: var(--simple-text, #141413);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.simple-portfolio .simple-interactive span {
+  display: inline-block;
+  line-height: 1;
+}
+
+.simple-portfolio .portfolio-theme-toggle:hover,
+.simple-portfolio .simple-interactive:hover {
+  border-color: color-mix(in srgb, var(--simple-muted, #5e5e5a) 50%, transparent);
+  background: var(--simple-soft, #efece6);
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--simple-text, #141413) 8%, transparent);
+}
+
+.simple-portfolio .portfolio-theme-toggle:active,
+.simple-portfolio .simple-interactive:active {
+  transform: translateY(0);
+}
+
+.simple-portfolio .portfolio-theme-toggle:focus-visible,
+.simple-portfolio .simple-interactive:focus-visible {
+  outline: 2px solid var(--simple-text, #141413);
+  outline-offset: 3px;
+}
+
+/* Theme icon crossfade + spin */
+.simple-portfolio .portfolio-theme-toggle-icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition:
+    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.simple-portfolio .portfolio-theme-toggle-icon svg,
+.simple-portfolio .simple-interactive svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  display: block;
+  stroke-width: 1.75;
+}
+
+.simple-portfolio .portfolio-theme-toggle[data-theme="light"] .portfolio-theme-toggle-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.simple-portfolio .portfolio-theme-toggle[data-theme="light"] .portfolio-theme-toggle-moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.6);
+}
+
+.simple-portfolio .portfolio-theme-toggle[data-theme="dark"] .portfolio-theme-toggle-sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.6);
+}
+
+.simple-portfolio .portfolio-theme-toggle[data-theme="dark"] .portfolio-theme-toggle-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+html[data-simple-resolved="dark"] .simple-portfolio .portfolio-theme-toggle,
+html[data-simple-resolved="dark"] .simple-portfolio .simple-interactive,
+.simple-portfolio[data-theme="dark"] .portfolio-theme-toggle,
+.simple-portfolio[data-theme="dark"] .simple-interactive {
+  color: var(--simple-text, #f2f2f2);
+  border-color: color-mix(in srgb, var(--simple-line, #2a2a2a) 70%, transparent);
+  background: transparent;
+}
+
+html[data-simple-resolved="dark"] .simple-portfolio .portfolio-theme-toggle:hover,
+html[data-simple-resolved="dark"] .simple-portfolio .simple-interactive:hover,
+.simple-portfolio[data-theme="dark"] .portfolio-theme-toggle:hover,
+.simple-portfolio[data-theme="dark"] .simple-interactive:hover {
+  background: color-mix(in srgb, var(--simple-text, #f2f2f2) 6%, transparent);
+  box-shadow: none;
+}
+
+html[data-simple-resolved="dark"] .simple-portfolio .portfolio-theme-toggle:focus-visible,
+html[data-simple-resolved="dark"] .simple-portfolio .simple-interactive:focus-visible,
+.simple-portfolio[data-theme="dark"] .portfolio-theme-toggle:focus-visible,
+.simple-portfolio[data-theme="dark"] .simple-interactive:focus-visible {
+  outline-color: var(--simple-text, #f2f2f2);
+}
+
+@media (max-width: 760px) {
+  .simple-portfolio .portfolio-theme-toggle {
+    width: 44px;
+    min-height: 44px;
+  }
+
+  .simple-portfolio .simple-interactive {
+    min-height: 44px;
+    padding-inline: 12px;
+    font-size: 12px;
+  }
+}
+
+/*
+ * Scroll reveal: only below-fold .simple-reveal-pending is hidden.
+ * Above-the-fold stays fully visible on first paint (no FOUC).
+ */
+.simple-reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.simple-portfolio[data-motion-ready="true"] .simple-reveal-pending:not(.is-visible) {
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition:
+    opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.simple-portfolio[data-motion-ready="true"] .simple-reveal-pending.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.simple-portfolio:not([data-ready="true"]) .simple-scroll-progress,
+.simple-portfolio:not([data-ready="true"]) .simple-scroll-cue {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simple-portfolio .portfolio-theme-toggle,
+  .simple-portfolio .simple-interactive,
+  .simple-portfolio .portfolio-theme-toggle-icon {
+    transition: none !important;
+  }
+
+  .simple-portfolio[data-motion-ready="true"] .simple-reveal-pending,
+  .simple-portfolio[data-motion-ready="true"] .simple-reveal-pending.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    pointer-events: auto !important;
+  }
 }

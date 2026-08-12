@@ -1,0 +1,1202 @@
+/* Simple portfolio — global first paint (avoid styled-jsx FOUC) */
+
+/* ── Design tokens (one system for the whole page) ─────────────── */
+.simple-portfolio {
+  /* Cooler paper — white with a hint of warmth, not yellow */
+  --simple-bg: #f7f7f5;
+  --simple-panel: #ffffff;
+  --simple-text: #161616;
+  --simple-muted: #5a5a5a;
+  --simple-line: #e4e4e1;
+  --simple-soft: #efefec;
+  --simple-accent: #161616;
+  --font-ui: var(--font-portfolio-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-portfolio-display), Georgia, "Times New Roman", serif;
+  --font-meta: var(--font-portfolio-sans), ui-sans-serif, system-ui, sans-serif;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 220ms;
+  --dur-slow: 520ms;
+  --simple-ink-a: rgba(70, 70, 80, 0.1);
+  --simple-ink-b: rgba(40, 70, 110, 0.1);
+  --simple-ink-c: rgba(80, 55, 50, 0.08);
+  --simple-ink-d: rgba(45, 80, 70, 0.08);
+  --simple-band: rgba(40, 40, 50, 0.05);
+  --simple-speckle: rgba(20, 20, 24, 0.16);
+  --simple-mark: rgba(12, 12, 14, 0.05);
+  --simple-grain: 0.12;
+  --simple-fiber: 0.05;
+  --simple-paper-base: #f7f7f5;
+  --simple-paper-shade: #ececeb;
+  --simple-paper-edge: rgba(20, 20, 24, 0.06);
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  background-color: var(--simple-bg);
+  color: var(--simple-text);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.011em;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 380ms var(--ease-out),
+    color 380ms var(--ease-out);
+}
+
+/* Prefer resolved theme on <html> so first paint matches boot script */
+html[data-simple-resolved="dark"] .simple-portfolio,
+.simple-portfolio[data-theme="dark"],
+html[data-simple-theme="dark"] .simple-portfolio {
+  /* Black paper — charcoal fiber, not pure void */
+  --simple-bg: #0e0e0e;
+  --simple-panel: #161616;
+  --simple-text: #f0ebe3;
+  --simple-muted: #9a958c;
+  --simple-line: #2c2c2a;
+  --simple-soft: #1a1a18;
+  --simple-accent: #f0ebe3;
+  --simple-ink-a: rgba(255, 245, 230, 0.09);
+  --simple-ink-b: rgba(180, 200, 255, 0.06);
+  --simple-ink-c: rgba(255, 200, 160, 0.05);
+  --simple-ink-d: rgba(160, 220, 200, 0.05);
+  --simple-band: rgba(255, 255, 255, 0.04);
+  --simple-speckle: rgba(255, 250, 240, 0.14);
+  --simple-mark: rgba(255, 248, 235, 0.045);
+  --simple-grain: 0.18;
+  --simple-fiber: 0.1;
+  --simple-paper-base: #0c0c0b;
+  --simple-paper-shade: #141412;
+  --simple-paper-edge: rgba(255, 255, 255, 0.05);
+}
+
+/* system + OS dark is handled by boot script → data-simple-resolved */
+
+/* ── Scroll hold cues (quiet, fact-forward) ────────────────────── */
+.simple-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  width: 100%;
+  height: 2px;
+  transform-origin: left center;
+  background: var(--simple-text);
+  opacity: 0.55;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.simple-scroll-cue {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--simple-line) 80%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--simple-bg) 70%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: var(--font-meta);
+  font-size: 11px;
+  font-weight: 550;
+  letter-spacing: 0.02em;
+  color: var(--simple-muted);
+  pointer-events: none;
+}
+
+.simple-scroll-cue-label {
+  color: var(--simple-text);
+}
+
+.simple-scroll-cue-pct {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+@media (max-width: 760px) {
+  .simple-scroll-cue {
+    right: 12px;
+    bottom: 12px;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+}
+
+/* ── Scene: paper + ink + mark + speckles (reads as designed) ─── */
+.simple-atmosphere {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.simple-paper {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 100% 85% at 50% 35%,
+      var(--simple-paper-base) 0%,
+      var(--simple-paper-shade) 68%,
+      color-mix(in srgb, var(--simple-paper-shade) 55%, #000) 100%
+    );
+}
+
+/* Diagonal light band — structure, not a shape toy */
+.simple-band {
+  position: absolute;
+  top: 8%;
+  left: -25%;
+  width: 150%;
+  height: 42%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    var(--simple-band) 28%,
+    var(--simple-band) 55%,
+    transparent 78%
+  );
+  transform: rotate(-9deg) translateY(calc(var(--scroll, 0) * 30px));
+  filter: blur(2px);
+}
+
+/* Organic ink blots — irregular, blurred, slow drift */
+.simple-ink {
+  position: absolute;
+  filter: blur(48px);
+  will-change: transform;
+  opacity: 1;
+}
+
+.simple-ink-a {
+  top: -8%;
+  left: -6%;
+  width: min(70vw, 640px);
+  height: min(58vw, 520px);
+  border-radius: 58% 42% 48% 52% / 42% 58% 42% 58%;
+  background: var(--simple-ink-a);
+  animation: simple-ink-a 26s ease-in-out infinite alternate;
+}
+
+.simple-ink-b {
+  top: 8%;
+  right: -12%;
+  width: min(58vw, 540px);
+  height: min(62vw, 580px);
+  border-radius: 40% 60% 55% 45% / 55% 40% 60% 45%;
+  background: var(--simple-ink-b);
+  animation: simple-ink-b 32s ease-in-out infinite alternate;
+}
+
+.simple-ink-c {
+  bottom: 5%;
+  left: 18%;
+  width: min(52vw, 480px);
+  height: min(40vw, 360px);
+  border-radius: 48% 52% 38% 62% / 60% 40% 60% 40%;
+  background: var(--simple-ink-c);
+  animation: simple-ink-c 38s ease-in-out infinite alternate;
+}
+
+.simple-ink-d {
+  top: 42%;
+  left: 42%;
+  width: min(40vw, 360px);
+  height: min(44vw, 400px);
+  border-radius: 62% 38% 50% 50% / 45% 55% 45% 55%;
+  background: var(--simple-ink-d);
+  animation: simple-ink-d 44s ease-in-out infinite alternate;
+}
+
+/* Speckle field — density without grid */
+.simple-speckle {
+  position: absolute;
+  inset: 0;
+  opacity: 1;
+  background-image:
+    radial-gradient(circle at 12% 18%, var(--simple-speckle) 0.9px, transparent 1.1px),
+    radial-gradient(circle at 78% 22%, var(--simple-speckle) 0.7px, transparent 0.9px),
+    radial-gradient(circle at 34% 64%, var(--simple-speckle) 0.8px, transparent 1px),
+    radial-gradient(circle at 88% 72%, var(--simple-speckle) 0.6px, transparent 0.8px),
+    radial-gradient(circle at 56% 38%, var(--simple-speckle) 0.7px, transparent 0.9px),
+    radial-gradient(circle at 22% 82%, var(--simple-speckle) 0.85px, transparent 1.05px),
+    radial-gradient(circle at 64% 12%, var(--simple-speckle) 0.55px, transparent 0.75px),
+    radial-gradient(circle at 8% 48%, var(--simple-speckle) 0.7px, transparent 0.9px);
+  background-size:
+    42px 42px,
+    67px 67px,
+    53px 53px,
+    81px 81px,
+    37px 37px,
+    73px 73px,
+    59px 59px,
+    47px 47px;
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 40%, black 20%, transparent 85%);
+}
+
+/* Giant display mark — identity in the field */
+.simple-watermark {
+  position: absolute;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--simple-mark);
+  user-select: none;
+  white-space: nowrap;
+  line-height: 0.85;
+}
+
+.simple-watermark-main {
+  top: 6%;
+  right: -4%;
+  font-size: clamp(10rem, 32vw, 22rem);
+  letter-spacing: -0.07em;
+  transform: translate3d(0, calc(var(--scroll, 0) * -80px), 0);
+}
+
+.simple-watermark-sub {
+  bottom: 10%;
+  left: 4%;
+  font-family: var(--font-ui);
+  font-size: clamp(1.1rem, 2.8vw, 1.6rem);
+  font-style: normal;
+  font-weight: 550;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  transform: translate3d(0, calc(var(--scroll, 0) * 36px), 0);
+}
+
+.simple-atmosphere-grain {
+  position: absolute;
+  inset: 0;
+  opacity: var(--simple-grain);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+}
+
+html[data-simple-resolved="dark"] .simple-atmosphere-grain,
+.simple-portfolio[data-theme="dark"] .simple-atmosphere-grain,
+html[data-simple-theme="dark"] .simple-portfolio .simple-atmosphere-grain {
+  mix-blend-mode: soft-light;
+}
+
+.simple-atmosphere-fiber {
+  position: absolute;
+  inset: 0;
+  opacity: var(--simple-fiber);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.28' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 380px 380px;
+}
+
+html[data-simple-resolved="dark"] .simple-atmosphere-fiber,
+.simple-portfolio[data-theme="dark"] .simple-atmosphere-fiber,
+html[data-simple-theme="dark"] .simple-portfolio .simple-atmosphere-fiber {
+  mix-blend-mode: soft-light;
+}
+
+@keyframes simple-ink-a {
+  from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  to { transform: translate3d(4%, 6%, 0) rotate(4deg) scale(1.08); }
+}
+
+@keyframes simple-ink-b {
+  from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  to { transform: translate3d(-5%, 4%, 0) rotate(-5deg) scale(1.1); }
+}
+
+@keyframes simple-ink-c {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(3%, -5%, 0) scale(1.12); }
+}
+
+@keyframes simple-ink-d {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-4%, -3%, 0) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simple-ink,
+  .simple-band,
+  .simple-watermark-main,
+  .simple-watermark-sub {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .simple-watermark-main {
+    font-size: clamp(7rem, 40vw, 12rem);
+    right: -8%;
+    opacity: 0.9;
+  }
+
+  .simple-watermark-sub {
+    font-size: clamp(2.5rem, 16vw, 5rem);
+  }
+
+  .simple-ink {
+    filter: blur(36px);
+  }
+}
+
+/* ── Shared layout ─────────────────────────────────────────────── */
+.simple-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1040px, calc(100% - 48px));
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+.simple-skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 8px 12px;
+  background: var(--simple-text);
+  color: var(--simple-bg);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  transform: translateY(-160%);
+}
+
+.simple-skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ── Type roles (used everywhere — no one-off fonts) ───────────── */
+.simple-label {
+  margin: 0;
+  color: var(--simple-muted);
+  font-family: var(--font-meta);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+.simple-display {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(44px, 8vw, 80px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+.simple-heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.2vw, 44px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.simple-title {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.simple-title-lg {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.simple-lede {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.simple-body-copy {
+  margin: 0;
+  max-width: 54ch;
+  color: var(--simple-muted);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.simple-meta-line {
+  margin: 0;
+  color: var(--simple-muted);
+  font-family: var(--font-meta);
+  font-size: 13px;
+  font-weight: 450;
+  letter-spacing: -0.005em;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+
+.simple-meta-strong {
+  color: var(--simple-text);
+  font-weight: 550;
+}
+
+/* ── Header — continuous with page (no exile bar) ──────────────── */
+.simple-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding-top: env(safe-area-inset-top);
+  border-bottom: none;
+  /* Let atmosphere show through — same light as the hero */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--simple-bg) 55%, transparent) 0%,
+    color-mix(in srgb, var(--simple-bg) 28%, transparent) 100%
+  );
+  backdrop-filter: blur(16px) saturate(1.02);
+  -webkit-backdrop-filter: blur(16px) saturate(1.02);
+  transition: background 380ms var(--ease-out);
+}
+
+.simple-header-inner {
+  min-height: 64px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.simple-wordmark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--simple-line);
+  border-radius: 8px;
+  transition:
+    transform var(--dur) var(--ease-out),
+    border-color var(--dur) ease,
+    box-shadow var(--dur) ease;
+}
+
+.simple-wordmark:hover {
+  border-color: var(--simple-muted);
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--simple-text) 12%, transparent);
+}
+
+.simple-wordmark img,
+.simple-wordmark-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.simple-nav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 20px;
+  margin-right: auto;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--simple-muted);
+}
+
+.simple-nav a {
+  position: relative;
+  transition: color var(--dur) ease;
+}
+
+.simple-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.simple-nav a:hover {
+  color: var(--simple-text);
+  text-decoration: none;
+}
+
+.simple-nav a:hover::after {
+  transform: scaleX(1);
+}
+
+/* ── Links / focus ─────────────────────────────────────────────── */
+a {
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--simple-text);
+  outline-offset: 3px;
+}
+
+/* ── Hero ──────────────────────────────────────────────────────── */
+.simple-hero {
+  min-height: calc(100svh - 64px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(160px, 0.7fr);
+  align-items: center;
+  gap: 40px 48px;
+  /* Tighter top so dark doesn’t open with a dead black void */
+  padding-block: 48px 88px;
+  scroll-margin-top: 88px;
+}
+
+#top,
+#work,
+#experience,
+#focus,
+#writing,
+#contact {
+  scroll-margin-top: 88px;
+}
+
+.simple-hero-copy {
+  min-width: 0;
+}
+
+/* Snapshot strip under hero */
+.simple-proof {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px 24px;
+  padding-block: 8px 56px;
+}
+
+.simple-proof-item {
+  min-width: 0;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--simple-line) 85%, transparent);
+}
+
+.simple-proof-value {
+  margin: 8px 0 0;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.simple-project {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+}
+
+.simple-project-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+.simple-outcome {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--simple-text);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 550;
+  letter-spacing: -0.015em;
+  line-height: 1.45;
+}
+
+.simple-hero-portrait {
+  justify-self: end;
+  width: min(100%, 280px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--simple-line);
+  border-radius: 18px;
+  background: var(--simple-soft);
+  box-shadow: 0 18px 50px color-mix(in srgb, var(--simple-text) 10%, transparent);
+}
+
+.simple-hero-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.simple-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+}
+
+.simple-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--simple-muted);
+  font-family: var(--font-meta);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.simple-location svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.75;
+}
+
+.simple-hero .simple-display {
+  margin-top: 18px;
+  max-width: 14ch;
+}
+
+.simple-hero .simple-lede {
+  margin-top: 22px;
+}
+
+.simple-hero .simple-body-copy {
+  margin-top: 18px;
+}
+
+.simple-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 36px;
+  position: relative;
+  z-index: 2;
+}
+
+.simple-btn-primary,
+.simple-btn-ghost {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    transform var(--dur) var(--ease-out),
+    opacity var(--dur) ease,
+    background-color var(--dur) ease,
+    border-color var(--dur) ease;
+}
+
+.simple-btn-primary {
+  border: 1px solid var(--simple-text);
+  background: var(--simple-text);
+  color: var(--simple-bg);
+}
+
+.simple-btn-primary:hover {
+  opacity: 0.92;
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.simple-btn-ghost {
+  border: 1px solid var(--simple-line);
+  background: transparent;
+  color: var(--simple-text);
+}
+
+.simple-btn-ghost:hover {
+  border-color: var(--simple-muted);
+  background: var(--simple-soft);
+  color: var(--simple-text);
+  text-decoration: none;
+}
+
+.simple-btn-primary svg,
+.simple-inline-links svg,
+.simple-contact svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  stroke-width: 1.75;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+/* ── Sections ──────────────────────────────────────────────────── */
+.simple-section {
+  padding-block: 88px;
+  scroll-margin-top: 72px;
+}
+
+.simple-section + .simple-section {
+  /* One quiet break between sections — not a rule on every block */
+  margin-top: 8px;
+  padding-top: 88px;
+}
+
+.simple-section-head {
+  max-width: 40rem;
+  margin-bottom: 40px;
+}
+
+.simple-section-head .simple-heading {
+  margin-top: 10px;
+}
+
+.simple-section-head .simple-body-copy {
+  margin-top: 12px;
+}
+
+.simple-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.simple-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.85fr) minmax(0, 1.55fr);
+  gap: 20px 48px;
+  padding: 0;
+}
+
+.simple-row-meta .simple-title {
+  margin-top: 8px;
+  font-size: 22px;
+  font-weight: 550;
+  letter-spacing: -0.025em;
+}
+
+.simple-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.simple-chips li {
+  padding: 5px 10px;
+  border: 1px solid var(--simple-line);
+  border-radius: 999px;
+  color: var(--simple-muted);
+  font-family: var(--font-meta);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  transition:
+    border-color var(--dur) ease,
+    color var(--dur) ease,
+    background-color var(--dur) ease;
+}
+
+.simple-row:hover .simple-chips li {
+  border-color: color-mix(in srgb, var(--simple-muted) 40%, var(--simple-line));
+}
+
+.simple-inline-links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 18px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.simple-inline-links a {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.simple-inline-links a:hover svg,
+.simple-contact a:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* ── Experience ────────────────────────────────────────────────── */
+.simple-role {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+}
+
+.simple-role-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.simple-role-title-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+
+.simple-role-title-line .simple-title {
+  font-size: 17px;
+}
+
+.simple-role-head .simple-meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.simple-role-head .simple-meta-line a {
+  color: var(--simple-text);
+  font-weight: 550;
+}
+
+.simple-dot {
+  color: var(--simple-line);
+}
+
+.simple-pill {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 2px;
+  padding: 2px 8px;
+  border: 1px solid var(--simple-line);
+  border-radius: 999px;
+  color: var(--simple-text);
+  font-family: var(--font-meta);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+.simple-bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--simple-muted);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.simple-bullets li {
+  position: relative;
+  padding-left: 14px;
+}
+
+.simple-bullets li::before {
+  content: "";
+  position: absolute;
+  top: 0.65em;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--simple-muted);
+  opacity: 0.5;
+}
+
+.simple-bullets li + li {
+  margin-top: 10px;
+}
+
+/* ── Skills ────────────────────────────────────────────────────── */
+.simple-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.simple-skill-card {
+  min-height: 148px;
+  padding: 22px;
+  border: 1px solid color-mix(in srgb, var(--simple-line) 70%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--simple-panel) 40%, transparent);
+  transition:
+    background-color var(--dur) ease,
+    border-color var(--dur) ease;
+}
+
+.simple-skill-card:hover {
+  background: var(--simple-panel);
+  border-color: var(--simple-line);
+}
+
+.simple-skill-card .simple-title {
+  font-size: 15px;
+}
+
+.simple-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.simple-badges li {
+  display: flex;
+  max-width: 100%;
+}
+
+.simple-badges img {
+  width: auto;
+  max-width: 100%;
+  height: 26px;
+  border-radius: 4px;
+  filter: none;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.simple-badges img:hover {
+  transform: translateY(-2px);
+}
+
+/* ── Writing / footer ──────────────────────────────────────────── */
+.simple-panel {
+  padding: clamp(40px, 8vw, 72px);
+  border: 1px solid var(--simple-line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--simple-panel) 80%, transparent);
+  text-align: center;
+}
+
+.simple-panel .simple-title {
+  margin-top: 12px;
+}
+
+.simple-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 36px 48px;
+  padding-block: 80px 40px;
+  scroll-margin-top: 88px;
+}
+
+.simple-contact {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.simple-contact a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  font-family: var(--font-ui);
+  font-weight: 550;
+  transition: color var(--dur) ease;
+}
+
+.simple-contact a:hover {
+  color: var(--simple-muted);
+  text-decoration: none;
+}
+
+.simple-contact-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.simple-contact-kind {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--simple-text);
+}
+
+.simple-contact-detail {
+  font-size: 13px;
+  font-weight: 450;
+  color: var(--simple-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.simple-copyright {
+  grid-column: 1 / -1;
+  margin-top: 28px;
+}
+
+/* Reveal motion lives in globals.css */
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .simple-shell {
+    width: min(100% - 32px, 1040px);
+  }
+
+  .simple-header-inner {
+    min-height: 60px;
+    gap: 10px;
+  }
+
+  .simple-nav {
+    display: none;
+  }
+
+  .simple-hero {
+    min-height: calc(100svh - 60px);
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-block: 64px 72px;
+  }
+
+  .simple-hero-portrait {
+    order: -1;
+    justify-self: start;
+    width: 128px;
+    border-radius: 14px;
+  }
+
+  .simple-kicker {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .simple-section {
+    padding-block: 72px;
+  }
+
+  .simple-section-head {
+    margin-bottom: 36px;
+  }
+
+  .simple-list {
+    gap: 28px;
+  }
+
+  .simple-proof {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding-bottom: 40px;
+  }
+
+  .simple-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .simple-role-title-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .simple-skill-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .simple-footer {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-top: 64px;
+  }
+
+  .simple-copyright {
+    margin-top: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simple-portfolio {
+    transition: none;
+  }
+
+  .simple-ink,
+  .simple-band,
+  .simple-watermark-main,
+  .simple-watermark-sub {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .simple-wordmark,
+  .simple-btn-primary,
+  .simple-btn-ghost,
+  .simple-nav a::after,
+  .simple-badges img,
+  .simple-contact a,
+  .simple-inline-links svg,
+  .simple-contact svg,
+  .simple-scroll-progress {
+    transition: none;
+  }
+
+  .simple-scroll-cue {
+    display: none;
+  }
+}

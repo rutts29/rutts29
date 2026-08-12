@@ -1,0 +1,698 @@
+"use client";
+
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowUpRight, MapPin, SquareTerminal } from "lucide-react";
+
+import { scrollTimeline } from "@/config/scrollTimeline";
+import { ThemeToggle, type ResolvedTheme } from "@/components/UI/ThemeToggle";
+
+type ThemePreference = ResolvedTheme | "system";
+
+const themeStorageKey = "simple-portfolio-theme";
+const themeEventName = "simple-portfolio-theme-change";
+
+const isThemePreference = (value: string | null): value is ThemePreference =>
+  value === "light" || value === "dark" || value === "system";
+
+const getThemeSnapshot = (): ThemePreference => {
+  try {
+    const storedTheme = window.localStorage.getItem(themeStorageKey);
+    return isThemePreference(storedTheme) ? storedTheme : "system";
+  } catch {
+    return "system";
+  }
+};
+
+const getResolvedThemeSnapshot = (): ResolvedTheme => {
+  const preference = getThemeSnapshot();
+  if (preference !== "system") return preference;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+const getServerResolvedThemeSnapshot = (): ResolvedTheme => "light";
+
+const subscribeToTheme = (onChange: () => void) => {
+  const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
+  window.addEventListener("storage", onChange);
+  window.addEventListener(themeEventName, onChange);
+  colorScheme.addEventListener("change", onChange);
+
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(themeEventName, onChange);
+    colorScheme.removeEventListener("change", onChange);
+  };
+};
+
+const setThemePreference = (theme: ResolvedTheme) => {
+  try {
+    window.localStorage.setItem(themeStorageKey, theme);
+  } catch {
+    /* private mode */
+  }
+
+  document.documentElement.dataset.simpleTheme = theme;
+  document.documentElement.dataset.simpleResolved = theme;
+  document.documentElement.style.colorScheme = theme;
+  window.dispatchEvent(new Event(themeEventName));
+};
+
+const externalLinkProps = {
+  target: "_blank",
+  rel: "noreferrer noopener",
+} as const;
+
+const contactLabels: Record<string, string> = {
+  email: "Email",
+  linkedin: "LinkedIn",
+  github: "GitHub",
+  x: "X",
+};
+
+/** One-line outcome for projects — scannable in a 30–60s review. */
+const projectOutcomes: Record<string, string> = {
+  SolProbe:
+    "Autonomous fault detection for distributed AI training — diagnose, recover, attest.",
+  Keyed:
+    "Decentralized social on Solana with AI-powered discovery and creator monetization.",
+};
+
+const proofFacts = [
+  { label: "Based in", value: "Toronto" },
+  { label: "Focus", value: "AI systems · ML research" },
+  { label: "Track", value: "5 roles · product + research" },
+  { label: "Building at", value: "CredShields" },
+];
+
+const sectionMeta = [
+  { id: "top", label: "Intro" },
+  { id: "work", label: "Work" },
+  { id: "experience", label: "Experience" },
+  { id: "focus", label: "Stack" },
+  { id: "writing", label: "Writing" },
+  { id: "contact", label: "Contact" },
+] as const;
+
+function parseLocation(location: string) {
+  const parts = location.split("·").map((part) => part.trim());
+  if (parts.length < 2) return { type: location, place: "" };
+  return { type: parts[0], place: parts.slice(1).join(" · ") };
+}
+
+/** First sentence of a detail as the punch line. */
+function punchLine(detail: string) {
+  const cleaned = detail.replace(/https?:\/\/\S+/g, "").trim();
+  return cleaned.replace(/\s+/g, " ").replace(/[.:]+$/, "");
+}
+
+export function SimplePortfolio() {
+  const portfolioRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState("top");
+  const theme = useSyncExternalStore(
+    subscribeToTheme,
+    getResolvedThemeSnapshot,
+    getServerResolvedThemeSnapshot,
+  );
+
+  const about = scrollTimeline.find((section) => section.id === "about");
+  const skills = scrollTimeline.find((section) => section.id === "skills");
+  const experience = scrollTimeline.find(
+    (section) => section.id === "experience",
+  );
+  const projects = scrollTimeline.find((section) => section.id === "projects");
+  const contact = scrollTimeline.find((section) => section.id === "contact");
+  const activeLabel =
+    sectionMeta.find((s) => s.id === activeSection)?.label ?? "Intro";
+
+  useEffect(() => {
+    const portfolio = portfolioRef.current;
+    if (!portfolio) return;
+
+    /* Mark hydrated chrome (progress / section cue) */
+    portfolio.dataset.ready = "true";
+
+    const items = () =>
+      Array.from(portfolio.querySelectorAll<HTMLElement>(".simple-reveal"));
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (reduceMotion) {
+      items().forEach((item) => {
+        item.classList.remove("simple-reveal-pending");
+        item.classList.add("is-visible");
+      });
+      return;
+    }
+
+    const fold = () => window.innerHeight * 0.95;
+
+    /* Only below-fold nodes may hide — never blank the first paint */
+    items().forEach((item) => {
+      if (item.getBoundingClientRect().top > fold()) {
+        item.classList.add("simple-reveal-pending");
+      } else {
+        item.classList.add("is-visible");
+      }
+    });
+    portfolio.dataset.motionReady = "true";
+
+    const reveal = (item: HTMLElement) => {
+      item.classList.add("is-visible");
+      item.classList.remove("simple-reveal-pending");
+    };
+
+    const showNear = () => {
+      const line = fold();
+      items().forEach((item) => {
+        if (item.classList.contains("is-visible")) return;
+        if (item.getBoundingClientRect().top < line) reveal(item);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          reveal(entry.target as HTMLElement);
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -5% 0px", threshold: 0.05 },
+    );
+
+    items().forEach((item) => {
+      if (!item.classList.contains("is-visible")) observer.observe(item);
+    });
+
+    window.addEventListener("scroll", showNear, { passive: true });
+    window.addEventListener("resize", showNear);
+
+    const failSafe = window.setTimeout(() => {
+      items().forEach((item) => reveal(item));
+    }, 1200);
+
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(failSafe);
+      window.removeEventListener("scroll", showNear);
+      window.removeEventListener("resize", showNear);
+    };
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - window.innerHeight;
+      setScrollProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+
+      const marker = window.innerHeight * 0.28;
+      let current = "top";
+      for (const section of sectionMeta) {
+        const el = document.getElementById(section.id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= marker) current = section.id;
+      }
+      setActiveSection(current);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  /* Smooth section jumps (nav, Get in touch, CTAs) — eased, sticky-aware */
+  useEffect(() => {
+    const portfolio = portfolioRef.current;
+    if (!portfolio) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    /* Ease-out: moves immediately on click (no slow “wind-up”), soft landing */
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    let frameId = 0;
+
+    const scrollToId = (id: string) => {
+      const target =
+        id === "top" || id === ""
+          ? (document.getElementById("top") ?? portfolio)
+          : document.getElementById(id);
+      if (!target) return;
+
+      const header = portfolio.querySelector(".simple-header");
+      const headerH =
+        header instanceof HTMLElement
+          ? header.getBoundingClientRect().height
+          : 64;
+      const top =
+        window.scrollY +
+        target.getBoundingClientRect().top -
+        headerH -
+        12;
+
+      cancelAnimationFrame(frameId);
+
+      if (reduceMotion) {
+        window.scrollTo(0, Math.max(0, top));
+        return;
+      }
+
+      const start = window.scrollY;
+      const end = Math.max(0, top);
+      const distance = end - start;
+      if (Math.abs(distance) < 2) return;
+
+      /* Same smooth length as before — delay was easing, not duration */
+      const duration = Math.min(900, Math.max(420, Math.abs(distance) * 0.48));
+      const startTime = performance.now();
+
+      const step = (now: number) => {
+        const t = Math.min(1, (now - startTime) / duration);
+        window.scrollTo(0, start + distance * easeOutCubic(t));
+        if (t < 1) frameId = requestAnimationFrame(step);
+      };
+
+      frameId = requestAnimationFrame(step);
+    };
+
+    const onClick = (event: MouseEvent) => {
+      const el = event.target;
+      if (!(el instanceof Element)) return;
+      const anchor = el.closest("a[href^='#']");
+      if (!(anchor instanceof HTMLAnchorElement)) return;
+      if (!portfolio.contains(anchor)) return;
+
+      const href = anchor.getAttribute("href");
+      if (!href || href === "#") return;
+
+      const id = href.slice(1);
+      if (!id) return;
+      // Skip links that aren't in-page sections we own
+      if (
+        id !== "main-content" &&
+        !document.getElementById(id) &&
+        id !== "top"
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      const targetId = id === "main-content" ? "top" : id;
+      scrollToId(targetId);
+      /* Home/image → clean URL, no #top. Other sections keep their hash. */
+      if (targetId === "top") {
+        history.pushState(null, "", window.location.pathname + window.location.search);
+      } else {
+        history.pushState(null, "", href);
+      }
+    };
+
+    portfolio.addEventListener("click", onClick);
+    return () => {
+      cancelAnimationFrame(frameId);
+      portfolio.removeEventListener("click", onClick);
+    };
+  }, []);
+
+  return (
+    <div
+      className="simple-portfolio"
+      data-theme={theme}
+      ref={portfolioRef}
+      suppressHydrationWarning
+    >
+        <div
+          className="simple-atmosphere"
+          aria-hidden="true"
+          style={{ ["--scroll" as string]: String(scrollProgress) }}
+        >
+          <div className="simple-paper" />
+          <div className="simple-band" />
+          <div className="simple-ink simple-ink-a" />
+          <div className="simple-ink simple-ink-b" />
+          <div className="simple-ink simple-ink-c" />
+          <div className="simple-ink simple-ink-d" />
+          <div className="simple-speckle" />
+          <p className="simple-watermark simple-watermark-main">R</p>
+          <p className="simple-watermark simple-watermark-sub">AI · ML</p>
+          <div className="simple-atmosphere-grain" />
+          <div className="simple-atmosphere-fiber" />
+        </div>
+
+        {/* Quiet scroll cues — holds a 30–60s skim without a full HUD */}
+        <div
+          className="simple-scroll-progress"
+          style={{ transform: `scaleX(${scrollProgress})` }}
+          aria-hidden="true"
+        />
+        <div className="simple-scroll-cue" aria-live="polite">
+          <span className="simple-scroll-cue-label">{activeLabel}</span>
+          <span className="simple-scroll-cue-pct">
+            {Math.round(scrollProgress * 100)}%
+          </span>
+        </div>
+
+        <a className="simple-skip-link" href="#main-content">
+          Skip to content
+        </a>
+
+        <header className="simple-header">
+          <div className="simple-shell simple-header-inner">
+            <a
+              className="simple-wordmark"
+              href="#top"
+              aria-label="Ruttansh Bhatelia, home"
+            >
+              <Image
+                src="/core-image.jpg"
+                alt=""
+                width={34}
+                height={34}
+                className="simple-wordmark-img"
+                priority
+              />
+            </a>
+
+            <nav className="simple-nav" aria-label="Primary navigation">
+              <a href="#work">Work</a>
+              <a href="#experience">Experience</a>
+              <a href="#writing">Writing</a>
+              <a href="#contact">Contact</a>
+            </nav>
+
+            <div className="simple-controls">
+              <ThemeToggle
+                theme={theme}
+                onToggle={() =>
+                  setThemePreference(theme === "light" ? "dark" : "light")
+                }
+              />
+              <Link className="simple-interactive" href="/terminal">
+                <SquareTerminal aria-hidden="true" />
+                <span>Interactive view</span>
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        <main id="main-content">
+          <section className="simple-shell simple-hero simple-reveal" id="top">
+            <div className="simple-hero-copy">
+              <div className="simple-kicker">
+                <p className="simple-label">AI Engineer &amp; ML Researcher</p>
+                <p className="simple-location">
+                  <MapPin aria-hidden="true" />
+                  Toronto, Canada
+                </p>
+              </div>
+              <h1 className="simple-display">Ruttansh Bhatelia</h1>
+              <p className="simple-lede">
+                Reliable AI systems for difficult, high-stakes problems.
+              </p>
+              <p className="simple-body-copy">
+                {about?.content[1] ??
+                  "Agents, RAG, training, and inference pipelines — built for reliability and observability."}
+              </p>
+              <div className="simple-actions">
+                <a className="simple-btn-primary" href="#work">
+                  Selected work
+                </a>
+                <a className="simple-btn-ghost" href="#contact">
+                  Get in touch
+                </a>
+              </div>
+            </div>
+            <div className="simple-hero-portrait">
+              <Image
+                src="/core-image.jpg"
+                alt="Ruttansh Bhatelia"
+                width={320}
+                height={320}
+                priority
+                sizes="(max-width: 760px) 160px, 280px"
+              />
+            </div>
+          </section>
+
+          {/* Fact strip — scannable proof while they scroll the first screen */}
+          <section
+            className="simple-shell simple-proof simple-reveal"
+            aria-label="Snapshot"
+          >
+            {proofFacts.map((fact) => (
+              <div className="simple-proof-item" key={fact.label}>
+                <p className="simple-label">{fact.label}</p>
+                <p className="simple-proof-value">{fact.value}</p>
+              </div>
+            ))}
+          </section>
+
+          <section
+            className="simple-shell simple-section"
+            id="work"
+            aria-labelledby="work-title"
+          >
+            <header className="simple-section-head simple-reveal">
+              <p className="simple-label">Work</p>
+              <h2 id="work-title" className="simple-heading">
+                What shipped.
+              </h2>
+              <p className="simple-body-copy">
+                Systems from research question to running product.
+              </p>
+            </header>
+
+            <div className="simple-list">
+              {projects?.projects?.map((project) => (
+                <article
+                  className="simple-project simple-reveal"
+                  key={project.name}
+                >
+                  <div className="simple-project-top">
+                    <h3 className="simple-title simple-title-lg">
+                      {project.name}
+                    </h3>
+                    <div className="simple-inline-links">
+                      <a href={project.repoUrl} {...externalLinkProps}>
+                        Source
+                        <ArrowUpRight aria-hidden="true" />
+                      </a>
+                      {project.liveUrl && (
+                        <a href={project.liveUrl} {...externalLinkProps}>
+                          Live
+                          <ArrowUpRight aria-hidden="true" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <p className="simple-outcome">
+                    {projectOutcomes[project.name] ?? project.description}
+                  </p>
+                  <p className="simple-body-copy">{project.description}</p>
+                  <ul
+                    className="simple-chips"
+                    aria-label={`${project.name} technologies`}
+                  >
+                    {project.stack.slice(0, 5).map((technology) => (
+                      <li key={technology}>{technology}</li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section
+            className="simple-shell simple-section"
+            id="experience"
+            aria-labelledby="experience-title"
+          >
+            <header className="simple-section-head simple-reveal">
+              <p className="simple-label">Experience</p>
+              <h2 id="experience-title" className="simple-heading">
+                The trajectory.
+              </h2>
+              <p className="simple-body-copy">
+                Industry and research — impact first, then the how.
+              </p>
+            </header>
+
+            <ol className="simple-list">
+              {experience?.timeline?.map((role) => {
+                const { type, place } = parseLocation(role.location);
+                const lead = role.details[0]
+                  ? punchLine(role.details[0])
+                  : "";
+                return (
+                  <li
+                    className="simple-role simple-reveal"
+                    key={`${role.company}-${role.role}-${role.duration}`}
+                  >
+                    <div className="simple-role-head">
+                      <div className="simple-role-title-line">
+                        <h3 className="simple-title">{role.role}</h3>
+                        <p className="simple-meta-line">{role.duration}</p>
+                      </div>
+                      <p className="simple-meta-line">
+                        {role.companyUrl ? (
+                          <a href={role.companyUrl} {...externalLinkProps}>
+                            {role.company}
+                          </a>
+                        ) : (
+                          <span className="simple-meta-strong">
+                            {role.company}
+                          </span>
+                        )}
+                        <span className="simple-dot" aria-hidden="true">
+                          ·
+                        </span>
+                        <span>{type}</span>
+                        {place ? (
+                          <>
+                            <span className="simple-dot" aria-hidden="true">
+                              ·
+                            </span>
+                            <span>{place}</span>
+                          </>
+                        ) : null}
+                        {role.isCurrent ? (
+                          <span className="simple-pill">Current</span>
+                        ) : null}
+                      </p>
+                    </div>
+                    {lead ? <p className="simple-outcome">{lead}</p> : null}
+                    <ul className="simple-bullets">
+                      {role.details.slice(1, 3).map((detail) => (
+                        <li key={detail}>{detail}</li>
+                      ))}
+                    </ul>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+
+          <section
+            className="simple-shell simple-section"
+            id="focus"
+            aria-labelledby="focus-title"
+          >
+            <header className="simple-section-head simple-reveal">
+              <p className="simple-label">Stack</p>
+              <h2 id="focus-title" className="simple-heading">
+                What I run in production.
+              </h2>
+              <p className="simple-body-copy">
+                Tools chosen to ship dependable, observable systems.
+              </p>
+            </header>
+
+            <div className="simple-skill-grid">
+              {skills?.iconGroups?.map((group) => (
+                <article
+                  className="simple-skill-card simple-reveal"
+                  key={group.title}
+                >
+                  <h3 className="simple-title">{group.title}</h3>
+                  <ul
+                    className="simple-badges"
+                    aria-label={`${group.title} tools`}
+                  >
+                    {group.items.slice(0, 6).map((item) =>
+                      item.badgeSrc ? (
+                        <li key={item.label}>
+                          <Image
+                            src={item.badgeSrc}
+                            alt={item.label}
+                            width={120}
+                            height={28}
+                          />
+                        </li>
+                      ) : null,
+                    )}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section
+            className="simple-shell simple-section"
+            id="writing"
+            aria-labelledby="writing-title"
+          >
+            <header className="simple-section-head simple-reveal">
+              <p className="simple-label">Writing</p>
+              <h2 id="writing-title" className="simple-heading">
+                Notes, soon.
+              </h2>
+              <p className="simple-body-copy">
+                Short pieces on AI systems, ML research, and engineering
+                practice.
+              </p>
+            </header>
+
+            <div className="simple-panel simple-reveal">
+              <p className="simple-label">Coming soon</p>
+              <h3 className="simple-title simple-title-lg">
+                Useful ideas, made quick to read.
+              </h3>
+            </div>
+          </section>
+        </main>
+
+        <footer className="simple-shell simple-footer" id="contact">
+          <div className="simple-reveal">
+            <p className="simple-label">Contact</p>
+            <h2 className="simple-heading">Hard problems welcome.</h2>
+            <p className="simple-body-copy">
+              Open to roles and collaborations in applied AI and ML systems.
+            </p>
+          </div>
+          <ul className="simple-contact simple-reveal">
+            {contact?.contactLinks
+              ?.filter((link) => link.href)
+              .map((link) => {
+                const isMail = link.href?.startsWith("mailto:");
+                return (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      {...(isMail || !link.href?.startsWith("http")
+                        ? {}
+                        : externalLinkProps)}
+                    >
+                      <span className="simple-contact-main">
+                        <span className="simple-contact-kind">
+                          {contactLabels[link.icon] ?? link.label}
+                        </span>
+                        <span className="simple-contact-detail">
+                          {link.label}
+                        </span>
+                      </span>
+                      <ArrowUpRight aria-hidden="true" />
+                    </a>
+                  </li>
+                );
+              })}
+          </ul>
+          <p className="simple-meta-line simple-copyright">
+            © {new Date().getFullYear()} Ruttansh Bhatelia
+          </p>
+        </footer>
+    </div>
+  );
+}

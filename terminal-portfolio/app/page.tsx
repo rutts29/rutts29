@@ -1,5 +1,5 @@
-import { TerminalExperience } from "@/components/TerminalExperience";
+import { SimplePortfolio } from "@/components/SimplePortfolio";
 
 export default function Home() {
-  return <TerminalExperience />;
+  return <SimplePortfolio />;
 }

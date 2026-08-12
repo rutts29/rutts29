@@ -1,22 +1,52 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Instrument_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
-import { SmoothScroll } from "@/components/SmoothScroll";
+import "./simple-portfolio.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+/** Runs before paint — resolves theme so simple portfolio never FOUC. */
+const themeBootScript = `
+(function () {
+  try {
+    var key = "simple-portfolio-theme";
+    var stored = localStorage.getItem(key);
+    var pref = stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
+    var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var resolved = pref === "system" ? (dark ? "dark" : "light") : pref;
+    var root = document.documentElement;
+    root.dataset.simpleTheme = pref;
+    root.dataset.simpleResolved = resolved;
+    root.style.colorScheme = resolved;
+  } catch (e) {
+    document.documentElement.dataset.simpleTheme = "system";
+    document.documentElement.dataset.simpleResolved = "light";
+  }
+})();
+`;
+
+/* Anthropic-adjacent stack: refined sans UI + editorial serif for display */
+const instrumentSans = Instrument_Sans({
+  variable: "--font-portfolio-sans",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const newsreader = Newsreader({
+  variable: "--font-portfolio-display",
+  subsets: ["latin"],
+  display: "swap",
+  style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Ruttansh (0xRutts) — AI Engineer & ML Researcher",
+  title: "Ruttansh Bhatelia — AI Engineer & ML Researcher",
   description:
-    "Ruttansh (Rutts / 0xRutts) — Toronto-based AI Engineer & ML Researcher building production-grade AI systems across security, code intelligence, and automation.",
+    "Ruttansh Bhatelia is a Toronto-based AI Engineer and ML Researcher building production-grade systems across security, code intelligence, and automation.",
   keywords: [
     "Ruttansh",
     "Rutts",
@@ -38,8 +68,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://0xrutts.com",
-    siteName: "0xRutts",
-    title: "Ruttansh (0xRutts) — AI Engineer & ML Researcher",
+    siteName: "Ruttansh Bhatelia",
+    title: "Ruttansh Bhatelia — AI Engineer & ML Researcher",
     description:
       "Toronto-based AI Engineer & ML Researcher building production-grade AI systems across security, code intelligence, and automation.",
     images: [
@@ -53,7 +83,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Ruttansh (0xRutts) — AI Engineer & ML Researcher",
+    title: "Ruttansh Bhatelia — AI Engineer & ML Researcher",
     description:
       "Toronto-based AI Engineer & ML Researcher building production-grade AI systems across security, code intelligence, and automation.",
     creator: "@0xRutts",
@@ -87,25 +117,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="google-site-verification" content="RSyOabK11drnh_q3AKVZsECax5d06kYUYOlF94gHHRo" />
-        <link rel="preconnect" href="https://img.shields.io" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://cdn.simpleicons.org" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if (typeof window !== 'undefined') {
-                if ('scrollRestoration' in window.history) {
-                  window.history.scrollRestoration = 'manual';
-                }
-                window.scrollTo(0, 0);
-              }
-            `,
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -113,7 +128,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
-              name: "Ruttansh",
+              name: "Ruttansh Bhatelia",
               alternateName: ["Rutts", "0xRutts"],
               url: "https://0xrutts.com",
               image: "https://0xrutts.com/core-image.jpg",
@@ -153,9 +168,9 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${instrumentSans.variable} ${newsreader.variable} ${geistMono.variable} antialiased`}
       >
-        <SmoothScroll>{children}</SmoothScroll>
+        {children}
       </body>
     </html>
   );

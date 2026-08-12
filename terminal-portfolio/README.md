@@ -1,3 +1,3 @@
 # terminal-portfolio
 
-Internal repo for [0x.rutts.com](https://0x.rutts.com) — personal portfolio site.
+Internal repo for [0xrutts.com](https://0xrutts.com) — personal portfolio site.
