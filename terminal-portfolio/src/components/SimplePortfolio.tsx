@@ -637,9 +637,9 @@ export function SimplePortfolio() {
             {secondary.length > 0 ? (
               <>
                 <header className="simple-section-head simple-reveal" style={{ marginTop: "2rem" }}>
-                  <p className="simple-label">Also selected</p>
+                  <p className="simple-label">More work</p>
                   <h3 className="simple-title simple-title-lg">
-                    Product &amp; systems case studies
+                    Other projects
                   </h3>
                 </header>
                 <div className="simple-list">
