@@ -12,7 +12,8 @@ export type ScrollTimelineEntry = {
     name: string;
     description: string;
     stack: string[];
-    repoUrl: string;
+    /** Empty when the project is private with no public source. */
+    repoUrl?: string;
     liveUrl?: string;
     image?: string;
   }[];

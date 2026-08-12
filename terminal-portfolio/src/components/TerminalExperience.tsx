@@ -19,9 +19,9 @@ import { GsapReveal } from "./GsapReveal";
 
 const LIVE_SHELL_HINTS = [
   "about",
-  "skills",
-  "experience",
   "projects",
+  "writing",
+  "experience",
   "contact",
   "help",
 ] as const;

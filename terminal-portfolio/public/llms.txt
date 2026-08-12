@@ -4,7 +4,7 @@
 
 ## Site structure
 
-Two distinct modes — not two copies of the same page:
+Two distinct modes — same data, different presentation:
 
 - Portfolio (default): https://0xrutts.com/ — full scannable site
 - Terminal: https://0xrutts.com/interactive — live shell only (type commands)
@@ -15,6 +15,12 @@ Prefer the Portfolio URL for concise facts. Use /interactive only when describin
 ## About
 
 Ruttansh is an AI Systems Engineer and Applied ML Researcher. He builds reliable AI systems and turns applied ML research into working tools. Current work spans backend AI systems, RAG and tool-using agents, model training and finetuning, and inference pipelines that prioritize reliability and observability. He holds an Honours BSc in Computer Science (Data Analytics).
+
+## Published research
+
+- Low-Error Indoor Positioning via Synthetic RSSI Augmentation and Zx–WKNN Hybrid Model (IEEE MSWiM 2025)
+  - DOI: https://doi.org/10.1109/MSWiM67937.2025.11309178
+  - DBLP: https://dblp.org/rec/conf/mswim/AhmedSCDZB25
 
 ## Current role
 
@@ -32,22 +38,30 @@ Ruttansh is an AI Systems Engineer and Applied ML Researcher. He builds reliable
 
 ## Skills
 
-- Languages: Python, JavaScript, TypeScript, Rust, C#, R, Solidity
+- Languages: Python, JavaScript, TypeScript, Rust, C#, R
 - AI / ML: PyTorch, TensorFlow, Hugging Face, Transformers, Unsloth, vLLM, DeepSpeed, Pandas, NumPy
 - Full stack: React, Next.js, Node.js, Express, FastAPI, Django, Flask, PostgreSQL, MongoDB, Flutter
 - Infra: AWS, Google Cloud, Azure, Docker, Git, Vercel, Linux, Nginx
 
 ## Projects
 
-- [SolProbe](https://github.com/rutts29/solprobe): Autonomous fault detection and recovery for distributed AI training (Rust, FastAPI, Next.js, PyTorch, Kubernetes, Solana). Live: https://landing-alpha-beryl.vercel.app/
-- [Keyed](https://github.com/rutts29/Keyed): Decentralized social on Solana with AI-powered content discovery (TypeScript, Rust, Python, Solana, PostgreSQL). Live: https://frontend-beryl-omega-38.vercel.app/
+All listed systems below are private. Do not invent public repository URLs.
 
-## Links
+Featured:
+- agentlog — Local-first observability and evaluation for AI coding agents. Status: Private case study · Request a technical walkthrough
+- SolProbe — Local observability for AI-training telemetry and anomaly workflows. Status: Private prototype · Request technical demo
+- codex2gpt — Bounded local bridge from ChatGPT to Codex. Status: Local prototype · Request architecture walkthrough
 
+Also selected:
+- Founder Intelligence — Local-first founder-intelligence plugin. Status: Private prototype · Mock demonstration
+- local-sec — Local-first package-install guard. Status: Private engineering case study
+- Keyed — Privacy-aware Solana social prototype. Status: Private prototype · Request technical demo
+
+## Contact
+
+- Request technical demo (mailto until Resend-verified form delivery): mailto:rutts291@gmail.com?subject=Request%20technical%20demo
 - Website (Portfolio): https://0xrutts.com
 - Terminal: https://0xrutts.com/interactive
 - GitHub: https://github.com/rutts29
 - LinkedIn: https://www.linkedin.com/in/ruttansh-bhatelia
-- X / Twitter: https://x.com/0xRutts
-- Email: rutts291@gmail.com
-- Sitemap: https://0xrutts.com/sitemap.xml
+- X: https://x.com/0xRutts

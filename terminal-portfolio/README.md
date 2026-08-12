@@ -35,6 +35,7 @@ bun run build
 
 ## Notes
 
-- Portfolio content lives in `src/config/scrollTimeline.ts` (home page) and `src/config/commands.ts` (terminal).
+- **Single content source:** `src/config/portfolioContent.ts`. Home and terminal adapters (`scrollTimeline.ts`, `commands.ts`) derive from it — do not duplicate facts.
 - Theme for the simple site is bootstrapped before paint (`layout` boot script) to avoid theme FOUC.
+- Private projects never render public source links. Demo CTA is mailto until Resend delivery is verified.
 - Do not commit `.env` or local screenshot dumps; they are gitignored.

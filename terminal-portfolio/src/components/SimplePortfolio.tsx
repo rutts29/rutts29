@@ -5,7 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, MapPin, SquareTerminal } from "lucide-react";
 
-import { scrollTimeline } from "@/config/scrollTimeline";
+import {
+  portfolioContent,
+  type Project,
+} from "@/config/portfolioContent";
 import { ThemeToggle, type ResolvedTheme } from "@/components/UI/ThemeToggle";
 
 type ThemePreference = ResolvedTheme | "system";
@@ -73,21 +76,6 @@ const contactLabels: Record<string, string> = {
   x: "X",
 };
 
-/** One-line outcome for projects — scannable in a 30–60s review. */
-const projectOutcomes: Record<string, string> = {
-  SolProbe:
-    "Autonomous fault detection for distributed AI training — diagnose, recover, attest.",
-  Keyed:
-    "Decentralized social on Solana with AI-powered discovery and creator monetization.",
-};
-
-const proofFacts = [
-  { label: "Based in", value: "Toronto" },
-  { label: "Focus", value: "AI systems · ML research" },
-  { label: "Track", value: "5 roles · product + research" },
-  { label: "Building at", value: "CredShields" },
-];
-
 const sectionMeta = [
   { id: "top", label: "Intro" },
   { id: "work", label: "Work" },
@@ -142,18 +130,13 @@ export function SimplePortfolio() {
     getServerResolvedThemeSnapshot,
   );
 
-  const about = scrollTimeline.find((section) => section.id === "about");
-  const skills = scrollTimeline.find((section) => section.id === "skills");
-  const experience = scrollTimeline.find(
-    (section) => section.id === "experience",
-  );
-  const projects = scrollTimeline.find((section) => section.id === "projects");
-  const contact = scrollTimeline.find((section) => section.id === "contact");
+  const { identity, proofFacts, publications, projects, skills, experience, writing, contact } =
+    portfolioContent;
+  const featured = projects.filter((project) => project.featured);
+  const secondary = projects.filter((project) => !project.featured);
   const activeLabel =
     sectionMeta.find((s) => s.id === activeSection)?.label ?? "Intro";
-  const yearTrack = buildYearTrack(
-    experience?.timeline?.map((role) => role.duration) ?? [],
-  );
+  const yearTrack = buildYearTrack(experience.map((role) => role.duration));
 
   useEffect(() => {
     const portfolio = portfolioRef.current;
@@ -564,23 +547,15 @@ export function SimplePortfolio() {
           <section className="simple-shell simple-hero simple-reveal" id="top">
             <div className="simple-hero-copy">
               <div className="simple-kicker">
-                <p className="simple-label">
-                  AI Systems Engineer · Applied ML Researcher
-                </p>
+                <p className="simple-label">{identity.title}</p>
                 <p className="simple-location">
                   <MapPin aria-hidden="true" />
-                  Toronto, Canada
+                  {identity.location}
                 </p>
               </div>
-              <h1 className="simple-display">Ruttansh Bhatelia</h1>
-              <p className="simple-lede">
-                I build reliable AI systems and turn applied ML research into
-                working tools.
-              </p>
-              <p className="simple-body-copy">
-                {about?.content[1] ??
-                  "Agents, RAG, training, and inference pipelines — built for reliability and observability."}
-              </p>
+              <h1 className="simple-display">{identity.name}</h1>
+              <p className="simple-lede">{identity.hero}</p>
+              <p className="simple-body-copy">{identity.about[1]}</p>
               <div className="simple-actions">
                 <a className="simple-btn-primary" href="#work">
                   Selected work
@@ -626,48 +601,54 @@ export function SimplePortfolio() {
                 What shipped.
               </h2>
               <p className="simple-body-copy">
-                Systems from research question to running product.
+                Research first, then systems — private case studies by default.
               </p>
             </header>
 
-            <div className="simple-list">
-              {projects?.projects?.map((project) => (
-                <article
-                  className="simple-project simple-reveal"
-                  key={project.name}
-                >
-                  <div className="simple-project-top">
-                    <h3 className="simple-title simple-title-lg">
-                      {project.name}
-                    </h3>
-                    <div className="simple-inline-links">
-                      <a href={project.repoUrl} {...externalLinkProps}>
-                        Source
+            {publications.map((publication) => (
+              <article
+                className="simple-project simple-reveal"
+                key={publication.id}
+              >
+                <div className="simple-project-top">
+                  <h3 className="simple-title simple-title-lg">
+                    {publication.title}
+                  </h3>
+                  <div className="simple-inline-links">
+                    {publication.links.map((link) => (
+                      <a key={link.href} href={link.href} {...externalLinkProps}>
+                        {link.prefix ?? "Link"}
                         <ArrowUpRight aria-hidden="true" />
                       </a>
-                      {project.liveUrl && (
-                        <a href={project.liveUrl} {...externalLinkProps}>
-                          Live
-                          <ArrowUpRight aria-hidden="true" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                  <p className="simple-outcome">
-                    {projectOutcomes[project.name] ?? project.description}
-                  </p>
-                  <p className="simple-body-copy">{project.description}</p>
-                  <ul
-                    className="simple-chips"
-                    aria-label={`${project.name} technologies`}
-                  >
-                    {project.stack.slice(0, 5).map((technology) => (
-                      <li key={technology}>{technology}</li>
                     ))}
-                  </ul>
-                </article>
+                  </div>
+                </div>
+                <p className="simple-outcome">{publication.label}</p>
+                <p className="simple-body-copy">{publication.summary}</p>
+              </article>
+            ))}
+
+            <div className="simple-list">
+              {featured.map((project) => (
+                <ProjectCard key={project.id} project={project} />
               ))}
             </div>
+
+            {secondary.length > 0 ? (
+              <>
+                <header className="simple-section-head simple-reveal" style={{ marginTop: "2rem" }}>
+                  <p className="simple-label">Also selected</p>
+                  <h3 className="simple-title simple-title-lg">
+                    Product &amp; systems case studies
+                  </h3>
+                </header>
+                <div className="simple-list">
+                  {secondary.map((project) => (
+                    <ProjectCard key={project.id} project={project} />
+                  ))}
+                </div>
+              </>
+            ) : null}
           </section>
 
           <section
@@ -705,7 +686,7 @@ export function SimplePortfolio() {
                 <div className="simple-timeline-rail-fill" />
               </div>
               <ol className="simple-timeline-list">
-                {experience?.timeline?.map((role) => {
+                {experience.map((role) => {
                   const { type, place } = parseLocation(role.location);
                   const lead = role.details[0]
                     ? punchLine(role.details[0])
@@ -784,7 +765,7 @@ export function SimplePortfolio() {
             </header>
 
             <div className="simple-skill-grid">
-              {skills?.iconGroups?.map((group) => (
+              {skills.map((group) => (
                 <article
                   className="simple-skill-card simple-reveal"
                   key={group.title}
@@ -820,19 +801,39 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Writing</p>
               <h2 id="writing-title" className="simple-heading">
-                Notes, soon.
+                Research &amp; notes.
               </h2>
               <p className="simple-body-copy">
-                Short pieces on AI systems, ML research, and engineering
-                practice.
+                Publications first; shorter engineering notes over time.
               </p>
             </header>
 
-            <div className="simple-panel simple-reveal">
-              <p className="simple-label">Coming soon</p>
-              <h3 className="simple-title simple-title-lg">
-                Useful ideas, made quick to read.
-              </h3>
+            <div className="simple-list">
+              {writing.map((item) => (
+                <article
+                  className="simple-project simple-reveal"
+                  key={item.id}
+                >
+                  <div className="simple-project-top">
+                    <h3 className="simple-title simple-title-lg">{item.title}</h3>
+                    {item.href ? (
+                      <div className="simple-inline-links">
+                        <a href={item.href} {...externalLinkProps}>
+                          Read
+                          <ArrowUpRight aria-hidden="true" />
+                        </a>
+                      </div>
+                    ) : null}
+                  </div>
+                  <p className="simple-outcome">
+                    {item.meta ??
+                      (item.status === "coming_soon"
+                        ? "Coming soon"
+                        : "Published")}
+                  </p>
+                  <p className="simple-body-copy">{item.summary}</p>
+                </article>
+              ))}
             </div>
           </section>
         </main>
@@ -840,14 +841,20 @@ export function SimplePortfolio() {
         <footer className="simple-shell simple-footer" id="contact">
           <div className="simple-reveal">
             <p className="simple-label">Contact</p>
-            <h2 className="simple-heading">Hard problems welcome.</h2>
-            <p className="simple-body-copy">
-              Open to roles and collaborations in applied AI and ML systems.
+            <h2 className="simple-heading">{contact.heading}</h2>
+            <p className="simple-body-copy">{contact.intro}</p>
+            <div className="simple-actions" style={{ marginTop: "1.25rem" }}>
+              <a className="simple-btn-primary" href={contact.demoCta.mailto}>
+                {contact.demoCta.label}
+              </a>
+            </div>
+            <p className="simple-meta-line" style={{ marginTop: "0.75rem" }}>
+              {contact.demoCta.note}
             </p>
           </div>
           <ul className="simple-contact simple-reveal">
-            {contact?.contactLinks
-              ?.filter((link) => link.href)
+            {contact.links
+              .filter((link) => link.href)
               .map((link) => {
                 const isMail = link.href?.startsWith("mailto:");
                 return (
@@ -873,9 +880,39 @@ export function SimplePortfolio() {
               })}
           </ul>
           <p className="simple-meta-line simple-copyright">
-            © {new Date().getFullYear()} Ruttansh Bhatelia
+            © {new Date().getFullYear()} {identity.name}
           </p>
         </footer>
     </div>
+  );
+}
+
+function ProjectCard({ project }: { project: Project }) {
+  const publicLinks = project.links ?? [];
+
+  return (
+    <article className="simple-project simple-reveal">
+      <div className="simple-project-top">
+        <h3 className="simple-title simple-title-lg">{project.name}</h3>
+        {publicLinks.length > 0 ? (
+          <div className="simple-inline-links">
+            {publicLinks.map((link) => (
+              <a key={link.href} href={link.href} {...externalLinkProps}>
+                {link.prefix ?? "Link"}
+                <ArrowUpRight aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <p className="simple-outcome">{project.summary}</p>
+      <p className="simple-body-copy">{project.description}</p>
+      <p className="simple-meta-line">{project.status}</p>
+      <ul className="simple-chips" aria-label={`${project.name} technologies`}>
+        {project.stack.slice(0, 5).map((technology) => (
+          <li key={technology}>{technology}</li>
+        ))}
+      </ul>
+    </article>
   );
 }

@@ -1,5 +1,11 @@
+import { portfolioContent } from "@/config/portfolioContent";
 import { themeNames } from "@/config/themes";
 import { CommandDefinition, TerminalLine } from "@/types/terminal";
+
+/**
+ * Terminal catalog + outputs derived from portfolioContent.
+ * Autocomplete / help stay driven by commandCatalog.
+ */
 
 export const commandCatalog: CommandDefinition[] = [
   { key: "help", description: "List available commands" },
@@ -7,12 +13,177 @@ export const commandCatalog: CommandDefinition[] = [
   { key: "education", description: "Where I studied" },
   { key: "skills", description: "Stacks, languages, and systems I build with" },
   { key: "experience", description: "Roles and impact" },
-  { key: "projects", description: "Highlighted builds and repos" },
+  { key: "projects", description: "Featured and selected private work" },
+  { key: "writing", description: "Publications and notes" },
   { key: "contact", description: "How to reach me" },
   { key: "theme set <name>", description: "Switch the terminal theme" },
   { key: "clear", description: "Reset the terminal history" },
   { key: "history", description: "Show recent commands" },
   { key: "banner", description: "Print the ASCII welcome banner" },
+];
+
+const { identity, publications, projects, skills, experience, writing, contact } =
+  portfolioContent;
+
+const aboutLines: TerminalLine[] = [
+  { type: "heading", text: "About" },
+  ...identity.about.map((text, index) => ({
+    type: "text" as const,
+    text,
+    tone: index === 0 ? ("default" as const) : ("muted" as const),
+  })),
+];
+
+const educationLines: TerminalLine[] = [
+  { type: "heading", text: "Education" },
+  { type: "text", text: identity.education.degree },
+  {
+    type: "text",
+    text: identity.education.detail,
+    tone: "muted",
+  },
+];
+
+const skillsLines: TerminalLine[] = [
+  { type: "heading", text: "Skills" },
+  {
+    type: "columns",
+    columns: skills.map((group) => ({
+      title: group.title,
+      items: group.items.map((item) => item.label),
+    })),
+  },
+];
+
+const experienceLines: TerminalLine[] = [
+  { type: "heading", text: "Experience" },
+  ...experience.flatMap((role, index) => {
+    const header = `${role.company} — ${role.role} · ${role.location}`;
+    const block: TerminalLine[] = [
+      ...(index > 0 ? [{ type: "spacer" as const }] : []),
+      { type: "text", text: header, tone: "accent" },
+      {
+        type: "text",
+        text: role.duration + (role.isCurrent ? " · Current" : ""),
+        tone: "muted",
+      },
+      { type: "list", items: role.details },
+    ];
+    return block;
+  }),
+];
+
+const projectLines: TerminalLine[] = [
+  { type: "heading", text: "Projects" },
+  {
+    type: "text",
+    text: "Featured systems first, then selected additional work. All listed projects are private — no public source links.",
+    tone: "muted",
+  },
+  ...projects.flatMap((project, index) => {
+    const block: TerminalLine[] = [
+      ...(index > 0 ? [{ type: "spacer" as const }] : []),
+      {
+        type: "text",
+        text: `${project.name}${project.featured ? " · featured" : ""} — ${project.summary}`,
+      },
+      { type: "text", text: project.description, tone: "muted" },
+      {
+        type: "text",
+        text: `Stack: ${project.stack.join(", ")}`,
+        tone: "muted",
+      },
+      {
+        type: "text",
+        text: project.status,
+        tone: "accent",
+      },
+      ...(project.links ?? []).map(
+        (link): TerminalLine => ({
+          type: "link",
+          label: link.label,
+          href: link.href,
+          prefix: link.prefix,
+        }),
+      ),
+    ];
+    return block;
+  }),
+];
+
+const writingLines: TerminalLine[] = [
+  { type: "heading", text: "Writing" },
+  ...publications.flatMap((pub, index) => {
+    const block: TerminalLine[] = [
+      ...(index > 0 ? [{ type: "spacer" as const }] : []),
+      { type: "text", text: pub.title, tone: "accent" },
+      { type: "text", text: pub.label, tone: "muted" },
+      { type: "text", text: pub.summary },
+      ...pub.links.map(
+        (link): TerminalLine => ({
+          type: "link",
+          label: link.label,
+          href: link.href,
+          prefix: link.prefix,
+        }),
+      ),
+    ];
+    return block;
+  }),
+  { type: "spacer" },
+  ...writing
+    .filter((item) => item.status === "coming_soon")
+    .flatMap((item) => [
+      {
+        type: "text" as const,
+        text: `${item.title} — ${item.meta ?? "Coming soon"}`,
+        tone: "accent" as const,
+      },
+      { type: "text" as const, text: item.summary, tone: "muted" as const },
+    ]),
+];
+
+const contactLines: TerminalLine[] = [
+  { type: "heading", text: "Contact" },
+  { type: "text", text: contact.intro, tone: "muted" },
+  ...contact.links
+    .filter((link) => link.href)
+    .map(
+      (link): TerminalLine => ({
+        type: "link",
+        label: link.label,
+        href: link.href!,
+        prefix:
+          link.icon === "email"
+            ? "Email"
+            : link.icon === "linkedin"
+              ? "LinkedIn"
+              : link.icon === "github"
+                ? "GitHub"
+                : link.icon === "x"
+                  ? "X"
+                  : undefined,
+      }),
+    ),
+  {
+    type: "text",
+    text:
+      contact.links.find((link) => link.icon === "location")?.label ??
+      identity.locationDetail,
+    tone: "muted",
+  },
+  { type: "spacer" },
+  {
+    type: "link",
+    label: contact.demoCta.label,
+    href: contact.demoCta.mailto,
+    prefix: contact.demoCta.live ? "Demo" : "Request",
+  },
+  {
+    type: "text",
+    text: contact.demoCta.note,
+    tone: "muted",
+  },
 ];
 
 export const staticCommandOutputs: Record<string, TerminalLine[]> = {
@@ -34,264 +205,22 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
   welcome: [
     {
       type: "text",
-      text: "yoo, I'm Rutts (Ruttansh) — AI Systems Engineer · Applied ML Researcher in Toronto.",
+      text: `yoo, I'm ${identity.shortName} (${identity.name.split(" ")[0]}) — ${identity.title} in Toronto.`,
       tone: "accent",
     },
     {
       type: "text",
-      text: "Type a command to explore. Start with about, projects, or help.",
+      text: "Type a command to explore. Try about, projects, writing, or help.",
       tone: "muted",
     },
   ],
-  about: [
-    { type: "heading", text: "About" },
-    {
-      type: "text",
-      text: "I'm Ruttansh (Rutts), an AI Systems Engineer and Applied ML Researcher. I build reliable AI systems and turn applied research into working tools.",
-    },
-    {
-      type: "text",
-      text: "My work spans backend AI systems, RAG and tool-using agents, model training and finetuning, and inference pipelines that prioritize reliability and observability.",
-    },
-    {
-      type: "text",
-      text: "I hold an Honours BSc in Computer Science (Data Analytics) and stay engaged with applied research partners to keep sharpening the stack.",
-    },
-  ],
-  education: [
-    { type: "heading", text: "Education" },
-    {
-      type: "text",
-      text: "Honours Bachelor of Science in Computer Science (Data Analytics)",
-    },
-    {
-      type: "text",
-      text: "Graduated 2025 · Toronto, Ontario · Focused on applied AI, data engineering, and collaborating with applied research programs.",
-      tone: "muted",
-    },
-  ],
-  skills: [
-    { type: "heading", text: "Skills" },
-    {
-      type: "columns",
-      columns: [
-        {
-          title: "Programming Languages",
-          items: [
-            "Python",
-            "C#",
-            "JavaScript / TypeScript",
-            "Rust",
-            "R",
-          ],
-        },
-        {
-          title: "Web & Cloud",
-          items: [
-            "HTML",
-            "CSS",
-            "Node.js",
-            "Next.js",
-            "React",
-            "Flutter",
-            "Azure",
-            "GCP",
-            "AWS",
-          ],
-        },
-        {
-          title: "Data Science",
-          items: [
-            "TensorFlow",
-            "PyTorch",
-            "Transformers",
-            "Pandas",
-            "NumPy",
-            "Spark",
-            "Tableau",
-            "Power BI",
-          ],
-        },
-        {
-          title: "Tools & Practices",
-          items: [
-            "SQL",
-            "MongoDB",
-            "Hadoop",
-            "Docker",
-            "Git",
-            "JIRA",
-            "SCRUM",
-            "Data Structures",
-            "Algorithms",
-            ".NET Core",
-          ],
-        },
-      ],
-    },
-  ],
-  experience: [
-    { type: "heading", text: "Experience" },
-    {
-      type: "text",
-      text: "CredShields — AI Engineer & ML Researcher · Part-time · Remote (Singapore)",
-      tone: "accent",
-    },
-    {
-      type: "list",
-      items: [
-        "Led end-to-end AI/ML pipelines that detect smart contract vulnerabilities with LLM-assisted reasoning.",
-        "Built backend and AI systems end to end for CredShields One, the unified security workspace at https://one.credshields.com/.",
-        "Built AI components for SolidityScan, CredShields' smart contract vulnerability scanner at https://solidityscan.com/.",
-        "Built RAG-enabled workflows and custom knowledge bases to amplify code analysis copilots.",
-        "Finetuned PyTorch/Hugging Face models with prompt tuning for few-/zero-shot vulnerability queries.",
-        "Created ML modules for feature extraction, anomaly detection, and fix recommendation scoring.",
-      ],
-    },
-    { type: "spacer" },
-    {
-      type: "text",
-      text: "TELUS — Machine Learning Researcher · Part-time · Oakville, Ontario",
-      tone: "accent",
-    },
-    {
-      type: "list",
-      items: [
-        "Architected a generative-AI indoor localization system in collaboration with applied research teams.",
-        "Synthesized RSSI data with VAEs to auto-generate virtual fingerprints and skip manual surveys.",
-        "Validated nearest-neighbor regression on 2D layouts to achieve high-precision positioning.",
-      ],
-    },
-    { type: "spacer" },
-    {
-      type: "text",
-      text: "McMaster University — Full Stack Developer · Part-time · Oakville, Ontario",
-      tone: "accent",
-    },
-    {
-      type: "list",
-      items: [
-        "Ported a web application into a Flutter-powered iOS/Android experience in partnership with applied AI researchers.",
-        "Enhanced UX, enforced GDPR/HIPAA compliance, and integrated Strapi + SQL backends.",
-        "Drove iterative improvements through Figma prototypes, REST APIs, and Git-based review cycles.",
-      ],
-    },
-    { type: "spacer" },
-    {
-      type: "text",
-      text: "Osteoporosis Canada — Machine Learning Researcher · Co-op · Oakville, Ontario",
-      tone: "accent",
-    },
-    {
-      type: "list",
-      items: [
-        "Collaborated with Naryant and research partners on ML efforts to predict imminent fracture risk.",
-        "Engineered features, trained soft-voting ensembles, and lifted accuracy by 30–40%.",
-        "Documented findings for stakeholders and internal knowledge sharing.",
-      ],
-    },
-  ],
-  projects: [
-    { type: "heading", text: "Projects" },
-    {
-      type: "text",
-      text: "SolProbe — Autonomous fault detection and recovery system for distributed AI training, with GPU sidecars, real-time diagnosis, Colab/T4 telemetry, and Solana attestations.",
-    },
-    {
-      type: "text",
-      text: "Stack: Rust, FastAPI, Next.js, PyTorch, Kubernetes, Solana",
-      tone: "muted",
-    },
-    {
-      type: "link",
-      label: "landing-alpha-beryl.vercel.app",
-      href: "https://landing-alpha-beryl.vercel.app",
-      prefix: "Landing",
-    },
-    {
-      type: "link",
-      label: "github.com/rutts29/solprobe",
-      href: "https://github.com/rutts29/solprobe",
-      prefix: "Repo",
-    },
-    { type: "spacer" },
-    {
-      type: "text",
-      text: "Keyed — Decentralized social media platform on Solana with AI-powered content discovery and creator monetization.",
-    },
-    {
-      type: "text",
-      text: "Stack: TypeScript, Rust, Python, Solana, PostgreSQL",
-      tone: "muted",
-    },
-    {
-      type: "link",
-      label: "frontend-beryl-omega-38.vercel.app",
-      href: "https://frontend-beryl-omega-38.vercel.app",
-      prefix: "Landing",
-    },
-    {
-      type: "link",
-      label: "github.com/rutts29/Keyed",
-      href: "https://github.com/rutts29/Keyed",
-      prefix: "Repo",
-    },
-    { type: "spacer" },
-    {
-      type: "text",
-      text: "Loan Referral Automation — Automated a 40–50 min manual loan-deal workflow to under a minute with AI-assisted deal submission and real-time pipeline tracking.",
-    },
-    {
-      type: "text",
-      text: "Stack: TypeScript, Next.js, Docker",
-      tone: "muted",
-    },
-    {
-      type: "link",
-      label: "loan-ref.vercel.app",
-      href: "https://loan-ref.vercel.app",
-      prefix: "Landing",
-    },
-    {
-      type: "link",
-      label: "github.com/rutts29/loan-referral-automation",
-      href: "https://github.com/rutts29/loan-referral-automation",
-      prefix: "Repo",
-    },
-    { type: "spacer" },
-  ],
-  contact: [
-    { type: "heading", text: "Contact" },
-    {
-      type: "link",
-      label: "rutts291@gmail.com",
-      href: "mailto:rutts291@gmail.com",
-      prefix: "Email",
-    },
-    {
-      type: "link",
-      label: "linkedin.com/in/ruttansh-bhatelia",
-      href: "https://www.linkedin.com/in/ruttansh-bhatelia",
-      prefix: "LinkedIn",
-    },
-    {
-      type: "link",
-      label: "github.com/rutts29",
-      href: "https://github.com/rutts29",
-      prefix: "GitHub",
-    },
-    {
-      type: "link",
-      label: "x.com/0xRutts",
-      href: "https://x.com/0xRutts",
-      prefix: "X",
-    },
-    {
-      type: "text",
-      text: "Location: Toronto, Ontario · Open to relocate",
-      tone: "muted",
-    },
-  ],
+  about: aboutLines,
+  education: educationLines,
+  skills: skillsLines,
+  experience: experienceLines,
+  projects: projectLines,
+  writing: writingLines,
+  contact: contactLines,
 };
 
 export const getHelpLines = (): TerminalLine[] => [
@@ -313,8 +242,9 @@ export const getThemeListLines = (activeTheme?: string): TerminalLine[] => [
   },
   {
     type: "list",
-    items: themeNames.map((name) =>
-      `theme set ${name} — ${name === activeTheme ? `${name} (current)` : name}`,
+    items: themeNames.map(
+      (name) =>
+        `theme set ${name} — ${name === activeTheme ? `${name} (current)` : name}`,
     ),
   },
 ];
