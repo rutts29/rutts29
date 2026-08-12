@@ -598,10 +598,10 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Work</p>
               <h2 id="work-title" className="simple-heading">
-                What shipped.
+                Recent projects
               </h2>
               <p className="simple-body-copy">
-                Research first, then systems — private case studies by default.
+                Research and systems I&apos;ve built.
               </p>
             </header>
 
@@ -637,10 +637,8 @@ export function SimplePortfolio() {
             {secondary.length > 0 ? (
               <>
                 <header className="simple-section-head simple-reveal" style={{ marginTop: "2rem" }}>
-                  <p className="simple-label">More work</p>
-                  <h3 className="simple-title simple-title-lg">
-                    Other projects
-                  </h3>
+                  <p className="simple-label">More</p>
+                  <h3 className="simple-title simple-title-lg">More projects</h3>
                 </header>
                 <div className="simple-list">
                   {secondary.map((project) => (
@@ -668,7 +666,7 @@ export function SimplePortfolio() {
 
             <div
               className="simple-year-track simple-reveal"
-              aria-label="Years along the trajectory"
+              aria-label="Years of experience"
             >
               {yearTrack.map((year) => (
                 <span
@@ -757,10 +755,10 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Stack</p>
               <h2 id="focus-title" className="simple-heading">
-                What I run in production.
+                Tools I use
               </h2>
               <p className="simple-body-copy">
-                Tools chosen to ship dependable, observable systems.
+                Languages, ML stack, and infrastructure I work with day to day.
               </p>
             </header>
 
@@ -801,10 +799,10 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Writing</p>
               <h2 id="writing-title" className="simple-heading">
-                Research &amp; notes.
+                Papers &amp; notes
               </h2>
               <p className="simple-body-copy">
-                Papers and short pieces on AI systems and applied ML.
+                On AI systems and applied ML.
               </p>
             </header>
 
@@ -848,9 +846,11 @@ export function SimplePortfolio() {
                 {contact.demoCta.label}
               </a>
             </div>
-            <p className="simple-meta-line" style={{ marginTop: "0.75rem" }}>
-              {contact.demoCta.note}
-            </p>
+            {contact.demoCta.note ? (
+              <p className="simple-meta-line" style={{ marginTop: "0.75rem" }}>
+                {contact.demoCta.note}
+              </p>
+            ) : null}
           </div>
           <ul className="simple-contact simple-reveal">
             {contact.links

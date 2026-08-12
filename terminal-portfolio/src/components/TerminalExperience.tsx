@@ -168,16 +168,9 @@ const IntroPanel = ({
                   </span>
                   <span className="text-[var(--color-text-secondary)]">$</span>
                   <span className="min-w-0 flex-1 break-words">
-                    open live shell — type commands yourself
+                    open live shell
                   </span>
                 </button>
-
-                <p
-                  className="fade-up text-center text-[0.7rem] text-[var(--color-text-secondary)] sm:text-sm"
-                  style={{ animationDelay: "260ms" }}
-                >
-                  This route is the terminal only. The full portfolio lives on the home page.
-                </p>
               </div>
             )}
 

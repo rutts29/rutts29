@@ -47,15 +47,15 @@ Ruttansh is an AI Systems Engineer and Applied ML Researcher. He builds reliable
 
 All listed systems below are private. Do not invent public repository URLs.
 
-Featured:
-- agentlog — Local-first observability and evaluation for AI coding agents. Status: Private case study · Request a technical walkthrough
-- SolProbe — Local observability for AI-training telemetry and anomaly workflows. Status: Private prototype · Request technical demo
-- codex2gpt — Bounded local bridge from ChatGPT to Codex. Status: Local prototype · Request architecture walkthrough
+Featured (private):
+- agentlog — Local-first observability and evaluation for AI coding agents
+- SolProbe — Local observability for AI-training telemetry and anomaly workflows
+- codex2gpt — Bounded local bridge from ChatGPT to Codex
 
-Also selected:
-- Founder Intelligence — Local-first founder-intelligence plugin. Status: Private prototype · Mock demonstration
-- local-sec — Local-first package-install guard. Status: Private engineering case study
-- Keyed — Privacy-aware Solana social prototype. Status: Private prototype · Request technical demo
+Also (private):
+- Founder Intelligence — Founder research plugin with bounded tools
+- local-sec — Package-install guard for local developer tooling
+- Keyed — Solana social prototype with wallet identity and creator monetization
 
 ## Contact
 

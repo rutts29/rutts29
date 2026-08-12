@@ -6,20 +6,18 @@ import { TerminalExperience } from "@/components/TerminalExperience";
 export const metadata: Metadata = {
   title: "Terminal | Ruttansh",
   description:
-    "Explore Ruttansh's work in a live terminal shell. The full portfolio lives on the home page.",
+    "Explore Ruttansh's work in a live terminal shell.",
   alternates: {
     canonical: "/interactive",
   },
   openGraph: {
     title: "Terminal | Ruttansh",
-    description:
-      "Explore Ruttansh's work in a live terminal shell. The full portfolio lives on the home page.",
+    description: "Explore Ruttansh's work in a live terminal shell.",
     url: "/interactive",
   },
   twitter: {
     title: "Terminal | Ruttansh",
-    description:
-      "Explore Ruttansh's work in a live terminal shell. The full portfolio lives on the home page.",
+    description: "Explore Ruttansh's work in a live terminal shell.",
   },
 };
 

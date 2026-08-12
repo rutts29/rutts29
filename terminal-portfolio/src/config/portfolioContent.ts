@@ -143,7 +143,7 @@ export const portfolioContent: PortfolioContent = {
         "Low-Error Indoor Positioning via Synthetic RSSI Augmentation and Zx–WKNN Hybrid Model",
       label: "IEEE MSWiM 2025 · Conference paper",
       summary:
-        "Co-authored an IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
+        "IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
       links: [
         {
           label: "10.1109/MSWiM67937.2025.11309178",
@@ -167,9 +167,9 @@ export const portfolioContent: PortfolioContent = {
       summary:
         "Local-first observability and evaluation for AI coding agents.",
       description:
-        "Normalizes local harness artifacts into a provenance-aware SQLite ledger and revalidates source-backed transcript content before serving it. CLI, loopback dashboard, and read-only MCP tools with source identity checks.",
+        "Normalizes local harness artifacts into a provenance-aware SQLite ledger and revalidates source-backed transcript content before serving it. Includes a CLI, loopback dashboard, and read-only MCP tools.",
       stack: ["Python", "TypeScript", "SQLite", "MCP"],
-      status: "Private case study · Request a technical walkthrough",
+      status: "Private",
       visibility: "private",
     },
     {
@@ -179,9 +179,9 @@ export const portfolioContent: PortfolioContent = {
       summary:
         "Local observability for AI-training telemetry and anomaly workflows.",
       description:
-        "A Rust sidecar, FastAPI service, and Next.js dashboard cover Apple Silicon collection and repeatable simulated faults — built for honest, local demos rather than unverified multi-node claims.",
+        "A Rust sidecar, FastAPI service, and Next.js dashboard for on-device collection and repeatable fault simulation on Apple Silicon.",
       stack: ["Rust", "FastAPI", "Next.js", "PyTorch"],
-      status: "Private prototype · Request technical demo",
+      status: "Private",
       visibility: "private",
       image: "/projects/solprobe-landing.png",
     },
@@ -189,11 +189,11 @@ export const portfolioContent: PortfolioContent = {
       id: "codex2gpt",
       name: "codex2gpt",
       featured: true,
-      summary: "Bounded local bridge from ChatGPT to Codex.",
+      summary: "A bounded local bridge from ChatGPT to Codex.",
       description:
-        "Rust MCP server combining OAuth/PKCE, workspace allowlists, managed worktrees, audit records, and explicit approval boundaries without exposing a raw shell by default.",
+        "Rust MCP server with OAuth/PKCE, workspace allowlists, managed worktrees, audit records, and explicit approval boundaries — without a raw shell by default.",
       stack: ["Rust", "MCP", "OAuth"],
-      status: "Local prototype · Request architecture walkthrough",
+      status: "Private",
       visibility: "private",
     },
     {
@@ -201,23 +201,22 @@ export const portfolioContent: PortfolioContent = {
       name: "Founder Intelligence",
       featured: false,
       summary:
-        "Local-first founder-intelligence plugin with bounded tools and explicit approvals.",
+        "Founder research plugin with bounded tools and explicit approvals.",
       description:
-        "Nine bounded tools, explicit approval before paid X collection, SQLite persistence, and monthly credit controls.",
+        "Nine tools, approval before paid X collection, SQLite persistence, and monthly credit controls.",
       stack: ["TypeScript", "SQLite"],
-      status: "Private prototype · Mock demonstration",
+      status: "Private",
       visibility: "private",
     },
     {
       id: "local-sec",
       name: "local-sec",
       featured: false,
-      summary:
-        "Local-first package-install guard for developer-tool installs.",
+      summary: "Package-install guard for local developer tooling.",
       description:
-        "Mature-version selection, advisory checks, supported-flow artifact scanning, explicit approvals, and metadata inventory before selected installs. Lockfile installs are audited; one-shots are identity-checked and manually approved.",
+        "Version selection, advisory checks, artifact scanning where supported, explicit approvals, and metadata inventory before selected installs.",
       stack: ["Go"],
-      status: "Private engineering case study",
+      status: "Private",
       visibility: "private",
     },
     {
@@ -225,11 +224,11 @@ export const portfolioContent: PortfolioContent = {
       name: "Keyed",
       featured: false,
       summary:
-        "Privacy-aware Solana social prototype exploring wallet identity and creator monetization.",
+        "Solana social prototype with wallet identity and creator monetization.",
       description:
-        "Explores wallet identity, creator monetization, token-gated access, AI-assisted discovery, and tipping integrations as a private product prototype.",
+        "Wallet identity, creator monetization, token-gated access, AI-assisted discovery, and tipping integrations.",
       stack: ["TypeScript", "Rust", "Python", "Solana", "PostgreSQL"],
-      status: "Private prototype · Request technical demo",
+      status: "Private",
       visibility: "private",
       image: "/projects/keyed-landing.png",
     },
@@ -373,25 +372,24 @@ export const portfolioContent: PortfolioContent = {
       title:
         "Low-Error Indoor Positioning via Synthetic RSSI Augmentation and Zx–WKNN Hybrid Model",
       summary:
-        "Co-authored IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
+        "IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
       status: "published",
       meta: "IEEE MSWiM 2025",
       href: "https://doi.org/10.1109/MSWiM67937.2025.11309178",
     },
     {
       id: "notes-soon",
-      title: "Notes on AI systems & engineering practice",
-      summary:
-        "Short pieces on reliable AI systems, applied ML, and local-first tooling — coming soon.",
+      title: "Engineering notes",
+      summary: "Short writing on AI systems and applied ML.",
       status: "coming_soon",
       meta: "Coming soon",
     },
   ],
 
   contact: {
-    heading: "Hard problems welcome.",
+    heading: "Let's talk.",
     intro:
-      "Open to roles and collaborations in applied AI and ML systems. For a private technical walkthrough of current work, request a demo.",
+      "Open to roles and collaborations in applied AI and ML systems.",
     links: [
       {
         label: "rutts291@gmail.com",
@@ -421,7 +419,7 @@ export const portfolioContent: PortfolioContent = {
     demoCta: {
       label: "Request technical demo",
       live: false,
-      note: "Private walkthroughs by request — opens email.",
+      note: "",
       mailto:
         "mailto:rutts291@gmail.com?subject=Request%20technical%20demo%20%E2%80%94%200xRutts",
     },

@@ -1,2 +1,5 @@
 plan.md
 .DS_Store
+# secrets
+.env
+.env.*

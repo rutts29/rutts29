@@ -77,7 +77,7 @@ const projectLines: TerminalLine[] = [
   { type: "heading", text: "Projects" },
   {
     type: "text",
-    text: "Featured systems first, then selected additional work. All listed projects are private — no public source links.",
+    text: "Recent systems and prototypes. Most work is private.",
     tone: "muted",
   },
   ...projects.flatMap((project, index) => {
@@ -85,7 +85,7 @@ const projectLines: TerminalLine[] = [
       ...(index > 0 ? [{ type: "spacer" as const }] : []),
       {
         type: "text",
-        text: `${project.name}${project.featured ? " · featured" : ""} — ${project.summary}`,
+        text: `${project.name} — ${project.summary}`,
       },
       { type: "text", text: project.description, tone: "muted" },
       {
@@ -177,13 +177,17 @@ const contactLines: TerminalLine[] = [
     type: "link",
     label: contact.demoCta.label,
     href: contact.demoCta.mailto,
-    prefix: contact.demoCta.live ? "Demo" : "Request",
+    prefix: "Email",
   },
-  {
-    type: "text",
-    text: contact.demoCta.note,
-    tone: "muted",
-  },
+  ...(contact.demoCta.note
+    ? [
+        {
+          type: "text" as const,
+          text: contact.demoCta.note,
+          tone: "muted" as const,
+        },
+      ]
+    : []),
 ];
 
 export const staticCommandOutputs: Record<string, TerminalLine[]> = {

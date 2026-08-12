@@ -60,7 +60,7 @@ export const BootSequence = ({ onDone }: BootSequenceProps) => {
           AI Systems Engineer · Applied ML Researcher — Toronto
         </p>
         <p className="mt-1.5 flex items-center text-sm sm:text-base text-[var(--color-text-secondary)]">
-          reliable AI systems &amp; applied research that ships.
+          reliable AI systems and applied ML research.
           <span className="terminal-cursor ml-1.5" />
         </p>
       </div>
