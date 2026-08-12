@@ -11,8 +11,6 @@ type TerminalShellProps = {
   mode: TerminalMode;
   currentInput: string;
   setCurrentInput: (value: string) => void;
-  autoTypingText: string;
-  isTyping: boolean;
   onSubmit: (value: string) => void;
   embedded?: boolean;
 };
@@ -153,13 +151,12 @@ export const TerminalShell = ({
   mode,
   currentInput,
   setCurrentInput,
-  autoTypingText,
-  isTyping,
   onSubmit,
   embedded = false,
 }: TerminalShellProps) => {
   const historyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const isLive = mode === "interactive";
 
   useEffect(() => {
     if (historyRef.current) {
@@ -171,12 +168,10 @@ export const TerminalShell = ({
   }, [history]);
 
   useEffect(() => {
-    if (mode === "interactive" && inputRef.current && canAutoFocusInput()) {
+    if (isLive && inputRef.current && canAutoFocusInput()) {
       inputRef.current.focus();
     }
-  }, [mode]);
-
-  const promptValue = mode === "interactive" ? currentInput : autoTypingText;
+  }, [isLive]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -254,14 +249,13 @@ export const TerminalShell = ({
   };
 
   const normalizedInput = currentInput.trim().toLowerCase();
-  const autocompleteSuggestion =
-    mode === "interactive" && normalizedInput
-      ? autocompleteCommands.find(
-          (command) =>
-            command.toLowerCase().startsWith(normalizedInput) &&
-            command.toLowerCase() !== normalizedInput,
-        )
-      : undefined;
+  const autocompleteSuggestion = isLive && normalizedInput
+    ? autocompleteCommands.find(
+        (command) =>
+          command.toLowerCase().startsWith(normalizedInput) &&
+          command.toLowerCase() !== normalizedInput,
+      )
+    : undefined;
   const autocompleteSuffix =
     autocompleteSuggestion && currentInput.length < autocompleteSuggestion.length
       ? autocompleteSuggestion.slice(currentInput.length)
@@ -270,7 +264,7 @@ export const TerminalShell = ({
   const handleTerminalClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
     if (
-      mode === "interactive" &&
+      isLive &&
       inputRef.current &&
       canAutoFocusInput() &&
       !target.closest("button") &&
@@ -312,7 +306,7 @@ export const TerminalShell = ({
             </p>
           </div>
           <span className="text-[0.65rem] sm:text-xs text-[var(--color-text-secondary)] whitespace-nowrap flex-shrink-0">
-            {mode === "interactive" ? "Live shell" : "Ready"}
+            {isLive ? "Live shell" : "Ready"}
           </span>
         </div>
       )}
@@ -334,14 +328,17 @@ export const TerminalShell = ({
               </p>
             ) : (
               entry.lines.map((line, index) => {
-                // Create a wrapper function that sets input and focuses it
                 const handleCommandClick = (command: string) => {
                   onSubmit(command);
                   setCurrentInput("");
                 };
                 return (
                   <div key={`${entry.id}-${index}`}>
-                    {renderLine(line, mode, mode === "interactive" ? handleCommandClick : undefined)}
+                    {renderLine(
+                      line,
+                      mode,
+                      isLive ? handleCommandClick : undefined,
+                    )}
                   </div>
                 );
               })
@@ -350,8 +347,8 @@ export const TerminalShell = ({
         ))}
       </div>
 
-      <div className="mt-4 sm:mt-6 font-mono text-sm sm:text-base text-[var(--color-text-primary)]">
-        {mode === "interactive" ? (
+      {isLive ? (
+        <div className="mt-4 sm:mt-6 font-mono text-sm sm:text-base text-[var(--color-text-primary)]">
           <form
             onSubmit={handleSubmit}
             className="flex items-center gap-2 sm:gap-3 border-t border-white/10 pt-3 sm:pt-4"
@@ -381,24 +378,8 @@ export const TerminalShell = ({
               />
             </div>
           </form>
-        ) : (
-          <div className="flex items-center gap-2 sm:gap-3 border-t border-white/5 pt-3 sm:pt-4">
-            <span className="text-[var(--color-text-prompt)] whitespace-nowrap text-xs sm:text-sm">
-              rutts@workspace
-            </span>
-            <span className="text-[var(--color-text-secondary)]">$</span>
-            <p className="flex-1 min-w-0 min-h-[1.25rem] sm:min-h-[1.5rem] break-words text-xs sm:text-sm md:text-base">
-              {promptValue}
-              {isTyping && <span className="terminal-cursor ml-1" />}
-            </p>
-          </div>
-        )}
-        {mode !== "interactive" && !isTyping && (
-          <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-[var(--color-text-secondary)]">
-            Open the live shell to type commands.
-          </p>
-        )}
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 };

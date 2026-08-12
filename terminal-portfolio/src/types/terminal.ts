@@ -56,5 +56,6 @@ export type TerminalEntry =
       lines: TerminalLine[];
     };
 
-export type TerminalMode = "scrollAuto" | "interactive";
+/** boot = pre-shell intro; interactive = live shell input */
+export type TerminalMode = "boot" | "interactive";
 

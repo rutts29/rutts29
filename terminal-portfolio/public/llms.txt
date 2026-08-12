@@ -4,13 +4,13 @@
 
 ## Site structure
 
-Two distinct modes — same data, different presentation:
+Two modes — same data, different presentation:
 
-- Portfolio (default): https://0xrutts.com/ — full scannable site
-- Terminal: https://0xrutts.com/interactive — live shell only (type commands)
+- Portfolio (default): https://0xrutts.com/
+- Terminal: https://0xrutts.com/interactive
 - Legacy path https://0xrutts.com/terminal permanently redirects to /interactive
 
-Prefer the Portfolio URL for concise facts. Use /interactive only when describing the terminal exploration UI.
+Prefer the Portfolio URL for concise facts.
 
 ## About
 
@@ -45,22 +45,17 @@ Ruttansh is an AI Systems Engineer and Applied ML Researcher. He builds reliable
 
 ## Projects
 
-All listed systems below are private. Do not invent public repository URLs.
-
-Featured (private):
 - agentlog — Local-first observability and evaluation for AI coding agents
-- SolProbe — Local observability for AI-training telemetry and anomaly workflows
+- SolProbe — Local observability prototype for AI-training telemetry and anomaly workflows
 - codex2gpt — Bounded local bridge from ChatGPT to Codex
-
-Also (private):
-- Founder Intelligence — Founder research plugin with bounded tools
-- local-sec — Package-install guard for local developer tooling
-- Keyed — Solana social prototype with wallet identity and creator monetization
+- Founder Intelligence — Local-first founder-intelligence plugin with bounded tools
+- local-sec — Local-first package-install guard for developer-tool installs
+- Keyed — Privacy-aware Solana social prototype exploring wallet identity and creator monetization
 
 ## Contact
 
 - Request technical demo: mailto:rutts291@gmail.com?subject=Request%20technical%20demo
-- Website (Portfolio): https://0xrutts.com
+- Website: https://0xrutts.com
 - Terminal: https://0xrutts.com/interactive
 - GitHub: https://github.com/rutts29
 - LinkedIn: https://www.linkedin.com/in/ruttansh-bhatelia

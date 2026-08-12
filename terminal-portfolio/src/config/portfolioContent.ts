@@ -1,12 +1,11 @@
 /**
  * Single source of truth for portfolio data.
- * Home and terminal both derive presentation from this module.
+ * Home and terminal both present this — do not duplicate facts elsewhere.
  */
 
 export type PortfolioLink = {
   label: string;
   href: string;
-  /** Display prefix in the terminal (e.g. DOI, Status). */
   prefix?: string;
 };
 
@@ -34,35 +33,22 @@ export type ExperienceRole = {
 export type Project = {
   id: string;
   name: string;
-  /** Featured AI/research systems shown first. */
   featured: boolean;
-  /** One-line outcome for scannable cards. */
   summary: string;
   description: string;
   stack: string[];
-  /** Honest status / CTA line (no “live app” until verified). */
-  status: string;
-  /** Private projects must not render public source links. */
-  visibility: "private" | "public";
   image?: string;
   links?: PortfolioLink[];
-};
-
-export type Publication = {
-  id: string;
-  title: string;
-  label: string;
-  summary: string;
-  links: PortfolioLink[];
 };
 
 export type WritingItem = {
   id: string;
   title: string;
   summary: string;
-  status: "published" | "coming_soon";
   meta?: string;
-  href?: string;
+  /** When false or omitted for notes that are not ready yet. */
+  published?: boolean;
+  links?: PortfolioLink[];
 };
 
 export type ContactLink = {
@@ -87,7 +73,6 @@ export type PortfolioContent = {
     };
   };
   proofFacts: Array<{ label: string; value: string }>;
-  publications: Publication[];
   projects: Project[];
   skills: SkillGroup[];
   experience: ExperienceRole[];
@@ -98,10 +83,6 @@ export type PortfolioContent = {
     links: ContactLink[];
     demoCta: {
       label: string;
-      /** False until Resend delivery is verified end-to-end. */
-      live: boolean;
-      note: string;
-      /** Fallback while form delivery is not live. */
       mailto: string;
     };
   };
@@ -136,29 +117,6 @@ export const portfolioContent: PortfolioContent = {
     { label: "Building at", value: "CredShields" },
   ],
 
-  publications: [
-    {
-      id: "ieee-mswim-2025",
-      title:
-        "Low-Error Indoor Positioning via Synthetic RSSI Augmentation and Zx–WKNN Hybrid Model",
-      label: "IEEE MSWiM 2025 · Conference paper",
-      summary:
-        "Co-authored an IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
-      links: [
-        {
-          label: "10.1109/MSWiM67937.2025.11309178",
-          href: "https://doi.org/10.1109/MSWiM67937.2025.11309178",
-          prefix: "DOI",
-        },
-        {
-          label: "DBLP record",
-          href: "https://dblp.org/rec/conf/mswim/AhmedSCDZB25",
-          prefix: "DBLP",
-        },
-      ],
-    },
-  ],
-
   projects: [
     {
       id: "agentlog",
@@ -167,10 +125,8 @@ export const portfolioContent: PortfolioContent = {
       summary:
         "Local-first observability and evaluation for AI coding agents.",
       description:
-        "agentlog normalizes local harness artifacts into a provenance-aware SQLite ledger and revalidates source-backed transcript content before serving it. Six harness adapters; CLI, loopback dashboard, and read-only MCP tools with source identity checks.",
+        "Normalizes local harness artifacts into a provenance-aware SQLite ledger and revalidates source-backed transcript content before serving it. Six harness adapters; CLI, loopback dashboard, and read-only MCP tools with source identity checks.",
       stack: ["Python", "TypeScript", "SQLite", "MCP"],
-      status: "Private",
-      visibility: "private",
     },
     {
       id: "solprobe",
@@ -181,8 +137,6 @@ export const portfolioContent: PortfolioContent = {
       description:
         "A Rust sidecar, FastAPI service, and Next.js dashboard cover Apple Silicon collection and repeatable simulated faults.",
       stack: ["Rust", "FastAPI", "Next.js", "PyTorch"],
-      status: "Private",
-      visibility: "private",
       image: "/projects/solprobe-landing.png",
     },
     {
@@ -191,10 +145,8 @@ export const portfolioContent: PortfolioContent = {
       featured: true,
       summary: "A bounded local bridge from ChatGPT to Codex.",
       description:
-        "The Rust MCP server combines OAuth/PKCE, workspace allowlists, managed worktrees, audit records, and explicit approval boundaries without exposing a raw shell by default.",
+        "Rust MCP server combining OAuth/PKCE, workspace allowlists, managed worktrees, audit records, and explicit approval boundaries without exposing a raw shell by default.",
       stack: ["Rust", "MCP", "OAuth"],
-      status: "Private",
-      visibility: "private",
     },
     {
       id: "founder-intelligence",
@@ -205,8 +157,6 @@ export const portfolioContent: PortfolioContent = {
       description:
         "Nine bounded tools, explicit approval before paid X collection, SQLite persistence, and monthly credit controls.",
       stack: ["TypeScript", "SQLite"],
-      status: "Private",
-      visibility: "private",
     },
     {
       id: "local-sec",
@@ -215,10 +165,8 @@ export const portfolioContent: PortfolioContent = {
       summary:
         "Local-first package-install guard for developer-tool installs.",
       description:
-        "Applies mature-version selection, advisory checks, supported-flow artifact scanning, explicit approvals, and metadata inventory before selected installs.",
+        "Mature-version selection, advisory checks, supported-flow artifact scanning, explicit approvals, and metadata inventory before selected installs.",
       stack: ["Go"],
-      status: "Private",
-      visibility: "private",
     },
     {
       id: "keyed",
@@ -227,10 +175,8 @@ export const portfolioContent: PortfolioContent = {
       summary:
         "Privacy-aware Solana social prototype exploring wallet identity and creator monetization.",
       description:
-        "Explores wallet identity, creator monetization, token-gated access, AI-assisted discovery, and tipping integrations.",
+        "Wallet identity, creator monetization, token-gated access, AI-assisted discovery, and tipping integrations.",
       stack: ["TypeScript", "Rust", "Python", "Solana", "PostgreSQL"],
-      status: "Private",
-      visibility: "private",
       image: "/projects/keyed-landing.png",
     },
   ],
@@ -369,28 +315,38 @@ export const portfolioContent: PortfolioContent = {
 
   writing: [
     {
-      id: "ieee-mswim-2025-note",
+      id: "ieee-mswim-2025",
       title:
         "Low-Error Indoor Positioning via Synthetic RSSI Augmentation and Zx–WKNN Hybrid Model",
       summary:
         "Co-authored an IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
-      status: "published",
       meta: "IEEE MSWiM 2025 · Conference paper",
-      href: "https://doi.org/10.1109/MSWiM67937.2025.11309178",
+      published: true,
+      links: [
+        {
+          label: "10.1109/MSWiM67937.2025.11309178",
+          href: "https://doi.org/10.1109/MSWiM67937.2025.11309178",
+          prefix: "DOI",
+        },
+        {
+          label: "DBLP record",
+          href: "https://dblp.org/rec/conf/mswim/AhmedSCDZB25",
+          prefix: "DBLP",
+        },
+      ],
     },
     {
       id: "notes-soon",
       title: "Engineering notes",
       summary: "Short writing on AI systems and applied ML.",
-      status: "coming_soon",
       meta: "Coming soon",
+      published: false,
     },
   ],
 
   contact: {
     heading: "Let's talk.",
-    intro:
-      "Open to roles and collaborations in applied AI and ML systems.",
+    intro: "Open to roles and collaborations in applied AI and ML systems.",
     links: [
       {
         label: "rutts291@gmail.com",
@@ -419,18 +375,8 @@ export const portfolioContent: PortfolioContent = {
     ],
     demoCta: {
       label: "Request technical demo",
-      live: false,
-      note: "",
       mailto:
         "mailto:rutts291@gmail.com?subject=Request%20technical%20demo%20%E2%80%94%200xRutts",
     },
   },
 };
-
-export const featuredProjects = portfolioContent.projects.filter(
-  (project) => project.featured,
-);
-
-export const secondaryProjects = portfolioContent.projects.filter(
-  (project) => !project.featured,
-);

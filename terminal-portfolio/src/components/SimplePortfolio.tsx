@@ -133,7 +133,6 @@ export function SimplePortfolio() {
   const {
     identity,
     proofFacts,
-    publications,
     projects,
     skills,
     experience,
@@ -792,55 +791,36 @@ export function SimplePortfolio() {
             </header>
 
             <div className="simple-list">
-              {writing.map((item) => {
-                const pubLinks =
-                  item.status === "published"
-                    ? publications.find(
-                        (pub) =>
-                          pub.title === item.title ||
-                          item.id.includes(pub.id.split("-")[0] ?? ""),
-                      )?.links
-                    : undefined;
-                const links =
-                  pubLinks ??
-                  (item.href
-                    ? [{ label: "Read", href: item.href, prefix: "Read" }]
-                    : []);
-
-                return (
-                  <article
-                    className="simple-project simple-reveal"
-                    key={item.id}
-                  >
-                    <div className="simple-project-top">
-                      <h3 className="simple-title simple-title-lg">
-                        {item.title}
-                      </h3>
-                      {links.length > 0 ? (
-                        <div className="simple-inline-links">
-                          {links.map((link) => (
-                            <a
-                              key={link.href}
-                              href={link.href}
-                              {...externalLinkProps}
-                            >
-                              {link.prefix ?? "Link"}
-                              <ArrowUpRight aria-hidden="true" />
-                            </a>
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
-                    <p className="simple-outcome">
-                      {item.meta ??
-                        (item.status === "coming_soon"
-                          ? "Coming soon"
-                          : "Published")}
-                    </p>
-                    <p className="simple-body-copy">{item.summary}</p>
-                  </article>
-                );
-              })}
+              {writing.map((item) => (
+                <article
+                  className="simple-project simple-reveal"
+                  key={item.id}
+                >
+                  <div className="simple-project-top">
+                    <h3 className="simple-title simple-title-lg">
+                      {item.title}
+                    </h3>
+                    {item.links && item.links.length > 0 ? (
+                      <div className="simple-inline-links">
+                        {item.links.map((link) => (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            {...externalLinkProps}
+                          >
+                            {link.prefix ?? "Link"}
+                            <ArrowUpRight aria-hidden="true" />
+                          </a>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                  {item.meta ? (
+                    <p className="simple-outcome">{item.meta}</p>
+                  ) : null}
+                  <p className="simple-body-copy">{item.summary}</p>
+                </article>
+              ))}
             </div>
           </section>
         </main>
@@ -855,11 +835,6 @@ export function SimplePortfolio() {
                 {contact.demoCta.label}
               </a>
             </div>
-            {contact.demoCta.note ? (
-              <p className="simple-meta-line" style={{ marginTop: "0.75rem" }}>
-                {contact.demoCta.note}
-              </p>
-            ) : null}
           </div>
           <ul className="simple-contact simple-reveal">
             {contact.links
@@ -897,15 +872,15 @@ export function SimplePortfolio() {
 }
 
 function ProjectCard({ project }: { project: Project }) {
-  const publicLinks = project.links ?? [];
+  const links = project.links ?? [];
 
   return (
     <article className="simple-project simple-reveal">
       <div className="simple-project-top">
         <h3 className="simple-title simple-title-lg">{project.name}</h3>
-        {publicLinks.length > 0 ? (
+        {links.length > 0 ? (
           <div className="simple-inline-links">
-            {publicLinks.map((link) => (
+            {links.map((link) => (
               <a key={link.href} href={link.href} {...externalLinkProps}>
                 {link.prefix ?? "Link"}
                 <ArrowUpRight aria-hidden="true" />
@@ -916,7 +891,6 @@ function ProjectCard({ project }: { project: Project }) {
       </div>
       <p className="simple-outcome">{project.summary}</p>
       <p className="simple-body-copy">{project.description}</p>
-      <p className="simple-meta-line">{project.status}</p>
       <ul className="simple-chips" aria-label={`${project.name} technologies`}>
         {project.stack.slice(0, 5).map((technology) => (
           <li key={technology}>{technology}</li>

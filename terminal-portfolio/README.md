@@ -35,7 +35,7 @@ bun run build
 
 ## Notes
 
-- **Single content source:** `src/config/portfolioContent.ts`. Home and terminal adapters (`scrollTimeline.ts`, `commands.ts`) derive from it — do not duplicate facts.
+- **Single content source:** `src/config/portfolioContent.ts`. Terminal outputs in `commands.ts` derive from it.
 - Theme for the simple site is bootstrapped before paint (`layout` boot script) to avoid theme FOUC.
-- Private projects never render public source links. Demo CTA uses mailto for now.
+- Demo CTA uses mailto.
 - Do not commit `.env` or local screenshot dumps; they are gitignored.

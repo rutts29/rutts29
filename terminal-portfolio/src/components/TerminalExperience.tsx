@@ -192,8 +192,6 @@ export const TerminalExperience = () => {
     mode,
     currentInput,
     setCurrentInput,
-    autoTypingText,
-    isTyping,
     runCommand,
     enterInteractiveMode,
   } = useTerminal({
@@ -261,8 +259,6 @@ export const TerminalExperience = () => {
       mode={mode}
       currentInput={currentInput}
       setCurrentInput={setCurrentInput}
-      autoTypingText={autoTypingText}
-      isTyping={isTyping}
       onSubmit={handleSubmit}
     />
   ) : undefined;

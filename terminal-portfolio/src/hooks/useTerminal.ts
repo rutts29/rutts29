@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import {
   commandCatalog,
@@ -54,7 +54,6 @@ const createInteractiveHistory = (): TerminalEntry[] => {
   return entries;
 };
 
-const TYPING_DELAY = 45;
 const suggestedCommands = [
   ...commandCatalog
     .filter((command) => !command.key.includes("<"))
@@ -109,55 +108,10 @@ export const useTerminal = ({
   themeName,
 }: UseTerminalOptions) => {
   const [history, setHistory] = useState<TerminalEntry[]>(createInitialHistory);
-  const [mode, setMode] = useState<TerminalMode>("scrollAuto");
+  const [mode, setMode] = useState<TerminalMode>("boot");
   const [currentInput, setCurrentInput] = useState("");
-  const [autoTypingText, setAutoTypingText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
 
   const commandLogRef = useRef<string[]>([]);
-  const queueRef = useRef(Promise.resolve());
-  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const clearTypingTimeout = () => {
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = null;
-    }
-  };
-
-  useEffect(() => () => clearTypingTimeout(), []);
-
-  const simulateTyping = useCallback(
-    (command: string) =>
-      new Promise<void>((resolve) => {
-        if (!command.length) {
-          resolve();
-          return;
-        }
-        setIsTyping(true);
-        setAutoTypingText("");
-        let index = 0;
-
-        const typeNext = () => {
-          setAutoTypingText(command.slice(0, index + 1));
-          index += 1;
-
-          if (index >= command.length) {
-            typingTimeoutRef.current = setTimeout(() => {
-              setIsTyping(false);
-              setAutoTypingText("");
-              resolve();
-            }, TYPING_DELAY * 2);
-            return;
-          }
-
-          typingTimeoutRef.current = setTimeout(typeNext, TYPING_DELAY);
-        };
-
-        typingTimeoutRef.current = setTimeout(typeNext, TYPING_DELAY);
-      }),
-    [],
-  );
 
   const appendEntry = useCallback((entry: TerminalEntry) => {
     setHistory((prev) => [...prev, entry]);
@@ -223,15 +177,11 @@ export const useTerminal = ({
     [getHistoryLines, themeName],
   );
 
-  const executeCommand = useCallback(
-    async (commandText: string, opts?: { simulateTyping?: boolean }) => {
+  const runCommand = useCallback(
+    async (commandText: string) => {
       const trimmed = commandText.trim();
       if (!trimmed) {
         return;
-      }
-
-      if (opts?.simulateTyping) {
-        await simulateTyping(trimmed);
       }
 
       commandLogRef.current.push(trimmed);
@@ -310,60 +260,26 @@ export const useTerminal = ({
       appendOutputEntry,
       onThemeChange,
       resolveStaticOutput,
-      simulateTyping,
       themeName,
     ],
   );
 
-  const runCommand = useCallback(
-    (command: string) => executeCommand(command, { simulateTyping: false }),
-    [executeCommand],
-  );
-
-  const enqueueAutoCommand = useCallback(
-    (command: string) => {
-      queueRef.current = queueRef.current.then(() =>
-        executeCommand(command, { simulateTyping: true }),
-      );
-      return queueRef.current;
-    },
-    [executeCommand],
-  );
-
   const enterInteractiveMode = useCallback(() => {
     setHistory(createInteractiveHistory());
-    commandLogRef.current = ["about", "help"];
-    queueRef.current = Promise.resolve();
-    clearTypingTimeout();
-    setIsTyping(false);
-    setAutoTypingText("");
+    commandLogRef.current = ["help"];
     setCurrentInput("");
     setMode("interactive");
   }, []);
 
-  const terminalState = useMemo(
+  return useMemo(
     () => ({
       history,
       mode,
       currentInput,
       setCurrentInput,
-      isTyping,
-      autoTypingText,
       runCommand,
-      enqueueAutoCommand,
       enterInteractiveMode,
     }),
-    [
-      history,
-      mode,
-      currentInput,
-      isTyping,
-      autoTypingText,
-      runCommand,
-      enqueueAutoCommand,
-      enterInteractiveMode,
-    ],
+    [history, mode, currentInput, runCommand, enterInteractiveMode],
   );
-
-  return terminalState;
 };

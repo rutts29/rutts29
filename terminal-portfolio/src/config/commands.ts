@@ -2,10 +2,7 @@ import { portfolioContent } from "@/config/portfolioContent";
 import { themeNames } from "@/config/themes";
 import { CommandDefinition, TerminalLine } from "@/types/terminal";
 
-/**
- * Terminal catalog + outputs derived from portfolioContent.
- * Autocomplete / help stay driven by commandCatalog.
- */
+/** Terminal catalog + outputs derived from portfolioContent. */
 
 export const commandCatalog: CommandDefinition[] = [
   { key: "help", description: "List available commands" },
@@ -13,7 +10,7 @@ export const commandCatalog: CommandDefinition[] = [
   { key: "education", description: "Where I studied" },
   { key: "skills", description: "Stacks, languages, and systems I build with" },
   { key: "experience", description: "Roles and impact" },
-  { key: "projects", description: "Featured and selected private work" },
+  { key: "projects", description: "Selected systems and prototypes" },
   { key: "writing", description: "Publications and writing" },
   { key: "contact", description: "How to reach me" },
   { key: "theme set <name>", description: "Switch the terminal theme" },
@@ -22,26 +19,31 @@ export const commandCatalog: CommandDefinition[] = [
   { key: "banner", description: "Print the ASCII welcome banner" },
 ];
 
-const { identity, publications, projects, skills, experience, writing, contact } =
+const { identity, projects, skills, experience, writing, contact } =
   portfolioContent;
+
+const contactPrefix: Record<string, string> = {
+  email: "Email",
+  linkedin: "LinkedIn",
+  github: "GitHub",
+  x: "X",
+};
 
 const aboutLines: TerminalLine[] = [
   { type: "heading", text: "About" },
-  ...identity.about.map((text, index) => ({
-    type: "text" as const,
-    text,
-    tone: index === 0 ? ("default" as const) : ("muted" as const),
-  })),
+  ...identity.about.map(
+    (text, index): TerminalLine => ({
+      type: "text",
+      text,
+      tone: index === 0 ? "default" : "muted",
+    }),
+  ),
 ];
 
 const educationLines: TerminalLine[] = [
   { type: "heading", text: "Education" },
   { type: "text", text: identity.education.degree },
-  {
-    type: "text",
-    text: identity.education.detail,
-    tone: "muted",
-  },
+  { type: "text", text: identity.education.detail, tone: "muted" },
 ];
 
 const skillsLines: TerminalLine[] = [
@@ -57,103 +59,62 @@ const skillsLines: TerminalLine[] = [
 
 const experienceLines: TerminalLine[] = [
   { type: "heading", text: "Experience" },
-  ...experience.flatMap((role, index) => {
-    const header = `${role.company} — ${role.role} · ${role.location}`;
-    const block: TerminalLine[] = [
-      ...(index > 0 ? [{ type: "spacer" as const }] : []),
-      { type: "text", text: header, tone: "accent" },
-      {
-        type: "text",
-        text: role.duration + (role.isCurrent ? " · Current" : ""),
-        tone: "muted",
-      },
-      { type: "list", items: role.details },
-    ];
-    return block;
-  }),
+  ...experience.flatMap((role, index): TerminalLine[] => [
+    ...(index > 0 ? [{ type: "spacer" as const }] : []),
+    {
+      type: "text",
+      text: `${role.company} — ${role.role} · ${role.location}`,
+      tone: "accent",
+    },
+    {
+      type: "text",
+      text: role.duration + (role.isCurrent ? " · Current" : ""),
+      tone: "muted",
+    },
+    { type: "list", items: role.details },
+  ]),
 ];
 
 const projectLines: TerminalLine[] = [
   { type: "heading", text: "Projects" },
-  {
-    type: "text",
-    text: "Featured local-first systems, then additional selected work. All listed projects are private.",
-    tone: "muted",
-  },
-  ...projects.flatMap((project, index) => {
-    const block: TerminalLine[] = [
-      ...(index > 0 ? [{ type: "spacer" as const }] : []),
-      {
-        type: "text",
-        text: `${project.name} — ${project.summary}`,
-      },
-      { type: "text", text: project.description, tone: "muted" },
-      {
-        type: "text",
-        text: `Stack: ${project.stack.join(", ")}`,
-        tone: "muted",
-      },
-      {
-        type: "text",
-        text: project.status,
-        tone: "accent",
-      },
-      ...(project.links ?? []).map(
-        (link): TerminalLine => ({
-          type: "link",
-          label: link.label,
-          href: link.href,
-          prefix: link.prefix,
-        }),
-      ),
-    ];
-    return block;
-  }),
+  ...projects.flatMap((project, index): TerminalLine[] => [
+    ...(index > 0 ? [{ type: "spacer" as const }] : []),
+    { type: "text", text: `${project.name} — ${project.summary}` },
+    { type: "text", text: project.description, tone: "muted" },
+    {
+      type: "text",
+      text: `Stack: ${project.stack.join(", ")}`,
+      tone: "muted",
+    },
+    ...(project.links ?? []).map(
+      (link): TerminalLine => ({
+        type: "link",
+        label: link.label,
+        href: link.href,
+        prefix: link.prefix,
+      }),
+    ),
+  ]),
 ];
 
 const writingLines: TerminalLine[] = [
   { type: "heading", text: "Publications & writing" },
-  ...writing.flatMap((item, index) => {
-    const block: TerminalLine[] = [
-      ...(index > 0 ? [{ type: "spacer" as const }] : []),
-      {
-        type: "text",
-        text: item.title,
-        tone: "accent",
-      },
-      {
-        type: "text",
-        text: item.meta ?? (item.status === "coming_soon" ? "Coming soon" : ""),
-        tone: "muted",
-      },
-      { type: "text", text: item.summary },
-    ];
-    if (item.href) {
-      const pub = publications.find(
-        (p) =>
-          item.status === "published" &&
-          (item.id.includes("ieee") || p.title === item.title),
-      );
-      if (pub) {
-        for (const link of pub.links) {
-          block.push({
-            type: "link",
-            label: link.label,
-            href: link.href,
-            prefix: link.prefix,
-          });
-        }
-      } else {
-        block.push({
-          type: "link",
-          label: item.href.replace(/^https?:\/\//, ""),
-          href: item.href,
-          prefix: "Link",
-        });
-      }
-    }
-    return block;
-  }),
+  ...writing.flatMap((item, index): TerminalLine[] => [
+    ...(index > 0 ? [{ type: "spacer" as const }] : []),
+    { type: "text", text: item.title, tone: "accent" },
+    ...(item.meta
+      ? [{ type: "text" as const, text: item.meta, tone: "muted" as const }]
+      : []),
+    { type: "text", text: item.summary },
+    ...(item.links ?? []).map(
+      (link): TerminalLine => ({
+        type: "link",
+        label: link.label,
+        href: link.href,
+        prefix: link.prefix,
+      }),
+    ),
+  ]),
 ];
 
 const contactLines: TerminalLine[] = [
@@ -166,16 +127,7 @@ const contactLines: TerminalLine[] = [
         type: "link",
         label: link.label,
         href: link.href!,
-        prefix:
-          link.icon === "email"
-            ? "Email"
-            : link.icon === "linkedin"
-              ? "LinkedIn"
-              : link.icon === "github"
-                ? "GitHub"
-                : link.icon === "x"
-                  ? "X"
-                  : undefined,
+        prefix: contactPrefix[link.icon],
       }),
     ),
   {
@@ -192,15 +144,6 @@ const contactLines: TerminalLine[] = [
     href: contact.demoCta.mailto,
     prefix: "Email",
   },
-  ...(contact.demoCta.note
-    ? [
-        {
-          type: "text" as const,
-          text: contact.demoCta.note,
-          tone: "muted" as const,
-        },
-      ]
-    : []),
 ];
 
 export const staticCommandOutputs: Record<string, TerminalLine[]> = {
