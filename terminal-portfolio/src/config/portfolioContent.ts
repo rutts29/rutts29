@@ -421,7 +421,7 @@ export const portfolioContent: PortfolioContent = {
     demoCta: {
       label: "Request technical demo",
       live: false,
-      note: "Private walkthroughs by request. Form delivery goes live after Resend is verified — email works now.",
+      note: "Private walkthroughs by request — opens email.",
       mailto:
         "mailto:rutts291@gmail.com?subject=Request%20technical%20demo%20%E2%80%94%200xRutts",
     },

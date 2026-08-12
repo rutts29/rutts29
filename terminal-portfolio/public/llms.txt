@@ -59,7 +59,7 @@ Also selected:
 
 ## Contact
 
-- Request technical demo (mailto until Resend-verified form delivery): mailto:rutts291@gmail.com?subject=Request%20technical%20demo
+- Request technical demo: mailto:rutts291@gmail.com?subject=Request%20technical%20demo
 - Website (Portfolio): https://0xrutts.com
 - Terminal: https://0xrutts.com/interactive
 - GitHub: https://github.com/rutts29
