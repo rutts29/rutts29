@@ -47,9 +47,9 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
   },
   {
     id: "writing",
-    label: "Writing",
+    label: "Publications & writing",
     command: "writing",
-    summary: "Publications and notes.",
+    summary: "Publications and writing.",
     content: portfolioContent.writing.map((item) =>
       item.status === "published"
         ? `${item.title} — ${item.summary}`

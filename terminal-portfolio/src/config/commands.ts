@@ -14,7 +14,7 @@ export const commandCatalog: CommandDefinition[] = [
   { key: "skills", description: "Stacks, languages, and systems I build with" },
   { key: "experience", description: "Roles and impact" },
   { key: "projects", description: "Featured and selected private work" },
-  { key: "writing", description: "Publications and notes" },
+  { key: "writing", description: "Publications and writing" },
   { key: "contact", description: "How to reach me" },
   { key: "theme set <name>", description: "Switch the terminal theme" },
   { key: "clear", description: "Reset the terminal history" },
@@ -112,35 +112,48 @@ const projectLines: TerminalLine[] = [
 ];
 
 const writingLines: TerminalLine[] = [
-  { type: "heading", text: "Writing" },
-  ...publications.flatMap((pub, index) => {
+  { type: "heading", text: "Publications & writing" },
+  ...writing.flatMap((item, index) => {
     const block: TerminalLine[] = [
       ...(index > 0 ? [{ type: "spacer" as const }] : []),
-      { type: "text", text: pub.title, tone: "accent" },
-      { type: "text", text: pub.label, tone: "muted" },
-      { type: "text", text: pub.summary },
-      ...pub.links.map(
-        (link): TerminalLine => ({
-          type: "link",
-          label: link.label,
-          href: link.href,
-          prefix: link.prefix,
-        }),
-      ),
+      {
+        type: "text",
+        text: item.title,
+        tone: "accent",
+      },
+      {
+        type: "text",
+        text: item.meta ?? (item.status === "coming_soon" ? "Coming soon" : ""),
+        tone: "muted",
+      },
+      { type: "text", text: item.summary },
     ];
+    if (item.href) {
+      const pub = publications.find(
+        (p) =>
+          item.status === "published" &&
+          (item.id.includes("ieee") || p.title === item.title),
+      );
+      if (pub) {
+        for (const link of pub.links) {
+          block.push({
+            type: "link",
+            label: link.label,
+            href: link.href,
+            prefix: link.prefix,
+          });
+        }
+      } else {
+        block.push({
+          type: "link",
+          label: item.href.replace(/^https?:\/\//, ""),
+          href: item.href,
+          prefix: "Link",
+        });
+      }
+    }
     return block;
   }),
-  { type: "spacer" },
-  ...writing
-    .filter((item) => item.status === "coming_soon")
-    .flatMap((item) => [
-      {
-        type: "text" as const,
-        text: `${item.title} — ${item.meta ?? "Coming soon"}`,
-        tone: "accent" as const,
-      },
-      { type: "text" as const, text: item.summary, tone: "muted" as const },
-    ]),
 ];
 
 const contactLines: TerminalLine[] = [

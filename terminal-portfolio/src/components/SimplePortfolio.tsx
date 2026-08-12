@@ -81,7 +81,7 @@ const sectionMeta = [
   { id: "work", label: "Work" },
   { id: "experience", label: "Experience" },
   { id: "focus", label: "Stack" },
-  { id: "writing", label: "Writing" },
+  { id: "writing", label: "Publications" },
   { id: "contact", label: "Contact" },
 ] as const;
 
@@ -130,8 +130,16 @@ export function SimplePortfolio() {
     getServerResolvedThemeSnapshot,
   );
 
-  const { identity, proofFacts, publications, projects, skills, experience, writing, contact } =
-    portfolioContent;
+  const {
+    identity,
+    proofFacts,
+    publications,
+    projects,
+    skills,
+    experience,
+    writing,
+    contact,
+  } = portfolioContent;
   const featured = projects.filter((project) => project.featured);
   const secondary = projects.filter((project) => !project.featured);
   const activeLabel =
@@ -524,7 +532,7 @@ export function SimplePortfolio() {
             <nav className="simple-nav" aria-label="Primary navigation">
               <a href="#work">Work</a>
               <a href="#experience">Experience</a>
-              <a href="#writing">Writing</a>
+              <a href="#writing">Publications</a>
               <a href="#contact">Contact</a>
             </nav>
 
@@ -601,32 +609,9 @@ export function SimplePortfolio() {
                 Recent projects
               </h2>
               <p className="simple-body-copy">
-                Research and systems I&apos;ve built.
+                Systems and prototypes I&apos;ve built.
               </p>
             </header>
-
-            {publications.map((publication) => (
-              <article
-                className="simple-project simple-reveal"
-                key={publication.id}
-              >
-                <div className="simple-project-top">
-                  <h3 className="simple-title simple-title-lg">
-                    {publication.title}
-                  </h3>
-                  <div className="simple-inline-links">
-                    {publication.links.map((link) => (
-                      <a key={link.href} href={link.href} {...externalLinkProps}>
-                        {link.prefix ?? "Link"}
-                        <ArrowUpRight aria-hidden="true" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-                <p className="simple-outcome">{publication.label}</p>
-                <p className="simple-body-copy">{publication.summary}</p>
-              </article>
-            ))}
 
             <div className="simple-list">
               {featured.map((project) => (
@@ -797,41 +782,65 @@ export function SimplePortfolio() {
             aria-labelledby="writing-title"
           >
             <header className="simple-section-head simple-reveal">
-              <p className="simple-label">Writing</p>
+              <p className="simple-label">Publications &amp; writing</p>
               <h2 id="writing-title" className="simple-heading">
-                Papers &amp; notes
+                Publications &amp; writing
               </h2>
               <p className="simple-body-copy">
-                On AI systems and applied ML.
+                Research papers and notes on AI systems and applied ML.
               </p>
             </header>
 
             <div className="simple-list">
-              {writing.map((item) => (
-                <article
-                  className="simple-project simple-reveal"
-                  key={item.id}
-                >
-                  <div className="simple-project-top">
-                    <h3 className="simple-title simple-title-lg">{item.title}</h3>
-                    {item.href ? (
-                      <div className="simple-inline-links">
-                        <a href={item.href} {...externalLinkProps}>
-                          Read
-                          <ArrowUpRight aria-hidden="true" />
-                        </a>
-                      </div>
-                    ) : null}
-                  </div>
-                  <p className="simple-outcome">
-                    {item.meta ??
-                      (item.status === "coming_soon"
-                        ? "Coming soon"
-                        : "Published")}
-                  </p>
-                  <p className="simple-body-copy">{item.summary}</p>
-                </article>
-              ))}
+              {writing.map((item) => {
+                const pubLinks =
+                  item.status === "published"
+                    ? publications.find(
+                        (pub) =>
+                          pub.title === item.title ||
+                          item.id.includes(pub.id.split("-")[0] ?? ""),
+                      )?.links
+                    : undefined;
+                const links =
+                  pubLinks ??
+                  (item.href
+                    ? [{ label: "Read", href: item.href, prefix: "Read" }]
+                    : []);
+
+                return (
+                  <article
+                    className="simple-project simple-reveal"
+                    key={item.id}
+                  >
+                    <div className="simple-project-top">
+                      <h3 className="simple-title simple-title-lg">
+                        {item.title}
+                      </h3>
+                      {links.length > 0 ? (
+                        <div className="simple-inline-links">
+                          {links.map((link) => (
+                            <a
+                              key={link.href}
+                              href={link.href}
+                              {...externalLinkProps}
+                            >
+                              {link.prefix ?? "Link"}
+                              <ArrowUpRight aria-hidden="true" />
+                            </a>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                    <p className="simple-outcome">
+                      {item.meta ??
+                        (item.status === "coming_soon"
+                          ? "Coming soon"
+                          : "Published")}
+                    </p>
+                    <p className="simple-body-copy">{item.summary}</p>
+                  </article>
+                );
+              })}
             </div>
           </section>
         </main>
