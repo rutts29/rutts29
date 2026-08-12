@@ -723,6 +723,20 @@ export function SimplePortfolio() {
                             <li key={detail}>{detail}</li>
                           ))}
                         </ul>
+                        {role.relatedLinks && role.relatedLinks.length > 0 ? (
+                          <div className="simple-inline-links simple-role-links">
+                            {role.relatedLinks.map((link) => (
+                              <a
+                                key={link.href}
+                                href={link.href}
+                                {...externalLinkProps}
+                              >
+                                {link.prefix ?? link.label}
+                                <ArrowUpRight aria-hidden="true" />
+                              </a>
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
                     </li>
                   );

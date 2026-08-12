@@ -72,6 +72,24 @@ const experienceLines: TerminalLine[] = [
       tone: "muted",
     },
     { type: "list", items: role.details },
+    ...(role.companyUrl
+      ? [
+          {
+            type: "link" as const,
+            label: role.companyUrl.replace(/^https?:\/\//, ""),
+            href: role.companyUrl,
+            prefix: "Company",
+          },
+        ]
+      : []),
+    ...(role.relatedLinks ?? []).map(
+      (link): TerminalLine => ({
+        type: "link",
+        label: link.label,
+        href: link.href,
+        prefix: link.prefix,
+      }),
+    ),
   ]),
 ];
 

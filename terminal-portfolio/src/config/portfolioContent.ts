@@ -28,6 +28,8 @@ export type ExperienceRole = {
   location: string;
   details: string[];
   isCurrent?: boolean;
+  /** Related publications or project links for this role. */
+  relatedLinks?: PortfolioLink[];
 };
 
 export type Project = {
@@ -272,7 +274,19 @@ export const portfolioContent: PortfolioContent = {
       details: [
         "Architected a generative-AI indoor localization system with research partners.",
         "Synthesized RSSI data with VAEs to auto-generate virtual fingerprints.",
-        "Validated nearest-neighbor regression on 2D layouts for precise positioning.",
+        "Co-authored an IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
+      ],
+      relatedLinks: [
+        {
+          label: "10.1109/MSWiM67937.2025.11309178",
+          href: "https://doi.org/10.1109/MSWiM67937.2025.11309178",
+          prefix: "DOI",
+        },
+        {
+          label: "DBLP record",
+          href: "https://dblp.org/rec/conf/mswim/AhmedSCDZB25",
+          prefix: "DBLP",
+        },
       ],
     },
     {
