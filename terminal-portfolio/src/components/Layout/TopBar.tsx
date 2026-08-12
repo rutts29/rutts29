@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 
+import { portfolioContent } from "@/config/portfolioContent";
+
 type TopBarProps = {
   themeLabel: string;
   onCycleTheme: () => void;
@@ -13,6 +15,20 @@ export const TopBar = ({
   onCycleTheme,
   themeName,
 }: TopBarProps) => {
+  const { identity, contact } = portfolioContent;
+  const getContactHref = (icon: "github" | "linkedin" | "x") => {
+    const link = contact.links.find((contactLink) => contactLink.icon === icon);
+
+    if (!link) {
+      throw new Error(`Missing ${icon} contact link`);
+    }
+
+    return link.href;
+  };
+  const githubUrl = getContactHref("github");
+  const linkedinUrl = getContactHref("linkedin");
+  const xUrl = getContactHref("x");
+
   return (
     <div
       className="w-full flex items-center justify-between gap-3 sm:gap-6 rounded-3xl border px-4 py-3 sm:px-8 sm:py-4 md:px-12 md:py-4 lg:px-16 lg:py-5 backdrop-blur-lg shadow-[0_25px_120px_rgba(0,0,0,0.25)]"
@@ -39,14 +55,12 @@ export const TopBar = ({
         </Link>
         <div className="min-w-0">
           <p className="truncate text-lg font-bold text-[var(--color-text-primary)] sm:text-2xl md:text-3xl lg:text-4xl">
-            0xRutts
+            {identity.handle}
           </p>
           <p className="mt-1 text-[0.6rem] text-[var(--color-text-secondary)] sm:mt-2 sm:text-sm md:text-base lg:text-lg">
-            <span className="sm:hidden">
-              AI Systems Engineer · Applied ML Researcher
-            </span>
+            <span className="sm:hidden">{identity.title}</span>
             <span className="hidden sm:inline">
-              AI Systems Engineer · Applied ML Researcher · Toronto
+              {identity.title} · {identity.location}
             </span>
           </p>
         </div>
@@ -55,7 +69,7 @@ export const TopBar = ({
       <div className="relative flex shrink-0 items-center gap-2 sm:gap-3">
         <div className="flex items-center gap-3 text-[var(--color-text-secondary)] sm:gap-4">
           <a
-            href="https://github.com/rutts29"
+            href={githubUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="transition hover:text-[var(--color-text-accent)]"
@@ -66,7 +80,7 @@ export const TopBar = ({
             </svg>
           </a>
           <a
-            href="https://www.linkedin.com/in/ruttansh-bhatelia/"
+            href={linkedinUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="transition hover:text-[var(--color-text-accent)]"
@@ -77,7 +91,7 @@ export const TopBar = ({
             </svg>
           </a>
           <a
-            href="https://x.com/0xRutts"
+            href={xUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="transition hover:text-[var(--color-text-accent)]"

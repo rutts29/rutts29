@@ -14,6 +14,13 @@ export type TerminalLine =
       items: string[];
     }
   | {
+      type: "command-list";
+      items: Array<{
+        command: string;
+        description: string;
+      }>;
+    }
+  | {
       type: "columns";
       columns: Array<{
         title: string;
@@ -56,6 +63,4 @@ export type TerminalEntry =
       lines: TerminalLine[];
     };
 
-/** boot = pre-shell intro; interactive = live shell input */
 export type TerminalMode = "boot" | "interactive";
-

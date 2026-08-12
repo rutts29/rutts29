@@ -11,8 +11,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "check:repo": "node scripts/check-repo-hygiene.mjs",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify": "bun run check:repo && bun run typecheck && bun run lint && bun run build"
   },
   "dependencies": {
     "@gsap/react": "2.1.2",

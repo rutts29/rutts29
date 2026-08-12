@@ -1,34 +1,21 @@
-"use client";
-
-import { useEffect } from "react";
-
-type BootSequenceProps = {
-  onDone?: () => void;
-};
+import { portfolioContent } from "@/config/portfolioContent";
 
 const BOOT_STEPS: Array<{ label: string; status: string }> = [
-  { label: "rutts.runtime", status: "init" },
-  { label: "ai systems core", status: "online" },
-  { label: "applied ml stack", status: "mounted" },
-  { label: "retrieval + vectors", status: "ready" },
-  { label: "inference pipelines", status: "stable" },
-  { label: "security sandbox", status: "armed" },
+  { label: "portfolio.content", status: "loaded" },
+  { label: "research.index", status: "ready" },
+  { label: "project.records", status: "ready" },
+  { label: "experience.timeline", status: "ready" },
+  { label: "writing.index", status: "ready" },
+  { label: "contact.routes", status: "ready" },
 ];
 
 const ROW_BASE = 120;
 const ROW_STEP = 150;
 const IDENTITY_DELAY = ROW_BASE + BOOT_STEPS.length * ROW_STEP + 150;
-const DONE_DELAY = IDENTITY_DELAY + 650;
 
-export const BootSequence = ({ onDone }: BootSequenceProps) => {
-  useEffect(() => {
-    if (!onDone) {
-      return;
-    }
-    const timeout = setTimeout(onDone, DONE_DELAY);
-    return () => clearTimeout(timeout);
-  }, [onDone]);
+const { identity } = portfolioContent;
 
+export const BootSequence = () => {
   return (
     <div className="space-y-1.5">
       {BOOT_STEPS.map((step, index) => (
@@ -54,13 +41,13 @@ export const BootSequence = ({ onDone }: BootSequenceProps) => {
 
       <div className="fade-up" style={{ animationDelay: `${IDENTITY_DELAY + 180}ms` }}>
         <p className="chroma text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-[var(--color-text-primary)]">
-          Ruttansh Bhatelia
+          {identity.name}
         </p>
         <p className="mt-1.5 text-sm sm:text-base text-[var(--color-text-accent)]">
-          AI Systems Engineer · Applied ML Researcher — Toronto
+          {identity.title} · {identity.location}
         </p>
         <p className="mt-1.5 flex items-center text-sm sm:text-base text-[var(--color-text-secondary)]">
-          reliable AI systems and applied ML research.
+          {identity.hero}
           <span className="terminal-cursor ml-1.5" />
         </p>
       </div>

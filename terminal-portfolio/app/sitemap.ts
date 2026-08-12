@@ -1,16 +1,18 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+
+import { portfolioContent } from "@/config/portfolioContent";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const { siteUrl } = portfolioContent;
+
   return [
     {
-      url: "https://0xrutts.com",
-      lastModified: new Date(),
+      url: siteUrl,
       changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: "https://0xrutts.com/interactive",
-      lastModified: new Date(),
+      url: `${siteUrl}/interactive`,
       changeFrequency: "monthly",
       priority: 0.6,
     },

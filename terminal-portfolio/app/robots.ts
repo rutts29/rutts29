@@ -1,35 +1,13 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+
+import { portfolioContent } from "@/config/portfolioContent";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-      },
-      {
-        userAgent: [
-          "Googlebot",
-          "Bingbot",
-          "GPTBot",
-          "ChatGPT-User",
-          "OAI-SearchBot",
-          "Google-Extended",
-          "ClaudeBot",
-          "Claude-Web",
-          "anthropic-ai",
-          "PerplexityBot",
-          "cohere-ai",
-          "FacebookBot",
-          "Meta-ExternalAgent",
-          "Applebot",
-          "Applebot-Extended",
-          "Amazonbot",
-          "CCBot",
-        ],
-        allow: "/",
-      },
-    ],
-    sitemap: "https://0xrutts.com/sitemap.xml",
+    rules: {
+      userAgent: "*",
+      allow: "/",
+    },
+    sitemap: `${portfolioContent.siteUrl}/sitemap.xml`,
   };
 }

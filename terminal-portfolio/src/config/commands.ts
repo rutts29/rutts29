@@ -1,18 +1,18 @@
 import { portfolioContent } from "@/config/portfolioContent";
 import { themeNames } from "@/config/themes";
-import { CommandDefinition, TerminalLine } from "@/types/terminal";
-
-/** Terminal catalog + outputs derived from portfolioContent. */
+import type { CommandDefinition, TerminalLine } from "@/types/terminal";
 
 export const commandCatalog: CommandDefinition[] = [
   { key: "help", description: "List available commands" },
+  { key: "commands", description: "List available commands" },
   { key: "about", description: "Who I am and what I do" },
-  { key: "education", description: "Where I studied" },
-  { key: "skills", description: "Stacks, languages, and systems I build with" },
+  { key: "education", description: "Degree and academic focus" },
+  { key: "skills", description: "Technical skills and tools" },
   { key: "experience", description: "Roles and impact" },
-  { key: "projects", description: "Selected systems and prototypes" },
+  { key: "projects", description: "AI systems, research, and prototypes" },
   { key: "writing", description: "Publications and writing" },
   { key: "contact", description: "How to reach me" },
+  { key: "theme list", description: "List terminal themes" },
   { key: "theme set <name>", description: "Switch the terminal theme" },
   { key: "clear", description: "Reset the terminal history" },
   { key: "history", description: "Show recent commands" },
@@ -31,7 +31,7 @@ const contactPrefix: Record<string, string> = {
 
 const aboutLines: TerminalLine[] = [
   { type: "heading", text: "About" },
-  ...identity.about.map(
+  ...[identity.hero, identity.summary, ...identity.about].map(
     (text, index): TerminalLine => ({
       type: "text",
       text,
@@ -43,7 +43,11 @@ const aboutLines: TerminalLine[] = [
 const educationLines: TerminalLine[] = [
   { type: "heading", text: "Education" },
   { type: "text", text: identity.education.degree },
-  { type: "text", text: identity.education.detail, tone: "muted" },
+  {
+    type: "text",
+    text: identity.education.detail,
+    tone: "muted",
+  },
 ];
 
 const skillsLines: TerminalLine[] = [
@@ -63,12 +67,12 @@ const experienceLines: TerminalLine[] = [
     ...(index > 0 ? [{ type: "spacer" as const }] : []),
     {
       type: "text",
-      text: `${role.company} — ${role.role} · ${role.location}`,
+      text: `${role.company} · ${role.role} · ${role.location}`,
       tone: "accent",
     },
     {
       type: "text",
-      text: role.duration + (role.isCurrent ? " · Current" : ""),
+      text: role.duration,
       tone: "muted",
     },
     { type: "list", items: role.details },
@@ -97,21 +101,14 @@ const projectLines: TerminalLine[] = [
   { type: "heading", text: "Projects" },
   ...projects.flatMap((project, index): TerminalLine[] => [
     ...(index > 0 ? [{ type: "spacer" as const }] : []),
-    { type: "text", text: `${project.name} — ${project.summary}` },
+    { type: "text", text: project.name, tone: "accent" },
+    { type: "text", text: project.summary },
     { type: "text", text: project.description, tone: "muted" },
     {
       type: "text",
       text: `Stack: ${project.stack.join(", ")}`,
       tone: "muted",
     },
-    ...(project.links ?? []).map(
-      (link): TerminalLine => ({
-        type: "link",
-        label: link.label,
-        href: link.href,
-        prefix: link.prefix,
-      }),
-    ),
   ]),
 ];
 
@@ -138,21 +135,17 @@ const writingLines: TerminalLine[] = [
 const contactLines: TerminalLine[] = [
   { type: "heading", text: "Contact" },
   { type: "text", text: contact.intro, tone: "muted" },
-  ...contact.links
-    .filter((link) => link.href)
-    .map(
-      (link): TerminalLine => ({
-        type: "link",
-        label: link.label,
-        href: link.href!,
-        prefix: contactPrefix[link.icon],
-      }),
-    ),
+  ...contact.links.map(
+    (link): TerminalLine => ({
+      type: "link",
+      label: link.label,
+      href: link.href,
+      prefix: contactPrefix[link.icon],
+    }),
+  ),
   {
     type: "text",
-    text:
-      contact.links.find((link) => link.icon === "location")?.label ??
-      identity.locationDetail,
+    text: contact.location,
     tone: "muted",
   },
   { type: "spacer" },
@@ -176,14 +169,14 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
         "██║  ██║╚██████╔╝   ██║      ██║   ███████║",
         "╚═╝  ╚═╝ ╚═════╝    ╚═╝      ╚═╝   ╚══════╝",
         "",
-        "Welcome to Rutts' live shell.",
+        "Welcome to Rutts' portfolio shell.",
       ],
     },
   ],
   welcome: [
     {
       type: "text",
-      text: `yoo, I'm ${identity.shortName} (${identity.name.split(" ")[0]}) — ${identity.title} in Toronto.`,
+      text: `Hi, I'm ${identity.shortName}. ${identity.title}, based in ${identity.location}.`,
       tone: "accent",
     },
     {
@@ -204,10 +197,11 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
 export const getHelpLines = (): TerminalLine[] => [
   { type: "heading", text: "Available Commands" },
   {
-    type: "list",
-    items: commandCatalog.map(
-      (command) => `${command.key.padEnd(16, " ")} — ${command.description}`,
-    ),
+    type: "command-list",
+    items: commandCatalog.map(({ key, description }) => ({
+      command: key,
+      description,
+    })),
   },
 ];
 
@@ -219,11 +213,11 @@ export const getThemeListLines = (activeTheme?: string): TerminalLine[] => [
     tone: "muted",
   },
   {
-    type: "list",
-    items: themeNames.map(
-      (name) =>
-        `theme set ${name} — ${name === activeTheme ? `${name} (current)` : name}`,
-    ),
+    type: "command-list",
+    items: themeNames.map((name) => ({
+      command: `theme set ${name}`,
+      description: name === activeTheme ? "Current theme" : `Switch to ${name}`,
+    })),
   },
 ];
 

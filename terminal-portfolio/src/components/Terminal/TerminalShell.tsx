@@ -4,7 +4,7 @@ import { FormEvent, KeyboardEvent, useEffect, useRef } from "react";
 
 import { commandCatalog } from "@/config/commands";
 import { themeNames } from "@/config/themes";
-import { TerminalEntry, TerminalLine, TerminalMode } from "@/types/terminal";
+import type { TerminalEntry, TerminalLine, TerminalMode } from "@/types/terminal";
 
 type TerminalShellProps = {
   history: TerminalEntry[];
@@ -35,7 +35,6 @@ const canAutoFocusInput = () =>
 
 const renderLine = (
   line: TerminalLine,
-  mode: TerminalMode,
   onCommandClick?: (command: string) => void,
 ) => {
   switch (line.type) {
@@ -60,43 +59,38 @@ const renderLine = (
             </p>
           )}
           <ul className="mt-1 space-y-0.5 sm:space-y-1 text-[var(--color-text-secondary)]">
-            {line.items.map((item, index) => {
-              // Check if this is a help command list item (format: "command        — description")
-              // Help items have the pattern: command name (padded) — description
-              const trimmedItem = item.trim();
-              const isHelpItem = trimmedItem.includes(" — ") && 
-                trimmedItem.split(" — ")[0].trim().length > 0;
-              
-              if (isHelpItem && mode === "interactive" && onCommandClick) {
-                // Extract command name (everything before " — ", trimmed)
-                const parts = trimmedItem.split(" — ");
-                if (parts.length >= 2) {
-                  const commandName = parts[0].trim();
-                  const description = parts.slice(1).join(" — ");
-                  return (
-                    <li key={`${item}-${index}`} className="pl-3 sm:pl-4 text-sm sm:text-base">
-                      —{" "}
-                      <button
-                        type="button"
-                        onClick={() => onCommandClick(commandName)}
-                        className="font-mono text-[var(--color-text-accent)] hover:text-[var(--color-text-primary)] hover:underline cursor-pointer transition-colors"
-                      >
-                        {commandName}
-                      </button>
-                      {" — "}
-                      <span>{description}</span>
-                    </li>
-                  );
-                }
-              }
-              return (
-                <li key={`${item}-${index}`} className="pl-3 sm:pl-4 text-sm sm:text-base">
-                  — {item}
-                </li>
-              );
-            })}
+            {line.items.map((item) => (
+              <li key={item} className="pl-3 text-sm sm:pl-4 sm:text-base">
+                • {item}
+              </li>
+            ))}
           </ul>
         </div>
+      );
+    case "command-list":
+      return (
+        <ul className="mt-1 space-y-0.5 text-sm text-[var(--color-text-secondary)] sm:space-y-1 sm:text-base">
+          {line.items.map(({ command, description }) => (
+            <li key={command} className="pl-3 sm:pl-4">
+              •{" "}
+              {onCommandClick ? (
+                <button
+                  type="button"
+                  onClick={() => onCommandClick(command)}
+                  className="cursor-pointer font-mono text-[var(--color-text-accent)] transition-colors hover:text-[var(--color-text-primary)] hover:underline"
+                >
+                  {command}
+                </button>
+              ) : (
+                <span className="font-mono text-[var(--color-text-accent)]">
+                  {command}
+                </span>
+              )}
+              <span aria-hidden="true"> · </span>
+              <span>{description}</span>
+            </li>
+          ))}
+        </ul>
       );
     case "columns":
       return (
@@ -126,7 +120,7 @@ const renderLine = (
           <a
             href={line.href}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="text-[var(--color-text-link)] underline decoration-dotted underline-offset-2 sm:underline-offset-4 transition hover:text-[var(--color-text-accent)] break-all"
           >
             {line.label}
@@ -210,19 +204,15 @@ export const TerminalShell = ({
         return;
       }
 
-      // Filter commands that start with the current input
       const matches = autocompleteCommands.filter((cmd) =>
         cmd.toLowerCase().startsWith(trimmed.toLowerCase()),
       );
 
       if (matches.length > 0) {
-        // If there's exactly one match, complete it
         if (matches.length === 1) {
           setCurrentInput(matches[0]);
         } else {
-          // If multiple matches, cycle through them or use the first one
-          // Find the longest common prefix
-          const sortedMatches = matches.sort();
+          const sortedMatches = [...matches].sort();
           let commonPrefix = sortedMatches[0];
           for (let i = 1; i < sortedMatches.length; i++) {
             const match = sortedMatches[i];
@@ -236,11 +226,9 @@ export const TerminalShell = ({
             }
             commonPrefix = commonPrefix.slice(0, j);
           }
-          // If common prefix is longer than current input, use it
           if (commonPrefix.length > trimmed.length) {
             setCurrentInput(commonPrefix);
           } else {
-            // Otherwise, use the first match
             setCurrentInput(matches[0]);
           }
         }
@@ -336,7 +324,6 @@ export const TerminalShell = ({
                   <div key={`${entry.id}-${index}`}>
                     {renderLine(
                       line,
-                      mode,
                       isLive ? handleCommandClick : undefined,
                     )}
                   </div>
@@ -369,6 +356,7 @@ export const TerminalShell = ({
               )}
               <input
                 ref={inputRef}
+                aria-label="Terminal command"
                 value={currentInput}
                 onChange={(event) => setCurrentInput(event.target.value)}
                 onKeyDown={handleKeyDown}

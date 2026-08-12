@@ -1,8 +1,3 @@
-/**
- * Single source of truth for portfolio data.
- * Home and terminal both present this — do not duplicate facts elsewhere.
- */
-
 export type PortfolioLink = {
   label: string;
   href: string;
@@ -22,13 +17,11 @@ export type SkillGroup = {
 export type ExperienceRole = {
   company: string;
   companyUrl?: string;
-  partnerUrl?: string;
   role: string;
   duration: string;
   location: string;
   details: string[];
   isCurrent?: boolean;
-  /** Related publications or project links for this role. */
   relatedLinks?: PortfolioLink[];
 };
 
@@ -39,8 +32,6 @@ export type Project = {
   summary: string;
   description: string;
   stack: string[];
-  image?: string;
-  links?: PortfolioLink[];
 };
 
 export type WritingItem = {
@@ -48,27 +39,27 @@ export type WritingItem = {
   title: string;
   summary: string;
   meta?: string;
-  /** When false or omitted for notes that are not ready yet. */
-  published?: boolean;
   links?: PortfolioLink[];
 };
 
 export type ContactLink = {
   label: string;
-  href?: string;
-  icon: "email" | "linkedin" | "github" | "x" | "location";
+  href: string;
+  icon: "email" | "linkedin" | "github" | "x";
 };
 
 export type PortfolioContent = {
+  siteUrl: string;
   identity: {
     name: string;
     shortName: string;
     handle: string;
     title: string;
     location: string;
-    locationDetail: string;
     hero: string;
+    summary: string;
     about: string[];
+    specialties: string[];
     education: {
       degree: string;
       detail: string;
@@ -82,6 +73,7 @@ export type PortfolioContent = {
   contact: {
     heading: string;
     intro: string;
+    location: string;
     links: ContactLink[];
     demoCta: {
       label: string;
@@ -91,32 +83,44 @@ export type PortfolioContent = {
 };
 
 export const portfolioContent: PortfolioContent = {
+  siteUrl: "https://www.0xrutts.com",
   identity: {
     name: "Ruttansh Bhatelia",
     shortName: "Rutts",
     handle: "0xRutts",
     title: "AI Systems Engineer · Applied ML Researcher",
-    location: "Toronto, Canada",
-    locationDetail: "Toronto, Ontario · Open to relocate",
-    hero: "I build reliable AI systems and turn applied ML research into working tools.",
+    location: "Toronto, Ontario",
+    hero:
+      "I design the systems around AI models: agent harnesses, specialized workflows, and evaluation infrastructure built for security, observability, and human control.",
+    summary:
+      "Across coding agents, smart-contract security, and applied ML research, I use cross-model and cross-harness evidence to separate model behavior from context, tools, orchestration, and product failures.",
     about: [
-      "I am an AI Systems Engineer and Applied ML Researcher. I build reliable AI systems and turn applied ML research into working tools.",
-      "My strongest work is research plus local-first systems engineering — observability, evaluation, and bounded tooling for AI agents and training workflows.",
-      "I hold an Honours BSc in Computer Science (Data Analytics) and stay engaged with applied research partners.",
+      "My strongest work combines AI system design with security and product judgment across context, tools, permissions, provenance, state, and human control.",
+      "I turn that architecture into specialized systems for smart-contract security, AI-assisted development, and applied ML research.",
+    ],
+    specialties: [
+      "AI systems and agent harness design",
+      "Agentic workflow engineering",
+      "AI agent observability and evaluation",
+      "Cross-model and cross-harness evaluation",
+      "Model-decoupled workflow infrastructure",
+      "Context engineering and tool integration",
+      "Security, privacy, and human-in-the-loop controls",
+      "Applied machine learning research",
+      "Smart-contract security systems",
     ],
     education: {
       degree:
         "Honours Bachelor of Science in Computer Science (Data Analytics)",
-      detail:
-        "Graduated 2025 · Toronto, Ontario · Applied AI, data engineering, and research collaboration.",
+      detail: "Jan 2022 – Dec 2025 · Oakville, Ontario",
     },
   },
 
   proofFacts: [
-    { label: "Based in", value: "Toronto" },
-    { label: "Focus", value: "AI systems · applied ML" },
-    { label: "Evidence", value: "Research + local systems" },
-    { label: "Building at", value: "CredShields" },
+    { label: "Education", value: "Honours BSc · Data Analytics" },
+    { label: "Current role", value: "CredShields" },
+    { label: "Published at", value: "IEEE MSWiM 2025" },
+    { label: "Focus", value: "AI systems · evaluation" },
   ],
 
   projects: [
@@ -125,9 +129,9 @@ export const portfolioContent: PortfolioContent = {
       name: "agentlog",
       featured: true,
       summary:
-        "Local-first observability and evaluation for AI coding agents.",
+        "Local-first observability and evaluation across six AI coding harnesses.",
       description:
-        "Normalizes local harness artifacts into a provenance-aware SQLite ledger and revalidates source-backed transcript content before serving it. Six harness adapters; CLI, loopback dashboard, and read-only MCP tools with source identity checks.",
+        "Built read-only adapters and a provenance-aware SQLite ledger that reconcile duplicate sessions and revalidate transcript content from canonical local sources before serving it through a CLI, local dashboard, and read-only MCP tools.",
       stack: ["Python", "TypeScript", "SQLite", "MCP"],
     },
     {
@@ -135,39 +139,48 @@ export const portfolioContent: PortfolioContent = {
       name: "SolProbe",
       featured: true,
       summary:
-        "Local observability prototype for AI-training telemetry and anomaly workflows.",
+        "A local observability prototype for AI-training systems.",
       description:
-        "A Rust sidecar, FastAPI service, and Next.js dashboard cover Apple Silicon collection and repeatable simulated faults.",
+        "Built a Rust telemetry sidecar, FastAPI control plane for anomaly detection and policy evaluation, and Next.js operations console. The verified local scope covers Apple Silicon telemetry and repeatable simulated faults.",
       stack: ["Rust", "FastAPI", "Next.js", "PyTorch"],
-      image: "/projects/solprobe-landing.png",
     },
     {
       id: "codex2gpt",
       name: "codex2gpt",
       featured: true,
-      summary: "A bounded local bridge from ChatGPT to Codex.",
+      summary: "A local Rust prototype for bounded delegation between ChatGPT and Codex.",
       description:
-        "Rust MCP server combining OAuth/PKCE, workspace allowlists, managed worktrees, audit records, and explicit approval boundaries without exposing a raw shell by default.",
+        "Built a Rust MCP server with workspace-scoped context, managed worktrees, OAuth/PKCE, audit records, and approval boundaries that prevent model-controlled authorization without exposing a raw shell by default.",
       stack: ["Rust", "MCP", "OAuth"],
+    },
+    {
+      id: "smart-contract-thesis",
+      name: "Smart Contract Vulnerability Detection",
+      featured: true,
+      summary:
+        "Undergraduate thesis on CodeBERT and graph-based smart-contract analysis.",
+      description:
+        "Fine-tuned CodeBERT on 47,000+ smart contracts, reaching 99.89% binary accuracy and 89.31% multi-class accuracy on the thesis dataset. Also explored AST- and CFG-based graph models and template-based fixes for reentrancy and arithmetic overflow.",
+      stack: ["Python", "PyTorch", "Transformers", "Solidity"],
     },
     {
       id: "founder-intelligence",
       name: "Founder Intelligence",
       featured: false,
       summary:
-        "Local-first founder-intelligence plugin with bounded tools and approvals.",
+        "A host- and model-decoupled workflow for structured founder intelligence.",
       description:
-        "Nine bounded tools, explicit approval before paid X collection, SQLite persistence, and monthly credit controls.",
-      stack: ["TypeScript", "SQLite"],
+        "Built nine bounded MCP tools that turn untrusted X evidence into reviewable decisions, with approval before paid collection, SQLite persistence, and atomic monthly credit controls.",
+      stack: ["TypeScript", "SQLite", "MCP"],
     },
     {
       id: "local-sec",
       name: "local-sec",
       featured: false,
       summary:
-        "Local-first package-install guard for developer-tool installs.",
+        "A local-first guard for selected developer-tool installs.",
       description:
-        "Mature-version selection, advisory checks, supported-flow artifact scanning, explicit approvals, and metadata inventory before selected installs.",
+        "Built a zero-dependency Go guard that selects mature versions, checks advisories, stages and scans supported artifacts, and fails closed when package identity or policy cannot be proven.",
       stack: ["Go"],
     },
     {
@@ -175,11 +188,10 @@ export const portfolioContent: PortfolioContent = {
       name: "Keyed",
       featured: false,
       summary:
-        "Privacy-aware Solana social prototype exploring wallet identity and creator monetization.",
+        "A multi-service Solana social prototype with AI-assisted discovery.",
       description:
-        "Wallet identity, creator monetization, token-gated access, AI-assisted discovery, and tipping integrations.",
-      stack: ["TypeScript", "Rust", "Python", "Solana", "PostgreSQL"],
-      image: "/projects/keyed-landing.png",
+        "Architected and implemented a prototype spanning Next.js, Express and BullMQ, FastAPI retrieval and moderation pipelines, and Anchor programs for social and payment workflows.",
+      stack: ["TypeScript", "FastAPI", "Rust", "Solana", "Docker"],
     },
   ],
 
@@ -192,61 +204,40 @@ export const portfolioContent: PortfolioContent = {
         { label: "TypeScript", badgeSrc: "/badges/typescript.svg" },
         { label: "Rust", badgeSrc: "/badges/rust.svg" },
         { label: "C#", badgeSrc: "/badges/csharp.svg" },
-        { label: "R", badgeSrc: "/badges/r.svg" },
+        { label: "Solidity", badgeSrc: "/badges/solidity.svg" },
       ],
     },
     {
-      title: "AI, Data & ML Stack",
+      title: "AI & ML",
       items: [
         { label: "PyTorch", badgeSrc: "/badges/pytorch.svg" },
         { label: "TensorFlow", badgeSrc: "/badges/tensorflow.svg" },
         { label: "Hugging Face", badgeSrc: "/badges/hugging-face.svg" },
         { label: "Transformers", badgeSrc: "/badges/transformers.svg" },
-        { label: "Unsloth", badgeSrc: "/badges/unsloth.svg" },
-        { label: "vLLM", badgeSrc: "/badges/vllm.svg" },
-        { label: "DeepSpeed", badgeSrc: "/badges/deepspeed.svg" },
         { label: "Pandas", badgeSrc: "/badges/pandas.svg" },
         { label: "NumPy", badgeSrc: "/badges/numpy.svg" },
-        { label: "Tableau", badgeSrc: "/badges/tableau.svg" },
-        { label: "Power BI", badgeSrc: "/badges/power-bi.svg" },
       ],
     },
     {
-      title: "Full Stack",
+      title: "Web & Data Systems",
       items: [
-        { label: "HTML5", badgeSrc: "/badges/html5.svg" },
-        { label: "CSS3", badgeSrc: "/badges/css3.svg" },
-        { label: "React", badgeSrc: "/badges/react.svg" },
-        { label: "Next.js", badgeSrc: "/badges/next-js.svg" },
-        { label: "Node.js", badgeSrc: "/badges/node-js.svg" },
-        { label: "Express", badgeSrc: "/badges/express.svg" },
         { label: "FastAPI", badgeSrc: "/badges/fastapi.svg" },
-        { label: "Django", badgeSrc: "/badges/django.svg" },
-        { label: "Flask", badgeSrc: "/badges/flask.svg" },
+        { label: "Next.js", badgeSrc: "/badges/next-js.svg" },
+        { label: "React", badgeSrc: "/badges/react.svg" },
+        { label: "Node.js", badgeSrc: "/badges/node-js.svg" },
         { label: "PostgreSQL", badgeSrc: "/badges/postgresql.svg" },
-        { label: "MongoDB", badgeSrc: "/badges/mongodb.svg" },
-        { label: "MySQL", badgeSrc: "/badges/mysql.svg" },
         { label: "SQLite", badgeSrc: "/badges/sqlite.svg" },
-        { label: "Milvus", badgeSrc: "/badges/milvus.svg" },
-        { label: "Flutter", badgeSrc: "/badges/flutter.svg" },
       ],
     },
     {
-      title: "Infra, DevOps & Tooling",
+      title: "Infrastructure & Tooling",
       items: [
-        { label: "AWS", badgeSrc: "/badges/aws.svg" },
-        { label: "Google Cloud", badgeSrc: "/badges/google-cloud.svg" },
-        { label: "Azure", badgeSrc: "/badges/azure.svg" },
         { label: "Docker", badgeSrc: "/badges/docker.svg" },
         { label: "Git", badgeSrc: "/badges/git.svg" },
-        { label: "Vercel", badgeSrc: "/badges/vercel.svg" },
-        { label: "Netlify", badgeSrc: "/badges/netlify.svg" },
-        { label: "Heroku", badgeSrc: "/badges/heroku.svg" },
-        { label: "Firebase", badgeSrc: "/badges/firebase.svg" },
-        { label: "Cloudflare", badgeSrc: "/badges/cloudflare.svg" },
         { label: "Linux", badgeSrc: "/badges/linux.svg" },
-        { label: "Nginx", badgeSrc: "/badges/nginx.svg" },
-        { label: "Postman", badgeSrc: "/badges/postman.svg" },
+        { label: "AWS", badgeSrc: "/badges/aws.svg" },
+        { label: "Google Cloud", badgeSrc: "/badges/google-cloud.svg" },
+        { label: "Cloudflare", badgeSrc: "/badges/cloudflare.svg" },
       ],
     },
   ],
@@ -257,72 +248,57 @@ export const portfolioContent: PortfolioContent = {
       companyUrl: "https://credshields.com/",
       role: "AI Engineer & ML Researcher",
       duration: "Apr 2025 – Present",
-      location: "Part-time · Remote (Singapore)",
+      location: "Contract · Part-time · Remote",
       isCurrent: true,
       details: [
-        "Built backend and AI systems end to end for CredShields One: https://one.credshields.com/.",
-        "Built AI components for SolidityScan, CredShields' smart contract vulnerability scanner: https://solidityscan.com/.",
-        "Led LLM-assisted pipelines, RAG workflows, and finetuned models for smart contract vulnerability analysis.",
-      ],
-    },
-    {
-      company: "TELUS",
-      companyUrl: "https://www.telus.com/en",
-      role: "Machine Learning Researcher",
-      duration: "Jan 2025 – Apr 2025",
-      location: "Part-time · Oakville, Ontario",
-      details: [
-        "Architected a generative-AI indoor localization system with research partners.",
-        "Synthesized RSSI data with VAEs to auto-generate virtual fingerprints.",
-        "Co-authored an IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
+        "Lead the design and implementation of a backend AI system and agent harness for smart-contract security.",
+        "Develop domain-specific workflows, retrieval, and knowledge systems for LLM-assisted vulnerability analysis with explicit review boundaries.",
+        "Fine-tune and evaluate language models with PyTorch and Hugging Face, achieving 90%+ precision on the project's vulnerability-classification evaluation.",
       ],
       relatedLinks: [
         {
-          label: "10.1109/MSWiM67937.2025.11309178",
-          href: "https://doi.org/10.1109/MSWiM67937.2025.11309178",
-          prefix: "DOI",
+          label: "one.credshields.com",
+          href: "https://one.credshields.com/",
+          prefix: "CredShields One",
         },
         {
-          label: "DBLP record",
-          href: "https://dblp.org/rec/conf/mswim/AhmedSCDZB25",
-          prefix: "DBLP",
+          label: "solidityscan.com",
+          href: "https://solidityscan.com/",
+          prefix: "SolidityScan",
         },
       ],
     },
     {
-      company: "McMaster University",
-      companyUrl: "https://www.mcmaster.ca/",
-      role: "Full Stack Developer",
-      duration: "Sep 2024 – Dec 2024",
-      location: "Part-time · Oakville, Ontario",
+      company: "TELUS & Sheridan Centre for Applied AI",
+      role: "Machine Learning Researcher",
+      duration: "Jan 2025 – Apr 2025",
+      location: "Contract · Part-time · Oakville, Ontario",
       details: [
-        "Ported a web experience into a Flutter-powered iOS/Android build.",
-        "Enhanced UX, enforced GDPR/HIPAA compliance, and integrated Strapi + SQL.",
-        "Iterated via Figma, REST APIs, and Git-based review cycles.",
+        "Developed VAE and DDPM approaches for synthetic RSSI fingerprint generation in an industry-academic indoor-positioning project.",
+        "Integrated synthetic augmentation with regression pipelines for 2D apartment localization.",
+        "Evaluated synthetic-data quality and localization error across changing indoor conditions.",
       ],
     },
     {
-      company: "Osteoporosis Canada",
-      companyUrl: "https://osteoporosis.ca/",
-      partnerUrl: "https://naryant.com/",
+      company: "McMaster University & Sheridan Centre for Applied AI",
+      role: "Full Stack Developer",
+      duration: "Sep 2024 – Dec 2024",
+      location: "Contract · Part-time · Oakville, Ontario",
+      details: [
+        "Translated a web product into a Flutter app for iOS and Android.",
+        "Developed features for GDPR- and HIPAA-aligned handling of sensitive health data.",
+        "Built REST APIs, integrated Strapi CMS, and designed the SQL database schema.",
+      ],
+    },
+    {
+      company: "Osteoporosis Canada & Sheridan Centre for Applied AI",
       role: "Machine Learning Researcher",
       duration: "May 2024 – Aug 2024",
       location: "Co-op · Oakville, Ontario",
       details: [
-        "Collaborated on ML research and imminent fracture risk prediction.",
-        "Engineered features, trained ensembles, and raised accuracy 30–40%.",
-        "Documented outcomes for stakeholders and knowledge sharing.",
-      ],
-    },
-    {
-      company: "Freelance",
-      role: "Full Stack Developer",
-      duration: "Dec 2023 – May 2024",
-      location: "Part-time · Remote",
-      details: [
-        "Delivered full-stack web applications for diverse clients.",
-        "Built responsive frontends and scalable backends using modern frameworks.",
-        "Managed end-to-end development lifecycle from design to deployment.",
+        "Built machine-learning pipelines for imminent-fracture-risk prediction.",
+        "Combined Random Forest, XGBoost, and Logistic Regression in a soft-voting ensemble.",
+        "Evaluated precision-recall, ROC-AUC, and calibration trade-offs for false-negative-sensitive healthcare research.",
       ],
     },
   ],
@@ -333,9 +309,8 @@ export const portfolioContent: PortfolioContent = {
       title:
         "Low-Error Indoor Positioning via Synthetic RSSI Augmentation and Zx–WKNN Hybrid Model",
       summary:
-        "Co-authored an IEEE MSWiM 2025 paper on synthetic RSSI augmentation and a hybrid Zx–WKNN model for indoor positioning.",
+        "Co-authored research using autoencoders and VAEs for synthetic RSSI augmentation, reporting 6–25% lower RMSE and 11–400% higher R² in the paper's evaluation.",
       meta: "IEEE MSWiM 2025 · Conference paper",
-      published: true,
       links: [
         {
           label: "10.1109/MSWiM67937.2025.11309178",
@@ -351,16 +326,18 @@ export const portfolioContent: PortfolioContent = {
     },
     {
       id: "notes-soon",
-      title: "Engineering notes",
-      summary: "Short writing on AI systems and applied ML.",
-      meta: "Coming soon",
-      published: false,
+      title: "Technical articles",
+      summary:
+        "Concise notes on building, evaluating, and securing AI systems.",
+      meta: "Articles coming soon",
     },
   ],
 
   contact: {
     heading: "Let's talk.",
-    intro: "Open to roles and collaborations in applied AI and ML systems.",
+    intro:
+      "Open to AI engineering, agent infrastructure, and applied ML research roles, plus selected collaborations.",
+    location: "Toronto, Ontario; open to relocation",
     links: [
       {
         label: "rutts291@gmail.com",
@@ -382,15 +359,11 @@ export const portfolioContent: PortfolioContent = {
         href: "https://x.com/0xRutts",
         icon: "x",
       },
-      {
-        label: "Toronto, Ontario · Open to relocate",
-        icon: "location",
-      },
     ],
     demoCta: {
       label: "Request technical demo",
       mailto:
-        "mailto:rutts291@gmail.com?subject=Request%20technical%20demo%20%E2%80%94%200xRutts",
+        "mailto:rutts291@gmail.com?subject=Request%20technical%20demo%20%7C%200xRutts",
     },
   },
 };

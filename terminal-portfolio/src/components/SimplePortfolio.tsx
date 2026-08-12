@@ -80,7 +80,7 @@ const sectionMeta = [
   { id: "top", label: "Intro" },
   { id: "work", label: "Work" },
   { id: "experience", label: "Experience" },
-  { id: "focus", label: "Stack" },
+  { id: "focus", label: "Skills" },
   { id: "writing", label: "Publications" },
   { id: "contact", label: "Contact" },
 ] as const;
@@ -91,8 +91,7 @@ function parseLocation(location: string) {
   return { type: parts[0], place: parts.slice(1).join(" · ") };
 }
 
-/** First sentence of a detail as the punch line. */
-function punchLine(detail: string) {
+function formatLead(detail: string) {
   const cleaned = detail.replace(/https?:\/\/\S+/g, "").trim();
   return cleaned.replace(/\s+/g, " ").replace(/[.:]+$/, "");
 }
@@ -516,7 +515,7 @@ export function SimplePortfolio() {
             <a
               className="simple-wordmark"
               href="#top"
-              aria-label="Ruttansh Bhatelia, home"
+              aria-label={`${identity.name}, home`}
             >
               <Image
                 src="/core-image.jpg"
@@ -562,7 +561,7 @@ export function SimplePortfolio() {
               </div>
               <h1 className="simple-display">{identity.name}</h1>
               <p className="simple-lede">{identity.hero}</p>
-              <p className="simple-body-copy">{identity.about[1]}</p>
+              <p className="simple-body-copy">{identity.summary}</p>
               <div className="simple-actions">
                 <a className="simple-btn-primary" href="#work">
                   Selected work
@@ -575,7 +574,7 @@ export function SimplePortfolio() {
             <div className="simple-hero-portrait">
               <Image
                 src="/core-image.jpg"
-                alt="Ruttansh Bhatelia"
+                alt={identity.name}
                 width={320}
                 height={320}
                 priority
@@ -603,12 +602,12 @@ export function SimplePortfolio() {
             aria-labelledby="work-title"
           >
             <header className="simple-section-head simple-reveal">
-              <p className="simple-label">Work</p>
+              <p className="simple-label">Selected work</p>
               <h2 id="work-title" className="simple-heading">
-                Recent projects
+                AI systems and research
               </h2>
               <p className="simple-body-copy">
-                Systems and prototypes I&apos;ve built.
+                Observability, agent infrastructure, security, and applied ML.
               </p>
             </header>
 
@@ -621,8 +620,10 @@ export function SimplePortfolio() {
             {secondary.length > 0 ? (
               <>
                 <header className="simple-section-head simple-reveal" style={{ marginTop: "2rem" }}>
-                  <p className="simple-label">More</p>
-                  <h3 className="simple-title simple-title-lg">More projects</h3>
+                  <p className="simple-label">Additional work</p>
+                  <h3 className="simple-title simple-title-lg">
+                    Products and infrastructure
+                  </h3>
                 </header>
                 <div className="simple-list">
                   {secondary.map((project) => (
@@ -641,10 +642,10 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Experience</p>
               <h2 id="experience-title" className="simple-heading">
-                Where I&apos;ve worked.
+                Research and engineering roles
               </h2>
               <p className="simple-body-copy">
-                Applied AI and ML roles across product and research.
+                Applied AI, ML research, and product work across industry and academic collaborations.
               </p>
             </header>
 
@@ -671,7 +672,7 @@ export function SimplePortfolio() {
                 {experience.map((role) => {
                   const { type, place } = parseLocation(role.location);
                   const lead = role.details[0]
-                    ? punchLine(role.details[0])
+                    ? formatLead(role.details[0])
                     : "";
                   const year = startYear(role.duration);
                   return (
@@ -751,12 +752,12 @@ export function SimplePortfolio() {
             aria-labelledby="focus-title"
           >
             <header className="simple-section-head simple-reveal">
-              <p className="simple-label">Stack</p>
+              <p className="simple-label">Skills</p>
               <h2 id="focus-title" className="simple-heading">
-                Tools I use
+                Core tools
               </h2>
               <p className="simple-body-copy">
-                Languages, ML stack, and infrastructure I work with day to day.
+                The languages, frameworks, and infrastructure I use most.
               </p>
             </header>
 
@@ -771,7 +772,7 @@ export function SimplePortfolio() {
                     className="simple-badges"
                     aria-label={`${group.title} tools`}
                   >
-                    {group.items.slice(0, 6).map((item) =>
+                    {group.items.map((item) =>
                       item.badgeSrc ? (
                         <li key={item.label}>
                           <Image
@@ -797,10 +798,11 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Publications &amp; writing</p>
               <h2 id="writing-title" className="simple-heading">
-                Publications &amp; writing
+                Published results and system notes
               </h2>
               <p className="simple-body-copy">
-                Research papers and notes on AI systems and applied ML.
+                An IEEE conference paper, with concise articles on AI systems,
+                evaluation, and security to follow.
               </p>
             </header>
 
@@ -851,31 +853,29 @@ export function SimplePortfolio() {
             </div>
           </div>
           <ul className="simple-contact simple-reveal">
-            {contact.links
-              .filter((link) => link.href)
-              .map((link) => {
-                const isMail = link.href?.startsWith("mailto:");
-                return (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      {...(isMail || !link.href?.startsWith("http")
-                        ? {}
-                        : externalLinkProps)}
-                    >
-                      <span className="simple-contact-main">
-                        <span className="simple-contact-kind">
-                          {contactLabels[link.icon] ?? link.label}
-                        </span>
-                        <span className="simple-contact-detail">
-                          {link.label}
-                        </span>
+            {contact.links.map((link) => {
+              const isMail = link.href.startsWith("mailto:");
+              return (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    {...(isMail || !link.href.startsWith("http")
+                      ? {}
+                      : externalLinkProps)}
+                  >
+                    <span className="simple-contact-main">
+                      <span className="simple-contact-kind">
+                        {contactLabels[link.icon] ?? link.label}
                       </span>
-                      <ArrowUpRight aria-hidden="true" />
-                    </a>
-                  </li>
-                );
-              })}
+                      <span className="simple-contact-detail">
+                        {link.label}
+                      </span>
+                    </span>
+                    <ArrowUpRight aria-hidden="true" />
+                  </a>
+                </li>
+              );
+            })}
           </ul>
           <p className="simple-meta-line simple-copyright">
             © {new Date().getFullYear()} {identity.name}
@@ -886,22 +886,10 @@ export function SimplePortfolio() {
 }
 
 function ProjectCard({ project }: { project: Project }) {
-  const links = project.links ?? [];
-
   return (
     <article className="simple-project simple-reveal">
       <div className="simple-project-top">
         <h3 className="simple-title simple-title-lg">{project.name}</h3>
-        {links.length > 0 ? (
-          <div className="simple-inline-links">
-            {links.map((link) => (
-              <a key={link.href} href={link.href} {...externalLinkProps}>
-                {link.prefix ?? "Link"}
-                <ArrowUpRight aria-hidden="true" />
-              </a>
-            ))}
-          </div>
-        ) : null}
       </div>
       <p className="simple-outcome">{project.summary}</p>
       <p className="simple-body-copy">{project.description}</p>

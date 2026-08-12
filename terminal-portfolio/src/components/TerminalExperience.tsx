@@ -11,6 +11,7 @@ import {
 
 import { useThemeManager } from "@/hooks/useThemeManager";
 import { useTerminal } from "@/hooks/useTerminal";
+import { portfolioContent } from "@/config/portfolioContent";
 
 import { TopBar } from "./Layout/TopBar";
 import { BootSequence } from "./Terminal/BootSequence";
@@ -133,7 +134,7 @@ const IntroPanel = ({
             <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e] sm:h-3 sm:w-3" />
             <span className="h-2.5 w-2.5 rounded-full bg-[#27c93f] sm:h-3 sm:w-3" />
             <p className="ml-2 truncate text-[0.65rem] uppercase tracking-[0.3em] text-[var(--color-text-secondary)] sm:ml-4 sm:text-sm">
-              rutts@workspace — ~/portfolio
+              rutts@workspace · ~/portfolio
             </p>
             <span className="ml-auto whitespace-nowrap text-[0.65rem] text-[var(--color-text-success)] sm:text-sm">
               {liveShell ? "● live shell" : "● ready"}
@@ -186,6 +187,7 @@ const IntroPanel = ({
 };
 
 export const TerminalExperience = () => {
+  const { identity } = portfolioContent;
   const { themeName, theme, setTheme, cycleTheme } = useThemeManager();
   const {
     history,
@@ -294,7 +296,7 @@ export const TerminalExperience = () => {
         {isLiveShell && (
           <div className="flex max-w-2xl flex-col items-center gap-3 text-center text-sm text-[var(--color-text-secondary)]">
             <p className="text-[var(--color-text-primary)]">
-              Live shell — try:
+              Live shell. Try:
             </p>
             <p className="font-mono text-xs uppercase tracking-[0.35em] text-[var(--color-text-accent)]">
               {LIVE_SHELL_HINTS.join(" · ")}
@@ -310,7 +312,7 @@ export const TerminalExperience = () => {
         )}
 
         <p className="mt-4 text-center text-[0.75rem] uppercase tracking-[0.4em] text-[var(--color-text-secondary)]">
-          © 2026 0xRutts
+          © {new Date().getFullYear()} {identity.handle}
         </p>
       </div>
     </div>

@@ -8,7 +8,7 @@ import {
   staticCommandOutputs,
 } from "@/config/commands";
 import { themeNames } from "@/config/themes";
-import { TerminalEntry, TerminalLine, TerminalMode } from "@/types/terminal";
+import type { TerminalEntry, TerminalLine, TerminalMode } from "@/types/terminal";
 
 type UseTerminalOptions = {
   themeName: string;
@@ -61,7 +61,6 @@ const suggestedCommands = [
       command: command.key,
       description: command.description,
     })),
-  { command: "commands", description: "List available commands" },
   ...themeNames.map((name) => ({
     command: `theme set ${name}`,
     description: `Switch to ${name}`,
@@ -189,6 +188,7 @@ export const useTerminal = ({
       const normalized = trimmed.toLowerCase();
 
       if (normalized === "clear") {
+        commandLogRef.current = [];
         setHistory(createInitialHistory());
         return;
       }
@@ -242,8 +242,8 @@ export const useTerminal = ({
                 tone: "error",
               },
               {
-                type: "list",
-                items: [`${suggestion.command} — ${suggestion.description}`],
+                type: "command-list",
+                items: [suggestion],
               },
             ]
           : [

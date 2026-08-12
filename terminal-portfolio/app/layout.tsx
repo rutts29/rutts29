@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Instrument_Sans, Newsreader } from "next/font/google";
+
+import { portfolioContent } from "@/config/portfolioContent";
+
 import "./globals.css";
 
 /** Runs before paint — resolves theme so simple portfolio never FOUC. */
@@ -22,7 +25,6 @@ const themeBootScript = `
 })();
 `;
 
-/* Anthropic-adjacent stack: refined sans UI + editorial serif for display */
 const instrumentSans = Instrument_Sans({
   variable: "--font-portfolio-sans",
   subsets: ["latin"],
@@ -42,48 +44,43 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+const { siteUrl, identity, experience, skills, contact } = portfolioContent;
+const currentRole = experience.find((role) => role.isCurrent);
+const pageTitle = `${identity.name} | ${identity.title}`;
+const pageDescription = `${identity.name} is an ${identity.title.replace(" · ", " and ")} based in ${identity.location}. ${identity.hero}`;
+const profileUrls = contact.links
+  .map((link) => link.href)
+  .filter((href) => href.startsWith("https://"));
+
 export const metadata: Metadata = {
-  title: "Ruttansh Bhatelia — AI Systems Engineer · Applied ML Researcher",
-  description:
-    "Ruttansh Bhatelia is a Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems, applied ML research, and local-first tooling.",
-  keywords: [
-    "Ruttansh",
-    "Rutts",
-    "0xRutts",
-    "AI Systems Engineer",
-    "Applied ML Researcher",
-    "Machine Learning",
-    "Toronto",
-    "portfolio",
-  ],
-  authors: [{ name: "Ruttansh", url: "https://0xrutts.com" }],
-  creator: "Ruttansh",
-  metadataBase: new URL("https://0xrutts.com"),
+  title: pageTitle,
+  description: pageDescription,
+  authors: [{ name: identity.name, url: siteUrl }],
+  creator: identity.name,
+  metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://0xrutts.com",
-    siteName: "Ruttansh Bhatelia",
-    title: "Ruttansh Bhatelia — AI Systems Engineer · Applied ML Researcher",
-    description:
-      "Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems, applied ML research, and local-first tooling.",
+    url: siteUrl,
+    siteName: identity.name,
+    title: pageTitle,
+    description: pageDescription,
     images: [
       {
         url: "/core-image.jpg",
         width: 800,
         height: 800,
-        alt: "Ruttansh — 0xRutts",
+        alt: identity.name,
       },
     ],
   },
   twitter: {
     card: "summary",
-    title: "Ruttansh Bhatelia — AI Systems Engineer · Applied ML Researcher",
-    description:
-      "Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems, applied ML research, and local-first tooling.",
+    title: pageTitle,
+    description: pageDescription,
     creator: "@0xRutts",
     images: ["/core-image.jpg"],
   },
@@ -123,44 +120,42 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            // Static JSON-LD structured data - no user input, safe from XSS
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Person",
-              name: "Ruttansh Bhatelia",
-              alternateName: ["Rutts", "0xRutts"],
-              url: "https://0xrutts.com",
-              image: "https://0xrutts.com/core-image.jpg",
-              jobTitle: "AI Systems Engineer · Applied ML Researcher",
-              worksFor: {
-                "@type": "Organization",
-                name: "CredShields",
-                url: "https://credshields.com/",
-              },
-              alumniOf: {
-                "@type": "EducationalOrganization",
-                name: "Sheridan College",
-              },
-              knowsAbout: [
-                "Artificial Intelligence",
-                "Machine Learning",
-                "Full Stack Development",
-                "Python",
-                "TypeScript",
-                "PyTorch",
-                "RAG",
-                "LLM",
-              ],
-              sameAs: [
-                "https://github.com/rutts29",
-                "https://www.linkedin.com/in/ruttansh-bhatelia",
-                "https://x.com/0xRutts",
-              ],
-              address: {
-                "@type": "PostalAddress",
-                addressLocality: "Toronto",
-                addressRegion: "Ontario",
-                addressCountry: "CA",
+              "@type": "ProfilePage",
+              name: pageTitle,
+              description: pageDescription,
+              url: siteUrl,
+              mainEntity: {
+                "@type": "Person",
+                name: identity.name,
+                alternateName: [identity.shortName, identity.handle],
+                description: identity.hero,
+                url: siteUrl,
+                image: `${siteUrl}/core-image.jpg`,
+                jobTitle: identity.title,
+                worksFor: currentRole
+                  ? {
+                      "@type": "Organization",
+                      name: currentRole.company,
+                      url: currentRole.companyUrl,
+                    }
+                  : undefined,
+                knowsAbout: [
+                  "Artificial Intelligence",
+                  "Machine Learning",
+                  ...identity.specialties,
+                  ...skills.flatMap((group) =>
+                    group.items.map((item) => item.label),
+                  ),
+                ],
+                sameAs: profileUrls,
+                address: {
+                  "@type": "PostalAddress",
+                  addressLocality: "Toronto",
+                  addressRegion: "Ontario",
+                  addressCountry: "CA",
+                },
               },
             }),
           }}
