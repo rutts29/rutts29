@@ -131,8 +131,11 @@ function buildYearTrack(durations: string[]): number[] {
 
 export function SimplePortfolio() {
   const portfolioRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [timelineProgress, setTimelineProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("top");
+  const [reachedYears, setReachedYears] = useState<Set<number>>(() => new Set());
   const theme = useSyncExternalStore(
     subscribeToTheme,
     getResolvedThemeSnapshot,
@@ -243,6 +246,37 @@ export function SimplePortfolio() {
         if (el.getBoundingClientRect().top <= marker) current = section.id;
       }
       setActiveSection(current);
+
+      /* Trajectory rail fill + node activation as the section scrolls */
+      const timeline = timelineRef.current;
+      if (timeline) {
+        const rect = timeline.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const focus = vh * 0.42;
+        const start = rect.top;
+        const end = rect.bottom;
+        const span = Math.max(1, end - start);
+        const p = Math.min(1, Math.max(0, (focus - start) / span));
+        setTimelineProgress(p);
+
+        const fillY = start + span * p;
+        const years = new Set<number>();
+        timeline.querySelectorAll<HTMLElement>(".simple-timeline-item").forEach((item) => {
+          const node = item.querySelector(".simple-timeline-node");
+          if (!(node instanceof HTMLElement)) return;
+          const mid =
+            node.getBoundingClientRect().top +
+            node.getBoundingClientRect().height / 2;
+          const reached = mid <= fillY + 6;
+          item.classList.toggle("is-reached", reached);
+          node.classList.toggle("is-active", reached);
+          if (reached) {
+            const y = Number(item.dataset.year);
+            if (!Number.isNaN(y)) years.add(y);
+          }
+        });
+        setReachedYears(years);
+      }
     };
 
     onScroll();
@@ -558,78 +592,93 @@ export function SimplePortfolio() {
               aria-label="Years along the trajectory"
             >
               {yearTrack.map((year) => (
-                <span className="simple-year-tick" key={year}>
+                <span
+                  className={
+                    reachedYears.has(year)
+                      ? "simple-year-tick is-active"
+                      : "simple-year-tick"
+                  }
+                  key={year}
+                >
                   {year}
                 </span>
               ))}
             </div>
 
-            <ol className="simple-timeline">
-              {experience?.timeline?.map((role, index) => {
-                const { type, place } = parseLocation(role.location);
-                const lead = role.details[0]
-                  ? punchLine(role.details[0])
-                  : "";
-                const year = startYear(role.duration);
-                return (
-                  <li
-                    className="simple-timeline-item simple-reveal"
-                    key={`${role.company}-${role.role}-${role.duration}`}
-                  >
-                    <div className="simple-timeline-aside" aria-hidden="true">
-                      <span className="simple-timeline-year">{year}</span>
-                      <span
-                        className={
-                          role.isCurrent || index === 0
-                            ? "simple-timeline-node is-active"
-                            : "simple-timeline-node"
-                        }
-                      />
-                    </div>
-                    <div className="simple-timeline-card">
-                      <div className="simple-role-head">
-                        <div className="simple-role-title-line">
-                          <h3 className="simple-title">{role.role}</h3>
-                          <p className="simple-meta-line">{role.duration}</p>
-                        </div>
-                        <p className="simple-meta-line">
-                          {role.companyUrl ? (
-                            <a href={role.companyUrl} {...externalLinkProps}>
-                              {role.company}
-                            </a>
-                          ) : (
-                            <span className="simple-meta-strong">
-                              {role.company}
-                            </span>
-                          )}
-                          <span className="simple-dot" aria-hidden="true">
-                            ·
-                          </span>
-                          <span>{type}</span>
-                          {place ? (
-                            <>
-                              <span className="simple-dot" aria-hidden="true">
-                                ·
+            <div
+              className="simple-timeline"
+              ref={timelineRef}
+              style={
+                {
+                  ["--timeline-progress" as string]: String(timelineProgress),
+                }
+              }
+            >
+              <div className="simple-timeline-rail" aria-hidden="true">
+                <div className="simple-timeline-rail-fill" />
+              </div>
+              <ol className="simple-timeline-list">
+                {experience?.timeline?.map((role) => {
+                  const { type, place } = parseLocation(role.location);
+                  const lead = role.details[0]
+                    ? punchLine(role.details[0])
+                    : "";
+                  const year = startYear(role.duration);
+                  return (
+                    <li
+                      className="simple-timeline-item simple-reveal"
+                      data-year={year}
+                      key={`${role.company}-${role.role}-${role.duration}`}
+                    >
+                      <span className="simple-timeline-year" aria-hidden="true">
+                        {year}
+                      </span>
+                      <span className="simple-timeline-node" aria-hidden="true" />
+                      <div className="simple-timeline-card">
+                        <div className="simple-role-head">
+                          <div className="simple-role-title-line">
+                            <h3 className="simple-title">{role.role}</h3>
+                            <p className="simple-meta-line">{role.duration}</p>
+                          </div>
+                          <p className="simple-meta-line">
+                            {role.companyUrl ? (
+                              <a href={role.companyUrl} {...externalLinkProps}>
+                                {role.company}
+                              </a>
+                            ) : (
+                              <span className="simple-meta-strong">
+                                {role.company}
                               </span>
-                              <span>{place}</span>
-                            </>
-                          ) : null}
-                          {role.isCurrent ? (
-                            <span className="simple-pill">Current</span>
-                          ) : null}
-                        </p>
+                            )}
+                            <span className="simple-dot" aria-hidden="true">
+                              ·
+                            </span>
+                            <span>{type}</span>
+                            {place ? (
+                              <>
+                                <span className="simple-dot" aria-hidden="true">
+                                  ·
+                                </span>
+                                <span>{place}</span>
+                              </>
+                            ) : null}
+                            {role.isCurrent ? (
+                              <span className="simple-pill">Current</span>
+                            ) : null}
+                          </p>
+                        </div>
+                        {lead ? <p className="simple-outcome">{lead}</p> : null}
+                        <ul className="simple-bullets">
+                          {role.details.slice(1, 3).map((detail) => (
+                            <li key={detail}>{detail}</li>
+                          ))}
+                        </ul>
                       </div>
-                      {lead ? <p className="simple-outcome">{lead}</p> : null}
-                      <ul className="simple-bullets">
-                        {role.details.slice(1, 3).map((detail) => (
-                          <li key={detail}>{detail}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
           </section>
 
           <section
