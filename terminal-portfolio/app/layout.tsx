@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Instrument_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
-import "./simple-portfolio.css";
 
 /** Runs before paint — resolves theme so simple portfolio never FOUC. */
 const themeBootScript = `
@@ -109,6 +108,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
+  viewportFit: "cover" as const,
 };
 
 export default function RootLayout({

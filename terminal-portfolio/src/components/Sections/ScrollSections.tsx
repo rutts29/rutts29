@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 
 import { ScrollTimelineEntry } from "@/types/scroll";
 
@@ -406,11 +407,13 @@ export const ScrollSections = ({
                             className="block w-full overflow-hidden border-t transition-opacity hover:opacity-90"
                             style={{ borderColor: "var(--surface-card-border)" }}
                           >
-                            <img
+                            <Image
                               src={project.image}
                               alt={`${project.name} landing page`}
+                              width={1200}
+                              height={720}
                               className="w-full h-auto max-h-[240px] sm:max-h-[280px] 2xl:max-h-[320px] object-cover object-top"
-                              loading="lazy"
+                              sizes="(max-width: 768px) 100vw, 720px"
                             />
                           </a>
                         )}
@@ -435,12 +438,13 @@ export const ScrollSections = ({
                         <div className="flex flex-wrap items-center gap-2">
                           {group.items.map((item) => (
                             item.badgeSrc ? (
-                              <img
+                              <Image
                                 key={item.label}
                                 src={item.badgeSrc}
                                 alt={`${item.label} badge`}
+                                width={120}
+                                height={28}
                                 className="h-6 w-auto rounded-md border border-[var(--surface-card-border)] bg-[var(--surface-panel-bg)]"
-                                loading="lazy"
                               />
                             ) : (
                               <span
@@ -452,11 +456,12 @@ export const ScrollSections = ({
                                 }}
                               >
                                 {item.iconSrc && (
-                                  <img
+                                  <Image
                                     src={item.iconSrc}
                                     alt={`${item.label} icon`}
+                                    width={16}
+                                    height={16}
                                     className="h-4 w-4"
-                                    loading="lazy"
                                   />
                                 )}
                                 <span className="text-[var(--color-text-secondary)]">

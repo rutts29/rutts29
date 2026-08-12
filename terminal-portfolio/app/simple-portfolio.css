@@ -16,6 +16,7 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --dur: 220ms;
   --dur-slow: 520ms;
+  --simple-header-h: 64px;
   --simple-ink-a: rgba(70, 70, 80, 0.1);
   --simple-ink-b: rgba(40, 70, 110, 0.1);
   --simple-ink-c: rgba(80, 55, 50, 0.08);
@@ -31,8 +32,10 @@
   position: relative;
   isolation: isolate;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: clip;
   overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
   background-color: var(--simple-bg);
   color: var(--simple-text);
   font-family: var(--font-ui);
@@ -41,6 +44,8 @@
   line-height: 1.6;
   letter-spacing: -0.011em;
   -webkit-tap-highlight-color: transparent;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
   transition:
     background-color 380ms var(--ease-out),
     color 380ms var(--ease-out);
@@ -91,8 +96,8 @@ html[data-simple-theme="dark"] .simple-portfolio {
 
 .simple-scroll-cue {
   position: fixed;
-  right: 20px;
-  bottom: 20px;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
   z-index: 45;
   display: flex;
   align-items: center;
@@ -358,6 +363,7 @@ html[data-simple-theme="dark"] .simple-portfolio .simple-atmosphere-fiber {
   position: relative;
   z-index: 1;
   width: min(1040px, calc(100% - 48px));
+  max-width: 100%;
   margin-inline: auto;
   box-sizing: border-box;
 }
@@ -576,7 +582,9 @@ button:focus-visible {
 
 /* ── Hero ──────────────────────────────────────────────────────── */
 .simple-hero {
-  min-height: calc(100svh - 64px);
+  min-height: calc(100vh - var(--simple-header-h));
+  min-height: calc(100svh - var(--simple-header-h));
+  min-height: calc(100dvh - var(--simple-header-h));
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(160px, 0.7fr);
   align-items: center;
@@ -1265,7 +1273,26 @@ button:focus-visible {
 /* Reveal motion lives in globals.css */
 
 /* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .simple-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(140px, 0.55fr);
+    gap: 28px 32px;
+  }
+
+  .simple-proof {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .simple-skill-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 @media (max-width: 760px) {
+  .simple-portfolio {
+    --simple-header-h: 60px;
+  }
+
   .simple-shell {
     width: min(100% - 32px, 1040px);
   }
@@ -1280,10 +1307,17 @@ button:focus-visible {
   }
 
   .simple-hero {
-    min-height: calc(100svh - 60px);
+    min-height: calc(100vh - var(--simple-header-h));
+    min-height: calc(100svh - var(--simple-header-h));
+    min-height: calc(100dvh - var(--simple-header-h));
     grid-template-columns: 1fr;
     gap: 28px;
-    padding-block: 64px 72px;
+    padding-block: 48px 64px;
+  }
+
+  .simple-scroll-cue {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
   }
 
   .simple-hero-portrait {
@@ -1356,10 +1390,21 @@ button:focus-visible {
     grid-template-columns: 1fr;
     gap: 28px;
     padding-top: 64px;
+    padding-bottom: max(40px, env(safe-area-inset-bottom));
   }
 
-  .simple-copyright {
-    margin-top: 24px;
+  .simple-interactive span {
+    /* Keep label; still one-line control on small phones */
+    max-width: 9.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Ultra-wide: keep content readable, don’t stretch forever */
+@media (min-width: 1600px) {
+  .simple-shell {
+    width: min(1120px, calc(100% - 80px));
   }
 }
 
