@@ -554,7 +554,7 @@ export function SimplePortfolio() {
               />
               <Link className="simple-interactive" href="/interactive">
                 <SquareTerminal aria-hidden="true" />
-                <span>Interactive view</span>
+                <span>Immersive</span>
               </Link>
             </div>
           </div>

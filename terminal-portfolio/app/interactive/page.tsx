@@ -4,22 +4,22 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { TerminalExperience } from "@/components/TerminalExperience";
 
 export const metadata: Metadata = {
-  title: "Interactive view | Ruttansh",
+  title: "Immersive | Ruttansh",
   description:
-    "Explore Ruttansh's AI engineering and machine learning work through an interactive portfolio experience.",
+    "Explore Ruttansh's AI engineering and machine learning work in an immersive interactive portfolio.",
   alternates: {
     canonical: "/interactive",
   },
   openGraph: {
-    title: "Interactive view | Ruttansh",
+    title: "Immersive | Ruttansh",
     description:
-      "Explore Ruttansh's AI engineering and machine learning work through an interactive portfolio experience.",
+      "Explore Ruttansh's AI engineering and machine learning work in an immersive interactive portfolio.",
     url: "/interactive",
   },
   twitter: {
-    title: "Interactive view | Ruttansh",
+    title: "Immersive | Ruttansh",
     description:
-      "Explore Ruttansh's AI engineering and machine learning work through an interactive portfolio experience.",
+      "Explore Ruttansh's AI engineering and machine learning work in an immersive interactive portfolio.",
   },
 };
 

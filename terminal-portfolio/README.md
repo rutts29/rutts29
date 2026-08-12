@@ -6,8 +6,8 @@ Personal portfolio for [0xrutts.com](https://0xrutts.com).
 
 | Route | Experience |
 | --- | --- |
-| `/` | Simple, scannable AI/ML portfolio (default) |
-| `/interactive` | Interactive terminal-style portfolio |
+| `/` | Overview — scannable AI/ML portfolio (default) |
+| `/interactive` | Immersive terminal-style experience |
 | `/terminal` | Permanent redirect → `/interactive` (legacy) |
 
 ## Stack

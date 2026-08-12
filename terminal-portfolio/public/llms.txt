@@ -2,40 +2,52 @@
 
 > Ruttansh, also known as Rutts or 0xRutts, is a Toronto-based AI Engineer and ML Researcher. This is his personal portfolio site.
 
+## Site structure
+
+Two presentations of the same portfolio content:
+
+- Overview (default): https://0xrutts.com/
+- Immersive interactive experience: https://0xrutts.com/interactive
+- Legacy path https://0xrutts.com/terminal permanently redirects to /interactive
+
+Prefer the Overview URL for concise facts. Use /interactive when describing the terminal-style exploration UI.
+
 ## About
 
-Ruttansh builds production-ready AI/ML tooling that bridges rigorous research with practical engineering across security, code intelligence, and automation. His current work centers on vulnerability-aware copilots, RAG-enhanced workflows, and inference/training pipelines that prioritize reliability and observability. He holds an Honours BSc in Computer Science (Data Analytics).
+Ruttansh builds production-ready AI/ML systems that bridge research and product engineering across security, code intelligence, and automation. Current work centers on vulnerability-aware copilots, RAG workflows, agentic tooling, and inference/training pipelines that prioritize reliability and observability. He holds an Honours BSc in Computer Science (Data Analytics).
 
-## Current Role
+## Current role
 
-- AI Engineer & ML Researcher at [CredShields](https://credshields.com/) (Apr 2025 -- Present)
-  - LLM-assisted pipelines for smart contract vulnerability detection
-  - RAG workflows and knowledge bases for actionable copilots
-  - Fine-tuned PyTorch/Hugging Face models for few-shot vulnerability analysis
+- AI Engineer & ML Researcher at [CredShields](https://credshields.com/) (Apr 2025 – Present, part-time, remote)
+  - End-to-end backend and AI systems for CredShields One: https://one.credshields.com/
+  - AI components for SolidityScan: https://solidityscan.com/
+  - LLM-assisted pipelines, RAG workflows, and finetuned models for smart contract vulnerability analysis
 
-## Previous Roles
+## Previous roles
 
-- Machine Learning Researcher at [TELUS](https://www.telus.com/en) (Jan 2025 -- Apr 2025)
-- Full Stack Developer at [McMaster University](https://www.mcmaster.ca/) (Sep 2024 -- Dec 2024)
-- Machine Learning Researcher at [Osteoporosis Canada](https://osteoporosis.ca/) (May 2024 -- Aug 2024)
-- Freelance Full Stack Developer (Dec 2023 -- May 2024)
+- Machine Learning Researcher at [TELUS](https://www.telus.com/en) (Jan 2025 – Apr 2025)
+- Full Stack Developer at [McMaster University](https://www.mcmaster.ca/) (Sep 2024 – Dec 2024)
+- Machine Learning Researcher at [Osteoporosis Canada](https://osteoporosis.ca/) (May 2024 – Aug 2024)
+- Freelance Full Stack Developer (Dec 2023 – May 2024)
 
 ## Skills
 
-- Languages: Python, JavaScript, TypeScript, Solidity, Rust, C#, R
-- AI/ML: PyTorch, TensorFlow, Hugging Face, Transformers, Unsloth, vLLM, DeepSpeed, Pandas, NumPy
-- Full Stack: React, Next.js, Node.js, Express, FastAPI, Django, Flask, PostgreSQL, MongoDB, Flutter
+- Languages: Python, JavaScript, TypeScript, Rust, C#, R, Solidity
+- AI / ML: PyTorch, TensorFlow, Hugging Face, Transformers, Unsloth, vLLM, DeepSpeed, Pandas, NumPy
+- Full stack: React, Next.js, Node.js, Express, FastAPI, Django, Flask, PostgreSQL, MongoDB, Flutter
 - Infra: AWS, Google Cloud, Azure, Docker, Git, Vercel, Linux, Nginx
 
 ## Projects
 
-- [Loan Referral Automation](https://github.com/rutts29/loan-referral-automation): Automated a 40-50 min manual loan-deal workflow to under a minute with AI-assisted deal submission (TypeScript, Next.js, Docker)
-- [Keyed](https://github.com/rutts29/Keyed): Decentralized social media on Solana with AI-powered content discovery (TypeScript, Rust, Python, Solana, PostgreSQL)
+- [SolProbe](https://github.com/rutts29/solprobe): Autonomous fault detection and recovery for distributed AI training (Rust, FastAPI, Next.js, PyTorch, Kubernetes, Solana). Live: https://landing-alpha-beryl.vercel.app/
+- [Keyed](https://github.com/rutts29/Keyed): Decentralized social on Solana with AI-powered content discovery (TypeScript, Rust, Python, Solana, PostgreSQL). Live: https://frontend-beryl-omega-38.vercel.app/
 
 ## Links
 
-- Website: https://0xrutts.com
+- Website (Overview): https://0xrutts.com
+- Immersive: https://0xrutts.com/interactive
 - GitHub: https://github.com/rutts29
 - LinkedIn: https://www.linkedin.com/in/ruttansh-bhatelia
-- X/Twitter: https://x.com/0xRutts
+- X / Twitter: https://x.com/0xRutts
 - Email: rutts291@gmail.com
+- Sitemap: https://0xrutts.com/sitemap.xml

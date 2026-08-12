@@ -15,34 +15,44 @@ export const TopBar = ({
 }: TopBarProps) => {
   return (
     <div
-      className="w-full flex items-center justify-between gap-4 sm:gap-6 rounded-3xl border px-6 py-3 sm:px-8 sm:py-4 md:px-12 md:py-4 lg:px-16 lg:py-5 backdrop-blur-lg shadow-[0_25px_120px_rgba(0,0,0,0.25)]"
+      className="w-full flex items-center justify-between gap-3 sm:gap-6 rounded-3xl border px-4 py-3 sm:px-8 sm:py-4 md:px-12 md:py-4 lg:px-16 lg:py-5 backdrop-blur-lg shadow-[0_25px_120px_rgba(0,0,0,0.25)]"
       style={{
         background: "var(--surface-panel-bg)",
         borderColor: "var(--surface-panel-border)",
-        boxShadow: "0 0 20px rgba(255, 255, 255, 0.1), 0 25px 120px rgba(0,0,0,0.25)",
+        boxShadow:
+          "0 0 20px rgba(255, 255, 255, 0.1), 0 25px 120px rgba(0,0,0,0.25)",
       }}
     >
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-        <div className="min-w-0 flex-1">
-          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-text-primary)] truncate">
+      <div className="flex min-w-0 flex-1 flex-col gap-2 sm:gap-2.5">
+        <Link
+          href="/"
+          className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wide text-[var(--color-text-primary)] transition hover:text-[var(--color-text-accent)] sm:px-3.5 sm:py-2 sm:text-sm"
+          style={{
+            background: "var(--surface-card-bg)",
+            borderColor: "var(--surface-card-border)",
+          }}
+        >
+          <span aria-hidden="true" className="text-[var(--color-text-accent)]">
+            ←
+          </span>
+          <span className="truncate">Overview</span>
+        </Link>
+        <div className="min-w-0">
+          <p className="truncate text-lg font-bold text-[var(--color-text-primary)] sm:text-2xl md:text-3xl lg:text-4xl">
             0xRutts
           </p>
-          <p className="text-[0.6rem] sm:text-sm md:text-base lg:text-lg text-[var(--color-text-secondary)] mt-1 sm:mt-2.5 md:mt-3">
+          <p className="mt-1 text-[0.6rem] text-[var(--color-text-secondary)] sm:mt-2 sm:text-sm md:text-base lg:text-lg">
             <span className="sm:hidden">Agentic Engineer · ML Researcher</span>
-            <span className="hidden sm:inline">Agentic Engineer · ML Researcher · Micromanaging Claude & Cursor Agents</span>
+            <span className="hidden sm:inline">
+              Agentic Engineer · ML Researcher · Micromanaging Claude &amp;
+              Cursor Agents
+            </span>
           </p>
         </div>
       </div>
-      <div className="relative flex items-center gap-2 sm:gap-3 flex-shrink-0">
-        <div className="flex items-center gap-3 sm:gap-4 text-[var(--color-text-secondary)]">
-          {/* Quiet exit — history back is enough when they came from home; this covers deep links */}
-          <Link
-            href="/"
-            className="text-[0.65rem] sm:text-xs font-semibold uppercase tracking-[0.18em] transition hover:text-[var(--color-text-accent)] whitespace-nowrap"
-          >
-            <span className="sm:hidden">Simple</span>
-            <span className="hidden sm:inline">Simple view</span>
-          </Link>
+
+      <div className="relative flex shrink-0 items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-3 text-[var(--color-text-secondary)] sm:gap-4">
           <a
             href="https://github.com/rutts29"
             target="_blank"
@@ -80,15 +90,15 @@ export const TopBar = ({
         <button
           type="button"
           onClick={onCycleTheme}
-          className="flex items-center gap-1 sm:gap-2 rounded-full border px-2 py-0.5 sm:px-3 sm:py-1 text-[0.65rem] sm:text-xs font-semibold uppercase tracking-[0.25em] text-[var(--color-text-secondary)] transition"
+          className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-[var(--color-text-secondary)] transition sm:gap-2 sm:px-3 sm:py-1 sm:text-xs"
           style={{
             background: "var(--surface-card-bg)",
             borderColor: "var(--surface-card-border)",
           }}
         >
-          <span className="relative flex h-4 w-8 sm:h-5 sm:w-10 items-center rounded-full bg-[var(--surface-panel-border)]/40 p-0.5">
+          <span className="relative flex h-4 w-8 items-center rounded-full bg-[var(--surface-panel-border)]/40 p-0.5 sm:h-5 sm:w-10">
             <span
-              className="absolute h-3 w-3 sm:h-4 sm:w-4 rounded-full bg-[var(--color-text-accent)] shadow-[0_0_12px_rgba(0,0,0,0.35)] transition-transform"
+              className="absolute h-3 w-3 rounded-full bg-[var(--color-text-accent)] shadow-[0_0_12px_rgba(0,0,0,0.35)] transition-transform sm:h-4 sm:w-4"
               style={{
                 transform:
                   themeName === "light"
