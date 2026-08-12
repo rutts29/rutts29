@@ -30,14 +30,14 @@ Co-authored research using autoencoders and variational autoencoders for synthet
 
 ## Experience
 
-- **AI Engineer & ML Researcher, CredShields** · Apr 2025 – Present · Contract, part-time, remote
-- **Machine Learning Researcher, TELUS & Sheridan Centre for Applied AI** · Jan 2025 – Apr 2025
-- **Full Stack Developer, McMaster University & Sheridan Centre for Applied AI** · Sep 2024 – Dec 2024
-- **Machine Learning Researcher, Osteoporosis Canada & Sheridan Centre for Applied AI** · May 2024 – Aug 2024
+- **AI Engineer & ML Researcher, [CredShields](https://credshields.com/)** · Apr 2025 – Present · Contract, part-time, remote
+- **Machine Learning Researcher, [TELUS](https://www.telus.com/) & [Sheridan Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai)** · Jan 2025 – Apr 2025
+- **Full Stack Developer, [McMaster University](https://www.mcmaster.ca/) & [Sheridan Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai)** · Sep 2024 – Dec 2024
+- **Machine Learning Researcher, [Osteoporosis Canada](https://osteoporosis.ca/) & [Sheridan Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai)** · May 2024 – Aug 2024
 
 ## Education
 
-**Honours Bachelor of Science in Computer Science (Data Analytics)** · Jan 2022 – Dec 2025
+**Honours Bachelor of Science in Computer Science** · Specialization in Data Analytics & Machine Learning · Jan 2022 – Dec 2025
 
 ## Core tools
 

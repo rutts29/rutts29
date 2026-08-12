@@ -484,8 +484,8 @@ html[data-simple-theme="dark"] .simple-portfolio .simple-atmosphere-fiber {
     color-mix(in srgb, var(--simple-bg) 55%, transparent) 0%,
     color-mix(in srgb, var(--simple-bg) 28%, transparent) 100%
   );
-  backdrop-filter: blur(16px) saturate(1.02);
   -webkit-backdrop-filter: blur(16px) saturate(1.02);
+  backdrop-filter: blur(16px) saturate(1.02);
   transition: background 380ms var(--ease-out);
 }
 

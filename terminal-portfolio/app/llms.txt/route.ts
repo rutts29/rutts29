@@ -1,4 +1,7 @@
-import { portfolioContent } from "@/config/portfolioContent";
+import {
+  formatOrganizationNames,
+  portfolioContent,
+} from "@/config/portfolioContent";
 
 export const dynamic = "force-static";
 
@@ -53,7 +56,11 @@ const lines = (() => {
     "",
     ...(currentRole
       ? [
-          `- ${currentRole.role} at ${currentRole.company} (${currentRole.duration})`,
+          `- ${currentRole.role} at ${formatOrganizationNames(currentRole.organizations)} (${currentRole.duration})`,
+          ...currentRole.organizations.map(
+            (organization) =>
+              `  - ${organization.label}: ${organization.href}`,
+          ),
           ...currentRole.details.map((detail) => `  - ${detail}`),
           ...(currentRole.relatedLinks ?? []).map(
             (link) => `  - ${link.prefix ?? link.label}: ${link.href}`,
@@ -63,9 +70,12 @@ const lines = (() => {
     "",
     "## Previous roles",
     "",
-    ...previousRoles.map(
-      (role) => `- ${role.role} at ${role.company} (${role.duration})`,
-    ),
+    ...previousRoles.flatMap((role) => [
+      `- ${role.role} at ${formatOrganizationNames(role.organizations)} (${role.duration})`,
+      ...role.organizations.map(
+        (organization) => `  - ${organization.label}: ${organization.href}`,
+      ),
+    ]),
     "",
     "## Selected work",
     "",

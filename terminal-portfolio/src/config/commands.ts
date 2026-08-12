@@ -1,4 +1,7 @@
-import { portfolioContent } from "@/config/portfolioContent";
+import {
+  formatOrganizationNames,
+  portfolioContent,
+} from "@/config/portfolioContent";
 import { themeNames } from "@/config/themes";
 import type { CommandDefinition, TerminalLine } from "@/types/terminal";
 
@@ -67,7 +70,7 @@ const experienceLines: TerminalLine[] = [
     ...(index > 0 ? [{ type: "spacer" as const }] : []),
     {
       type: "text",
-      text: `${role.company} · ${role.role} · ${role.location}`,
+      text: `${formatOrganizationNames(role.organizations)} · ${role.role} · ${role.location}`,
       tone: "accent",
     },
     {
@@ -76,16 +79,14 @@ const experienceLines: TerminalLine[] = [
       tone: "muted",
     },
     { type: "list", items: role.details },
-    ...(role.companyUrl
-      ? [
-          {
-            type: "link" as const,
-            label: role.companyUrl.replace(/^https?:\/\//, ""),
-            href: role.companyUrl,
-            prefix: "Company",
-          },
-        ]
-      : []),
+    ...role.organizations.map(
+      (organization): TerminalLine => ({
+        type: "link",
+        label: organization.href.replace(/^https?:\/\//, ""),
+        href: organization.href,
+        prefix: organization.label,
+      }),
+    ),
     ...(role.relatedLinks ?? []).map(
       (link): TerminalLine => ({
         type: "link",

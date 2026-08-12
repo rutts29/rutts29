@@ -15,8 +15,7 @@ export type SkillGroup = {
 };
 
 export type ExperienceRole = {
-  company: string;
-  companyUrl?: string;
+  organizations: PortfolioLink[];
   role: string;
   duration: string;
   location: string;
@@ -24,6 +23,10 @@ export type ExperienceRole = {
   isCurrent?: boolean;
   relatedLinks?: PortfolioLink[];
 };
+
+export const formatOrganizationNames = (
+  organizations: ExperienceRole["organizations"],
+) => organizations.map((organization) => organization.label).join(" & ");
 
 export type Project = {
   id: string;
@@ -110,14 +113,14 @@ export const portfolioContent: PortfolioContent = {
       "Smart-contract security systems",
     ],
     education: {
-      degree:
-        "Honours Bachelor of Science in Computer Science (Data Analytics)",
-      detail: "Jan 2022 – Dec 2025 · Oakville, Ontario",
+      degree: "Honours Bachelor of Science in Computer Science",
+      detail:
+        "Specialization in Data Analytics & Machine Learning · Jan 2022 – Dec 2025 · Oakville, Ontario",
     },
   },
 
   proofFacts: [
-    { label: "Education", value: "Honours BSc · Data Analytics" },
+    { label: "Education", value: "Honours BSc in Computer Science" },
     { label: "Current role", value: "CredShields" },
     { label: "Published at", value: "IEEE MSWiM 2025" },
     { label: "Focus", value: "AI systems · evaluation" },
@@ -244,8 +247,9 @@ export const portfolioContent: PortfolioContent = {
 
   experience: [
     {
-      company: "CredShields",
-      companyUrl: "https://credshields.com/",
+      organizations: [
+        { label: "CredShields", href: "https://credshields.com/" },
+      ],
       role: "AI Engineer & ML Researcher",
       duration: "Apr 2025 – Present",
       location: "Contract · Part-time · Remote",
@@ -269,7 +273,13 @@ export const portfolioContent: PortfolioContent = {
       ],
     },
     {
-      company: "TELUS & Sheridan Centre for Applied AI",
+      organizations: [
+        { label: "TELUS", href: "https://www.telus.com/" },
+        {
+          label: "Sheridan Centre for Applied AI",
+          href: "https://www.sheridancollege.ca/research/centres/applied-ai",
+        },
+      ],
       role: "Machine Learning Researcher",
       duration: "Jan 2025 – Apr 2025",
       location: "Contract · Part-time · Oakville, Ontario",
@@ -278,9 +288,21 @@ export const portfolioContent: PortfolioContent = {
         "Integrated synthetic augmentation with regression pipelines for 2D apartment localization.",
         "Evaluated synthetic-data quality and localization error across changing indoor conditions.",
       ],
+      relatedLinks: [
+        {
+          label: "Publication: DOI",
+          href: "https://doi.org/10.1109/MSWiM67937.2025.11309178",
+        },
+      ],
     },
     {
-      company: "McMaster University & Sheridan Centre for Applied AI",
+      organizations: [
+        { label: "McMaster University", href: "https://www.mcmaster.ca/" },
+        {
+          label: "Sheridan Centre for Applied AI",
+          href: "https://www.sheridancollege.ca/research/centres/applied-ai",
+        },
+      ],
       role: "Full Stack Developer",
       duration: "Sep 2024 – Dec 2024",
       location: "Contract · Part-time · Oakville, Ontario",
@@ -291,7 +313,13 @@ export const portfolioContent: PortfolioContent = {
       ],
     },
     {
-      company: "Osteoporosis Canada & Sheridan Centre for Applied AI",
+      organizations: [
+        { label: "Osteoporosis Canada", href: "https://osteoporosis.ca/" },
+        {
+          label: "Sheridan Centre for Applied AI",
+          href: "https://www.sheridancollege.ca/research/centres/applied-ai",
+        },
+      ],
       role: "Machine Learning Researcher",
       duration: "May 2024 – Aug 2024",
       location: "Co-op · Oakville, Ontario",

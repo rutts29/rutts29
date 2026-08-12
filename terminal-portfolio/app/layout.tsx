@@ -46,6 +46,7 @@ const geistMono = Geist_Mono({
 
 const { siteUrl, identity, experience, skills, contact } = portfolioContent;
 const currentRole = experience.find((role) => role.isCurrent);
+const currentOrganization = currentRole?.organizations[0];
 const pageTitle = `${identity.name} | ${identity.title}`;
 const pageDescription = `${identity.name} is an ${identity.title.replace(" · ", " and ")} based in ${identity.location}. ${identity.hero}`;
 const profileUrls = contact.links
@@ -134,11 +135,11 @@ export default function RootLayout({
                 url: siteUrl,
                 image: `${siteUrl}/core-image.jpg`,
                 jobTitle: identity.title,
-                worksFor: currentRole
+                worksFor: currentOrganization
                   ? {
                       "@type": "Organization",
-                      name: currentRole.company,
-                      url: currentRole.companyUrl,
+                      name: currentOrganization.label,
+                      url: currentOrganization.href,
                     }
                   : undefined,
                 knowsAbout: [

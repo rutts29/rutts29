@@ -1,11 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import {
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, MapPin, SquareTerminal } from "lucide-react";
 
 import {
+  formatOrganizationNames,
   portfolioContent,
   type Project,
 } from "@/config/portfolioContent";
@@ -679,7 +686,7 @@ export function SimplePortfolio() {
                     <li
                       className="simple-timeline-item simple-reveal"
                       data-year={year}
-                      key={`${role.company}-${role.role}-${role.duration}`}
+                      key={`${formatOrganizationNames(role.organizations)}-${role.role}-${role.duration}`}
                     >
                       <span className="simple-timeline-year" aria-hidden="true">
                         {year}
@@ -692,15 +699,19 @@ export function SimplePortfolio() {
                             <p className="simple-meta-line">{role.duration}</p>
                           </div>
                           <p className="simple-meta-line">
-                            {role.companyUrl ? (
-                              <a href={role.companyUrl} {...externalLinkProps}>
-                                {role.company}
-                              </a>
-                            ) : (
-                              <span className="simple-meta-strong">
-                                {role.company}
-                              </span>
-                            )}
+                            <span className="simple-company-links">
+                              {role.organizations.map((organization, index) => (
+                                <Fragment key={organization.href}>
+                                  {index > 0 ? " & " : null}
+                                  <a
+                                    href={organization.href}
+                                    {...externalLinkProps}
+                                  >
+                                    {organization.label}
+                                  </a>
+                                </Fragment>
+                              ))}
+                            </span>
                             <span className="simple-dot" aria-hidden="true">
                               ·
                             </span>
