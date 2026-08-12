@@ -7,47 +7,50 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from "react";
 
-import Image from "next/image";
-
-import { scrollTimeline } from "@/config/scrollTimeline";
-import { ScrollTimelineEntry } from "@/types/scroll";
 import { useThemeManager } from "@/hooks/useThemeManager";
 import { useTerminal } from "@/hooks/useTerminal";
 
 import { TopBar } from "./Layout/TopBar";
-import { ScrollSections } from "./Sections/ScrollSections";
 import { BootSequence } from "./Terminal/BootSequence";
 import { TerminalShell } from "./Terminal/TerminalShell";
 import { GsapReveal } from "./GsapReveal";
 
+const LIVE_SHELL_HINTS = [
+  "about",
+  "skills",
+  "experience",
+  "projects",
+  "contact",
+  "help",
+] as const;
+
 type IntroPanelProps = {
-  onActivateInteractive: () => void;
+  onOpenLiveShell: () => void;
   themeBackground: string;
   panelBorder: string;
   panelGlow: string;
-  interactiveComponent?: ReactNode;
+  liveShell?: ReactNode;
 };
 
 const IntroPanel = ({
-  onActivateInteractive,
+  onOpenLiveShell,
   themeBackground,
   panelBorder,
   panelGlow,
-  interactiveComponent,
+  liveShell,
 }: IntroPanelProps) => {
   const tiltRef = useRef<HTMLDivElement>(null);
 
   // Subtle 3D tilt on the terminal window — spatial depth, no objects.
-  // Disabled while reading/typing in the live terminal so text stays flat.
+  // Disabled while typing so text stays flat.
   useEffect(() => {
     const el = tiltRef.current;
     if (!el) {
       return;
     }
-    if (interactiveComponent) {
+    if (liveShell) {
       el.style.transform = "";
       return;
     }
@@ -90,7 +93,7 @@ const IntroPanel = ({
       window.removeEventListener("mousemove", onMove);
       window.cancelAnimationFrame(frame);
     };
-  }, [interactiveComponent]);
+  }, [liveShell]);
 
   return (
     <div
@@ -133,20 +136,26 @@ const IntroPanel = ({
               rutts@workspace — ~/portfolio
             </p>
             <span className="ml-auto whitespace-nowrap text-[0.65rem] text-[var(--color-text-success)] sm:text-sm">
-              {interactiveComponent ? "● interactive" : "● ready"}
+              {liveShell ? "● live shell" : "● ready"}
             </span>
           </div>
 
-          <div className="crt-screen flex h-[66vh] min-h-[500px] max-h-[680px] flex-col rounded-b-[2rem] px-4 py-5 sm:rounded-b-[2.5rem] sm:px-8 sm:py-8">
-            {interactiveComponent ? (
-              <div className="min-h-0 min-w-0 flex-1">{interactiveComponent}</div>
+          <div
+            className={`crt-screen flex flex-col rounded-b-[2rem] px-4 py-5 sm:rounded-b-[2.5rem] sm:px-8 sm:py-8 ${
+              liveShell
+                ? "h-[min(78vh,820px)] min-h-[560px]"
+                : "h-[66vh] min-h-[500px] max-h-[680px]"
+            }`}
+          >
+            {liveShell ? (
+              <div className="min-h-0 min-w-0 flex-1">{liveShell}</div>
             ) : (
               <div className="no-scrollbar flex min-h-0 flex-1 flex-col space-y-4 overflow-y-auto sm:space-y-5">
                 <BootSequence />
 
                 <button
                   type="button"
-                  onClick={onActivateInteractive}
+                  onClick={onOpenLiveShell}
                   className="terminal-cta fade-up group flex w-full max-w-[1080px] cursor-pointer items-center gap-2 rounded-xl border px-3 py-3 font-mono text-xs text-[var(--color-text-primary)] transition-all duration-300 hover:brightness-110 sm:gap-3 sm:px-6 sm:py-[1.125rem] sm:text-base"
                   style={{
                     background: "var(--surface-overlay-bg)",
@@ -159,21 +168,16 @@ const IntroPanel = ({
                   </span>
                   <span className="text-[var(--color-text-secondary)]">$</span>
                   <span className="min-w-0 flex-1 break-words">
-                    unlock interactive mode — run every command yourself
+                    open live shell — type commands yourself
                   </span>
                 </button>
 
-                <div
-                  className="fade-up flex flex-col items-center gap-1 text-[0.65rem] uppercase tracking-[0.5em] text-[var(--color-text-secondary)] sm:text-sm"
+                <p
+                  className="fade-up text-center text-[0.7rem] text-[var(--color-text-secondary)] sm:text-sm"
                   style={{ animationDelay: "260ms" }}
                 >
-                  <span className="px-2 text-center">
-                    Scroll to continue exploring the showcase
-                  </span>
-                  <span className="mt-1 animate-bounce text-3xl text-[var(--color-text-accent)] sm:mt-2 sm:text-4xl">
-                    ↓
-                  </span>
-                </div>
+                  This route is the terminal only. The full portfolio lives on the home page.
+                </p>
               </div>
             )}
 
@@ -198,16 +202,11 @@ export const TerminalExperience = () => {
     autoTypingText,
     isTyping,
     runCommand,
-    enqueueAutoCommand,
     enterInteractiveMode,
   } = useTerminal({
     onThemeChange: setTheme,
     themeName,
   });
-  const [scrollY, setScrollY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const [showScrollToTop, setShowScrollToTop] = useState(false);
-  const introPanelRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = useCallback(
     (command: string) => {
@@ -220,19 +219,6 @@ export const TerminalExperience = () => {
     [runCommand, setCurrentInput],
   );
 
-  const handleSectionTrigger = useCallback(
-    (entry: ScrollTimelineEntry) => {
-      if (mode !== "scrollAuto") {
-        return;
-      }
-      enqueueAutoCommand(entry.command);
-    },
-    [enqueueAutoCommand, mode],
-  );
-
-  const storyCommands = scrollTimeline.map((section) => section.command);
-
-  // Disable browser scroll restoration and force scroll to top on load/refresh
   useEffect(() => {
     const previousScrollRestoration = window.history.scrollRestoration;
     window.history.scrollRestoration = "manual";
@@ -243,45 +229,6 @@ export const TerminalExperience = () => {
       window.clearTimeout(scrollReset);
       window.history.scrollRestoration = previousScrollRestoration;
     };
-  }, []);
-
-  // Parallax scroll effect with requestAnimationFrame for better performance
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setScrollY(window.scrollY);
-          // Check if scrolled past intro panel/terminal shell
-          if (introPanelRef.current) {
-            const rect = introPanelRef.current.getBoundingClientRect();
-            const isPastTerminal = window.scrollY > rect.bottom + 100;
-            setShowScrollToTop(isPastTerminal);
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    // Initial check
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
-  // Detect mobile to disable transitions for smoother scrolling
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const themeVariables = useMemo(() => {
@@ -313,8 +260,8 @@ export const TerminalExperience = () => {
     } as CSSProperties;
   }, [theme]);
 
-  const isInteractive = mode === "interactive";
-  const interactiveComponent = isInteractive ? (
+  const isLiveShell = mode === "interactive";
+  const liveShell = isLiveShell ? (
     <TerminalShell
       embedded
       history={history}
@@ -327,24 +274,12 @@ export const TerminalExperience = () => {
     />
   ) : undefined;
 
-  // Calculate parallax transforms - use translate3d for hardware acceleration
-  const topBarTransform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
-  // IntroPanel moves up (negative) to prevent overlap with sections
-  const introPanelTransform = `translate3d(0, ${-scrollY * 0.15}px, 0)`;
-
   return (
     <div
       className="terminal-experience min-h-screen transition-colors"
       style={themeVariables}
     >
-      <div
-        style={{
-          transform: topBarTransform,
-          willChange: "transform",
-          transition: isMobile ? "none" : "transform 0.1s ease-out",
-        }}
-        className="w-full px-3 py-8 sm:px-4 sm:py-12 md:px-8"
-      >
+      <div className="w-full px-3 py-6 sm:px-4 sm:py-10 md:px-8">
         <div className="mx-auto w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] 3xl:max-w-none 3xl:px-16">
           <GsapReveal>
             <TopBar
@@ -355,99 +290,40 @@ export const TerminalExperience = () => {
           </GsapReveal>
         </div>
       </div>
-      <div className="mx-auto flex w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] flex-col items-center gap-4 sm:gap-6 md:gap-8 px-3 py-8 sm:px-4 sm:py-12 md:px-8">
-        <div
-          ref={introPanelRef}
-          className="w-full"
-          style={{
-            transform: introPanelTransform,
-            willChange: "transform",
-            transition: isMobile ? "none" : "transform 0.1s ease-out",
-          }}
-        >
+
+      <div className="mx-auto flex w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] flex-col items-center gap-5 sm:gap-6 px-3 pb-10 sm:px-4 sm:pb-14 md:px-8">
+        <div className="w-full">
           <IntroPanel
-            onActivateInteractive={enterInteractiveMode}
+            onOpenLiveShell={enterInteractiveMode}
             themeBackground={`linear-gradient(135deg, ${theme.terminal.background}, ${theme.body.background})`}
             panelBorder={theme.terminal.border}
             panelGlow={theme.terminal.glow}
-            interactiveComponent={interactiveComponent}
+            liveShell={liveShell}
           />
         </div>
 
-        {isInteractive && (
-          <div className="flex flex-col items-center gap-4 text-center text-sm text-[var(--color-text-secondary)]">
+        {isLiveShell && (
+          <div className="flex max-w-2xl flex-col items-center gap-3 text-center text-sm text-[var(--color-text-secondary)]">
             <p className="text-[var(--color-text-primary)]">
-              Interactive mode unlocked — try running these commands:
+              Live shell — try:
             </p>
-            <p className="font-mono text-xs uppercase tracking-[0.4em] text-[var(--color-text-accent)]">
-              {storyCommands.join(" · ")}
+            <p className="font-mono text-xs uppercase tracking-[0.35em] text-[var(--color-text-accent)]">
+              {LIVE_SHELL_HINTS.join(" · ")}
             </p>
             <p>
-              Need a refresher? Type{" "}
+              Type{" "}
               <span className="font-mono text-[var(--color-text-primary)]">
                 help
               </span>{" "}
-              to see everything available.
+              for the full list.
             </p>
           </div>
         )}
-        <ScrollSections
-          sections={scrollTimeline}
-          onTrigger={handleSectionTrigger}
-          initialTriggered={[]}
-        />
 
-        <GsapReveal className="mt-16 sm:mt-20 md:mt-24 flex w-full justify-center border-t border-[var(--surface-card-border)] pt-8">
-          <div className="relative h-48 w-full max-w-[1200px] md:h-52 flex items-center justify-center">
-            <div className="relative h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48 rounded-full border-2 overflow-hidden"
-              style={{
-                borderColor: "var(--surface-panel-border)",
-              }}
-            >
-              <Image
-                src="/core-image.jpg"
-                alt="0xRutts avatar"
-                fill
-                sizes="(max-width: 768px) 128px, 192px"
-                className="object-cover"
-
-              />
-            </div>
-          </div>
-        </GsapReveal>
-        <p className="mt-6 text-center text-[0.75rem] uppercase tracking-[0.4em] text-[var(--color-text-secondary)]">
+        <p className="mt-4 text-center text-[0.75rem] uppercase tracking-[0.4em] text-[var(--color-text-secondary)]">
           © 2026 0xRutts
         </p>
       </div>
-      
-      {/* Scroll to Top Button */}
-      {showScrollToTop && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-50 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border backdrop-blur-lg transition-all duration-300 hover:scale-110 hover:brightness-110"
-          style={{
-            background: "var(--surface-panel-bg)",
-            borderColor: "var(--color-text-accent)",
-            boxShadow: "0 0 15px var(--color-text-accent), 0 4px 20px rgba(0,0,0,0.3)",
-          }}
-          aria-label="Scroll to top"
-        >
-          <svg
-            className="h-5 w-5 sm:h-6 sm:w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            style={{ color: "var(--color-text-accent)" }}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 10l7-7m0 0l7 7m-7-7v18"
-            />
-          </svg>
-        </button>
-      )}
     </div>
   );
 };

@@ -312,7 +312,7 @@ export const TerminalShell = ({
             </p>
           </div>
           <span className="text-[0.65rem] sm:text-xs text-[var(--color-text-secondary)] whitespace-nowrap flex-shrink-0">
-            {mode === "interactive" ? "Interactive" : "Scroll Auto Mode"}
+            {mode === "interactive" ? "Live shell" : "Ready"}
           </span>
         </div>
       )}
@@ -395,7 +395,7 @@ export const TerminalShell = ({
         )}
         {mode !== "interactive" && !isTyping && (
           <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-[var(--color-text-secondary)]">
-            Scroll to reveal sections or unlock interactive mode to type.
+            Open the live shell to type commands.
           </p>
         )}
       </div>

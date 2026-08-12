@@ -6,8 +6,8 @@ Personal portfolio for [0xrutts.com](https://0xrutts.com).
 
 | Route | Experience |
 | --- | --- |
-| `/` | Overview — scannable AI/ML portfolio (default) |
-| `/interactive` | Immersive terminal-style experience |
+| `/` | Portfolio — scannable AI/ML site (default) |
+| `/interactive` | Terminal only — live shell to explore with commands |
 | `/terminal` | Permanent redirect → `/interactive` (legacy) |
 
 ## Stack
@@ -35,6 +35,6 @@ bun run build
 
 ## Notes
 
-- Shared content lives in `src/config/scrollTimeline.ts` (used by both modes).
+- Portfolio content lives in `src/config/scrollTimeline.ts` (home page) and `src/config/commands.ts` (terminal).
 - Theme for the simple site is bootstrapped before paint (`layout` boot script) to avoid theme FOUC.
 - Do not commit `.env` or local screenshot dumps; they are gitignored.

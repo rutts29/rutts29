@@ -8,8 +8,8 @@ type BootSequenceProps = {
 
 const BOOT_STEPS: Array<{ label: string; status: string }> = [
   { label: "rutts.runtime", status: "init" },
-  { label: "agentic core", status: "online" },
-  { label: "code-intel modules", status: "mounted" },
+  { label: "ai systems core", status: "online" },
+  { label: "applied ml stack", status: "mounted" },
   { label: "retrieval + vectors", status: "ready" },
   { label: "inference pipelines", status: "stable" },
   { label: "security sandbox", status: "armed" },
@@ -57,10 +57,10 @@ export const BootSequence = ({ onDone }: BootSequenceProps) => {
           Ruttansh Bhatelia
         </p>
         <p className="mt-1.5 text-sm sm:text-base text-[var(--color-text-accent)]">
-          AI Engineer · ML Researcher — Toronto
+          AI Systems Engineer · Applied ML Researcher — Toronto
         </p>
         <p className="mt-1.5 flex items-center text-sm sm:text-base text-[var(--color-text-secondary)]">
-          building agentic systems &amp; code intelligence that ship.
+          reliable AI systems &amp; applied research that ships.
           <span className="terminal-cursor ml-1.5" />
         </p>
       </div>

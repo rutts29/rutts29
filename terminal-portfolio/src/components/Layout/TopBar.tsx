@@ -35,17 +35,18 @@ export const TopBar = ({
           <span aria-hidden="true" className="text-[var(--color-text-accent)]">
             ←
           </span>
-          <span className="truncate">Overview</span>
+          <span className="truncate">Portfolio</span>
         </Link>
         <div className="min-w-0">
           <p className="truncate text-lg font-bold text-[var(--color-text-primary)] sm:text-2xl md:text-3xl lg:text-4xl">
             0xRutts
           </p>
           <p className="mt-1 text-[0.6rem] text-[var(--color-text-secondary)] sm:mt-2 sm:text-sm md:text-base lg:text-lg">
-            <span className="sm:hidden">Agentic Engineer · ML Researcher</span>
+            <span className="sm:hidden">
+              AI Systems Engineer · Applied ML Researcher
+            </span>
             <span className="hidden sm:inline">
-              Agentic Engineer · ML Researcher · Micromanaging Claude &amp;
-              Cursor Agents
+              AI Systems Engineer · Applied ML Researcher · Toronto
             </span>
           </p>
         </div>

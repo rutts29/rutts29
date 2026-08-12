@@ -7,7 +7,7 @@ export const scrollTimeline: ScrollTimelineEntry[] = [
     command: "about",
     summary: "Get the quick story and focus areas.",
     content: [
-      "I am an AI engineer and ML researcher building production-grade agentic systems, code intelligence platforms, and automation for security-heavy workflows.",
+      "I am an AI Systems Engineer and Applied ML Researcher. I build reliable AI systems and turn applied ML research into working tools.",
       "Current work spans backend AI systems, RAG and tool-using agents, model training and finetuning, and inference pipelines that prioritize reliability and observability.",
       "I hold an Honours BSc in Computer Science (Data Analytics) and stay embedded with applied research partners.",
     ],

@@ -554,7 +554,7 @@ export function SimplePortfolio() {
               />
               <Link className="simple-interactive" href="/interactive">
                 <SquareTerminal aria-hidden="true" />
-                <span>Immersive</span>
+                <span>Terminal</span>
               </Link>
             </div>
           </div>
@@ -564,7 +564,9 @@ export function SimplePortfolio() {
           <section className="simple-shell simple-hero simple-reveal" id="top">
             <div className="simple-hero-copy">
               <div className="simple-kicker">
-                <p className="simple-label">AI Engineer &amp; ML Researcher</p>
+                <p className="simple-label">
+                  AI Systems Engineer · Applied ML Researcher
+                </p>
                 <p className="simple-location">
                   <MapPin aria-hidden="true" />
                   Toronto, Canada
@@ -572,7 +574,8 @@ export function SimplePortfolio() {
               </div>
               <h1 className="simple-display">Ruttansh Bhatelia</h1>
               <p className="simple-lede">
-                Reliable AI systems for difficult, high-stakes problems.
+                I build reliable AI systems and turn applied ML research into
+                working tools.
               </p>
               <p className="simple-body-copy">
                 {about?.content[1] ??

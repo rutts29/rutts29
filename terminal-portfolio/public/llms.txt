@@ -1,20 +1,20 @@
 # Ruttansh (0xRutts)
 
-> Ruttansh, also known as Rutts or 0xRutts, is a Toronto-based AI Engineer and ML Researcher. This is his personal portfolio site.
+> Ruttansh, also known as Rutts or 0xRutts, is a Toronto-based AI Systems Engineer and Applied ML Researcher. This is his personal portfolio site.
 
 ## Site structure
 
-Two presentations of the same portfolio content:
+Two distinct modes — not two copies of the same page:
 
-- Overview (default): https://0xrutts.com/
-- Immersive interactive experience: https://0xrutts.com/interactive
+- Portfolio (default): https://0xrutts.com/ — full scannable site
+- Terminal: https://0xrutts.com/interactive — live shell only (type commands)
 - Legacy path https://0xrutts.com/terminal permanently redirects to /interactive
 
-Prefer the Overview URL for concise facts. Use /interactive when describing the terminal-style exploration UI.
+Prefer the Portfolio URL for concise facts. Use /interactive only when describing the terminal exploration UI.
 
 ## About
 
-Ruttansh builds production-ready AI/ML systems that bridge research and product engineering across security, code intelligence, and automation. Current work centers on vulnerability-aware copilots, RAG workflows, agentic tooling, and inference/training pipelines that prioritize reliability and observability. He holds an Honours BSc in Computer Science (Data Analytics).
+Ruttansh is an AI Systems Engineer and Applied ML Researcher. He builds reliable AI systems and turns applied ML research into working tools. Current work spans backend AI systems, RAG and tool-using agents, model training and finetuning, and inference pipelines that prioritize reliability and observability. He holds an Honours BSc in Computer Science (Data Analytics).
 
 ## Current role
 
@@ -44,8 +44,8 @@ Ruttansh builds production-ready AI/ML systems that bridge research and product 
 
 ## Links
 
-- Website (Overview): https://0xrutts.com
-- Immersive: https://0xrutts.com/interactive
+- Website (Portfolio): https://0xrutts.com
+- Terminal: https://0xrutts.com/interactive
 - GitHub: https://github.com/rutts29
 - LinkedIn: https://www.linkedin.com/in/ruttansh-bhatelia
 - X / Twitter: https://x.com/0xRutts

@@ -43,17 +43,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ruttansh Bhatelia — AI Engineer & ML Researcher",
+  title: "Ruttansh Bhatelia — AI Systems Engineer · Applied ML Researcher",
   description:
-    "Ruttansh Bhatelia is a Toronto-based AI Engineer and ML Researcher building production-grade systems across security, code intelligence, and automation.",
+    "Ruttansh Bhatelia is a Toronto-based AI Systems Engineer and Applied ML Researcher. He builds reliable AI systems and turns applied ML research into working tools.",
   keywords: [
     "Ruttansh",
     "Rutts",
     "0xRutts",
-    "AI Engineer",
-    "ML Researcher",
+    "AI Systems Engineer",
+    "Applied ML Researcher",
     "Machine Learning",
-    "Full Stack Developer",
     "Toronto",
     "portfolio",
   ],
@@ -68,9 +67,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://0xrutts.com",
     siteName: "Ruttansh Bhatelia",
-    title: "Ruttansh Bhatelia — AI Engineer & ML Researcher",
+    title: "Ruttansh Bhatelia — AI Systems Engineer · Applied ML Researcher",
     description:
-      "Toronto-based AI Engineer & ML Researcher building production-grade AI systems across security, code intelligence, and automation.",
+      "Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems and applied research turned into working tools.",
     images: [
       {
         url: "/core-image.jpg",
@@ -82,9 +81,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Ruttansh Bhatelia — AI Engineer & ML Researcher",
+    title: "Ruttansh Bhatelia — AI Systems Engineer · Applied ML Researcher",
     description:
-      "Toronto-based AI Engineer & ML Researcher building production-grade AI systems across security, code intelligence, and automation.",
+      "Toronto-based AI Systems Engineer and Applied ML Researcher. Reliable AI systems and applied research turned into working tools.",
     creator: "@0xRutts",
     images: ["/core-image.jpg"],
   },
@@ -132,7 +131,7 @@ export default function RootLayout({
               alternateName: ["Rutts", "0xRutts"],
               url: "https://0xrutts.com",
               image: "https://0xrutts.com/core-image.jpg",
-              jobTitle: "AI Engineer & ML Researcher",
+              jobTitle: "AI Systems Engineer · Applied ML Researcher",
               worksFor: {
                 "@type": "Organization",
                 name: "CredShields",

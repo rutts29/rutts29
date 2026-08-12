@@ -27,19 +27,19 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
         "██║  ██║╚██████╔╝   ██║      ██║   ███████║",
         "╚═╝  ╚═╝ ╚═════╝    ╚═╝      ╚═╝   ╚══════╝",
         "",
-        "Welcome to Rutts' interactive workspace.",
+        "Welcome to Rutts' live shell.",
       ],
     },
   ],
   welcome: [
     {
       type: "text",
-      text: "yoo, I'm Rutts (Ruttansh) — Toronto-based AI engineer shipping secure copilots and automation.",
+      text: "yoo, I'm Rutts (Ruttansh) — AI Systems Engineer · Applied ML Researcher in Toronto.",
       tone: "accent",
     },
     {
       type: "text",
-      text: "Scroll through the showcase or unlock interactive mode to run every command yourself.",
+      text: "Type a command to explore. Start with about, projects, or help.",
       tone: "muted",
     },
   ],
@@ -47,7 +47,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
     { type: "heading", text: "About" },
     {
       type: "text",
-      text: "I'm Ruttansh (Rutts), an AI engineer and ML researcher building production-grade agentic systems, code intelligence platforms, and automation for security-heavy workflows.",
+      text: "I'm Ruttansh (Rutts), an AI Systems Engineer and Applied ML Researcher. I build reliable AI systems and turn applied research into working tools.",
     },
     {
       type: "text",
