@@ -659,10 +659,10 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Experience</p>
               <h2 id="experience-title" className="simple-heading">
-                The trajectory.
+                Where I&apos;ve worked.
               </h2>
               <p className="simple-body-copy">
-                Industry and research — impact first, then the how.
+                Applied AI and ML roles across product and research.
               </p>
             </header>
 
