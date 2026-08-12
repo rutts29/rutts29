@@ -109,6 +109,26 @@ function punchLine(detail: string) {
   return cleaned.replace(/\s+/g, " ").replace(/[.:]+$/, "");
 }
 
+function yearsInDuration(duration: string): number[] {
+  return [...duration.matchAll(/\b(20\d{2})\b/g)].map((m) => Number(m[1]));
+}
+
+function startYear(duration: string): number {
+  const years = yearsInDuration(duration);
+  return years[0] ?? new Date().getFullYear();
+}
+
+function buildYearTrack(durations: string[]): number[] {
+  const years = durations.flatMap(yearsInDuration);
+  if (years.length === 0) {
+    const y = new Date().getFullYear();
+    return [y - 2, y - 1, y];
+  }
+  const min = Math.min(...years);
+  const max = Math.max(...years, new Date().getFullYear());
+  return Array.from({ length: max - min + 1 }, (_, i) => min + i);
+}
+
 export function SimplePortfolio() {
   const portfolioRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -128,6 +148,9 @@ export function SimplePortfolio() {
   const contact = scrollTimeline.find((section) => section.id === "contact");
   const activeLabel =
     sectionMeta.find((s) => s.id === activeSection)?.label ?? "Intro";
+  const yearTrack = buildYearTrack(
+    experience?.timeline?.map((role) => role.duration) ?? [],
+  );
 
   useEffect(() => {
     const portfolio = portfolioRef.current;
@@ -530,55 +553,79 @@ export function SimplePortfolio() {
               </p>
             </header>
 
-            <ol className="simple-list">
-              {experience?.timeline?.map((role) => {
+            <div
+              className="simple-year-track simple-reveal"
+              aria-label="Years along the trajectory"
+            >
+              {yearTrack.map((year) => (
+                <span className="simple-year-tick" key={year}>
+                  {year}
+                </span>
+              ))}
+            </div>
+
+            <ol className="simple-timeline">
+              {experience?.timeline?.map((role, index) => {
                 const { type, place } = parseLocation(role.location);
                 const lead = role.details[0]
                   ? punchLine(role.details[0])
                   : "";
+                const year = startYear(role.duration);
                 return (
                   <li
-                    className="simple-role simple-reveal"
+                    className="simple-timeline-item simple-reveal"
                     key={`${role.company}-${role.role}-${role.duration}`}
                   >
-                    <div className="simple-role-head">
-                      <div className="simple-role-title-line">
-                        <h3 className="simple-title">{role.role}</h3>
-                        <p className="simple-meta-line">{role.duration}</p>
-                      </div>
-                      <p className="simple-meta-line">
-                        {role.companyUrl ? (
-                          <a href={role.companyUrl} {...externalLinkProps}>
-                            {role.company}
-                          </a>
-                        ) : (
-                          <span className="simple-meta-strong">
-                            {role.company}
-                          </span>
-                        )}
-                        <span className="simple-dot" aria-hidden="true">
-                          ·
-                        </span>
-                        <span>{type}</span>
-                        {place ? (
-                          <>
-                            <span className="simple-dot" aria-hidden="true">
-                              ·
-                            </span>
-                            <span>{place}</span>
-                          </>
-                        ) : null}
-                        {role.isCurrent ? (
-                          <span className="simple-pill">Current</span>
-                        ) : null}
-                      </p>
+                    <div className="simple-timeline-aside" aria-hidden="true">
+                      <span className="simple-timeline-year">{year}</span>
+                      <span
+                        className={
+                          role.isCurrent || index === 0
+                            ? "simple-timeline-node is-active"
+                            : "simple-timeline-node"
+                        }
+                      />
                     </div>
-                    {lead ? <p className="simple-outcome">{lead}</p> : null}
-                    <ul className="simple-bullets">
-                      {role.details.slice(1, 3).map((detail) => (
-                        <li key={detail}>{detail}</li>
-                      ))}
-                    </ul>
+                    <div className="simple-timeline-card">
+                      <div className="simple-role-head">
+                        <div className="simple-role-title-line">
+                          <h3 className="simple-title">{role.role}</h3>
+                          <p className="simple-meta-line">{role.duration}</p>
+                        </div>
+                        <p className="simple-meta-line">
+                          {role.companyUrl ? (
+                            <a href={role.companyUrl} {...externalLinkProps}>
+                              {role.company}
+                            </a>
+                          ) : (
+                            <span className="simple-meta-strong">
+                              {role.company}
+                            </span>
+                          )}
+                          <span className="simple-dot" aria-hidden="true">
+                            ·
+                          </span>
+                          <span>{type}</span>
+                          {place ? (
+                            <>
+                              <span className="simple-dot" aria-hidden="true">
+                                ·
+                              </span>
+                              <span>{place}</span>
+                            </>
+                          ) : null}
+                          {role.isCurrent ? (
+                            <span className="simple-pill">Current</span>
+                          ) : null}
+                        </p>
+                      </div>
+                      {lead ? <p className="simple-outcome">{lead}</p> : null}
+                      <ul className="simple-bullets">
+                        {role.details.slice(1, 3).map((detail) => (
+                          <li key={detail}>{detail}</li>
+                        ))}
+                      </ul>
+                    </div>
                   </li>
                 );
               })}

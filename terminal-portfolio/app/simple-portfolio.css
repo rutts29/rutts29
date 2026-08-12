@@ -872,12 +872,126 @@ button:focus-visible {
   transform: translate(2px, -2px);
 }
 
-/* ── Experience ────────────────────────────────────────────────── */
-.simple-role {
+/* ── Experience trajectory (year track + vertical rail) ────────── */
+.simple-year-track {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 36px;
+  padding: 0 0 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--simple-line) 90%, transparent);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.simple-year-track::-webkit-scrollbar {
+  display: none;
+}
+
+.simple-year-tick {
+  flex: 1 1 0;
+  min-width: 2.5rem;
+  color: var(--simple-muted);
+  font-family: var(--font-meta);
+  font-size: 12px;
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.simple-year-tick:first-child {
+  text-align: left;
+}
+
+.simple-year-tick:last-child {
+  text-align: right;
+}
+
+.simple-timeline {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.simple-timeline::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 18px;
+  left: 47px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--simple-text) 45%, transparent),
+    color-mix(in srgb, var(--simple-line) 90%, transparent) 18%,
+    color-mix(in srgb, var(--simple-line) 90%, transparent) 82%,
+    transparent
+  );
+}
+
+.simple-timeline-item {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 8px 22px;
+  padding: 0 0 40px;
+}
+
+.simple-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.simple-timeline-aside {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.simple-timeline-year {
+  color: var(--simple-muted);
+  font-family: var(--font-meta);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.simple-timeline-node {
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid color-mix(in srgb, var(--simple-text) 55%, var(--simple-line));
+  border-radius: 50%;
+  background: var(--simple-bg);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--simple-bg) 88%, transparent);
+  transition:
+    background-color var(--dur) ease,
+    border-color var(--dur) ease,
+    transform var(--dur) var(--ease-out);
+}
+
+.simple-timeline-node.is-active {
+  border-color: var(--simple-text);
+  background: var(--simple-text);
+}
+
+.simple-timeline-item:hover .simple-timeline-node:not(.is-active) {
+  transform: scale(1.12);
+  border-color: var(--simple-text);
+}
+
+.simple-timeline-card {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 0;
+  min-width: 0;
+  padding: 2px 0 4px;
 }
 
 .simple-role-head {
@@ -1153,6 +1267,24 @@ button:focus-visible {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+  }
+
+  .simple-timeline::before {
+    left: 15px;
+  }
+
+  .simple-timeline-item {
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 6px 14px;
+    padding-bottom: 32px;
+  }
+
+  .simple-timeline-year {
+    display: none;
+  }
+
+  .simple-timeline-aside {
+    padding-top: 6px;
   }
 
   .simple-skill-grid {
