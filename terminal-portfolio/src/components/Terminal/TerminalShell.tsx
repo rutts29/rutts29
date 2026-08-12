@@ -395,7 +395,7 @@ export const TerminalShell = ({
         )}
         {mode !== "interactive" && !isTyping && (
           <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-[var(--color-text-secondary)]">
-            Scroll to reveal sections or click &quot;Interactive Terminal&quot; to type.
+            Scroll to reveal sections or unlock interactive mode to type.
           </p>
         )}
       </div>

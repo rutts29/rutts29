@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 type TopBarProps = {
   themeLabel: string;
   onCycleTheme: () => void;
@@ -33,6 +35,14 @@ export const TopBar = ({
       </div>
       <div className="relative flex items-center gap-2 sm:gap-3 flex-shrink-0">
         <div className="flex items-center gap-3 sm:gap-4 text-[var(--color-text-secondary)]">
+          {/* Quiet exit — history back is enough when they came from home; this covers deep links */}
+          <Link
+            href="/"
+            className="text-[0.65rem] sm:text-xs font-semibold uppercase tracking-[0.18em] transition hover:text-[var(--color-text-accent)] whitespace-nowrap"
+          >
+            <span className="sm:hidden">Simple</span>
+            <span className="hidden sm:inline">Simple view</span>
+          </Link>
           <a
             href="https://github.com/rutts29"
             target="_blank"

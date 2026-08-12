@@ -132,10 +132,10 @@ function buildYearTrack(durations: string[]): number[] {
 export function SimplePortfolio() {
   const portfolioRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [timelineProgress, setTimelineProgress] = useState(0);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const cueLabelRef = useRef<HTMLSpanElement>(null);
+  const cuePctRef = useRef<HTMLSpanElement>(null);
   const [activeSection, setActiveSection] = useState("top");
-  const [reachedYears, setReachedYears] = useState<Set<number>>(() => new Set());
   const theme = useSyncExternalStore(
     subscribeToTheme,
     getResolvedThemeSnapshot,
@@ -232,11 +232,32 @@ export function SimplePortfolio() {
     };
   }, []);
 
+  /*
+   * Scroll-linked UI (page progress + trajectory rail).
+   * Targets update on scroll; rAF lerps values and writes to the DOM so the
+   * rail doesn't hitch on React re-renders.
+   */
   useEffect(() => {
-    const onScroll = () => {
+    const portfolio = portfolioRef.current;
+    if (!portfolio) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    let targetPage = 0;
+    let currentPage = 0;
+    let targetTimeline = 0;
+    let currentTimeline = 0;
+    let rafId = 0;
+    let ticking = false;
+    let lastSection = "top";
+    let lastYearsKey = "";
+
+    const sampleTargets = () => {
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
-      setScrollProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+      targetPage = max > 0 ? Math.min(1, window.scrollY / max) : 0;
 
       const marker = window.innerHeight * 0.28;
       let current = "top";
@@ -245,46 +266,122 @@ export function SimplePortfolio() {
         if (!el) continue;
         if (el.getBoundingClientRect().top <= marker) current = section.id;
       }
-      setActiveSection(current);
+      if (current !== lastSection) {
+        lastSection = current;
+        setActiveSection(current);
+      }
 
-      /* Trajectory rail fill + node activation as the section scrolls */
       const timeline = timelineRef.current;
-      if (timeline) {
-        const rect = timeline.getBoundingClientRect();
-        const vh = window.innerHeight;
-        const focus = vh * 0.42;
-        const start = rect.top;
-        const end = rect.bottom;
-        const span = Math.max(1, end - start);
-        const p = Math.min(1, Math.max(0, (focus - start) / span));
-        setTimelineProgress(p);
+      if (!timeline) return;
 
-        const fillY = start + span * p;
-        const years = new Set<number>();
-        timeline.querySelectorAll<HTMLElement>(".simple-timeline-item").forEach((item) => {
-          const node = item.querySelector(".simple-timeline-node");
-          if (!(node instanceof HTMLElement)) return;
-          const mid =
-            node.getBoundingClientRect().top +
-            node.getBoundingClientRect().height / 2;
-          const reached = mid <= fillY + 6;
-          item.classList.toggle("is-reached", reached);
-          node.classList.toggle("is-active", reached);
-          if (reached) {
-            const y = Number(item.dataset.year);
-            if (!Number.isNaN(y)) years.add(y);
-          }
+      const rect = timeline.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const focus = vh * 0.42;
+      const span = Math.max(1, rect.bottom - rect.top);
+      targetTimeline = Math.min(1, Math.max(0, (focus - rect.top) / span));
+    };
+
+    const applyTimelineNodes = (progress: number) => {
+      const timeline = timelineRef.current;
+      if (!timeline) return;
+
+      const rect = timeline.getBoundingClientRect();
+      const fillY = rect.top + rect.height * progress;
+      const years = new Set<number>();
+
+      timeline.querySelectorAll<HTMLElement>(".simple-timeline-item").forEach((item) => {
+        const node = item.querySelector(".simple-timeline-node");
+        if (!(node instanceof HTMLElement)) return;
+        const nodeRect = node.getBoundingClientRect();
+        const mid = nodeRect.top + nodeRect.height / 2;
+        const reached = mid <= fillY + 8;
+        item.classList.toggle("is-reached", reached);
+        node.classList.toggle("is-active", reached);
+        if (reached) {
+          const y = Number(item.dataset.year);
+          if (!Number.isNaN(y)) years.add(y);
+        }
+      });
+
+      const yearsKey = [...years].sort((a, b) => a - b).join(",");
+      if (yearsKey !== lastYearsKey) {
+        lastYearsKey = yearsKey;
+        portfolio.querySelectorAll<HTMLElement>(".simple-year-tick").forEach((tick) => {
+          const y = Number(tick.dataset.year);
+          tick.classList.toggle("is-active", years.has(y));
         });
-        setReachedYears(years);
       }
     };
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    const paint = () => {
+      portfolio.style.setProperty("--scroll", String(currentPage));
+      if (progressBarRef.current) {
+        progressBarRef.current.style.transform = `scaleX(${currentPage})`;
+      }
+      if (cuePctRef.current) {
+        cuePctRef.current.textContent = `${Math.round(currentPage * 100)}%`;
+      }
+      if (cueLabelRef.current) {
+        const label =
+          sectionMeta.find((s) => s.id === lastSection)?.label ?? "Intro";
+        if (cueLabelRef.current.textContent !== label) {
+          cueLabelRef.current.textContent = label;
+        }
+      }
+
+      const timeline = timelineRef.current;
+      if (timeline) {
+        timeline.style.setProperty(
+          "--timeline-progress",
+          String(currentTimeline),
+        );
+        applyTimelineNodes(currentTimeline);
+      }
+    };
+
+    const tick = () => {
+      const ease = reduceMotion ? 1 : 0.16;
+      currentPage += (targetPage - currentPage) * ease;
+      currentTimeline += (targetTimeline - currentTimeline) * ease;
+
+      if (Math.abs(targetPage - currentPage) < 0.0008) currentPage = targetPage;
+      if (Math.abs(targetTimeline - currentTimeline) < 0.0008) {
+        currentTimeline = targetTimeline;
+      }
+
+      paint();
+
+      const settled =
+        currentPage === targetPage && currentTimeline === targetTimeline;
+      if (settled) {
+        ticking = false;
+        rafId = 0;
+        return;
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const kick = () => {
+      sampleTargets();
+      if (reduceMotion) {
+        currentPage = targetPage;
+        currentTimeline = targetTimeline;
+        paint();
+        return;
+      }
+      if (!ticking) {
+        ticking = true;
+        rafId = requestAnimationFrame(tick);
+      }
+    };
+
+    kick();
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", kick);
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("scroll", kick);
+      window.removeEventListener("resize", kick);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -391,11 +488,7 @@ export function SimplePortfolio() {
       ref={portfolioRef}
       suppressHydrationWarning
     >
-        <div
-          className="simple-atmosphere"
-          aria-hidden="true"
-          style={{ ["--scroll" as string]: String(scrollProgress) }}
-        >
+        <div className="simple-atmosphere" aria-hidden="true">
           <div className="simple-paper" />
           <div className="simple-band" />
           <div className="simple-ink simple-ink-a" />
@@ -412,13 +505,15 @@ export function SimplePortfolio() {
         {/* Quiet scroll cues — holds a 30–60s skim without a full HUD */}
         <div
           className="simple-scroll-progress"
-          style={{ transform: `scaleX(${scrollProgress})` }}
+          ref={progressBarRef}
           aria-hidden="true"
         />
         <div className="simple-scroll-cue" aria-live="polite">
-          <span className="simple-scroll-cue-label">{activeLabel}</span>
-          <span className="simple-scroll-cue-pct">
-            {Math.round(scrollProgress * 100)}%
+          <span className="simple-scroll-cue-label" ref={cueLabelRef}>
+            {activeLabel}
+          </span>
+          <span className="simple-scroll-cue-pct" ref={cuePctRef}>
+            0%
           </span>
         </div>
 
@@ -457,7 +552,7 @@ export function SimplePortfolio() {
                   setThemePreference(theme === "light" ? "dark" : "light")
                 }
               />
-              <Link className="simple-interactive" href="/terminal">
+              <Link className="simple-interactive" href="/interactive">
                 <SquareTerminal aria-hidden="true" />
                 <span>Interactive view</span>
               </Link>
@@ -593,11 +688,8 @@ export function SimplePortfolio() {
             >
               {yearTrack.map((year) => (
                 <span
-                  className={
-                    reachedYears.has(year)
-                      ? "simple-year-tick is-active"
-                      : "simple-year-tick"
-                  }
+                  className="simple-year-tick"
+                  data-year={year}
                   key={year}
                 >
                   {year}
@@ -605,15 +697,7 @@ export function SimplePortfolio() {
               ))}
             </div>
 
-            <div
-              className="simple-timeline"
-              ref={timelineRef}
-              style={
-                {
-                  ["--timeline-progress" as string]: String(timelineProgress),
-                }
-              }
-            >
+            <div className="simple-timeline" ref={timelineRef}>
               <div className="simple-timeline-rail" aria-hidden="true">
                 <div className="simple-timeline-rail-fill" />
               </div>

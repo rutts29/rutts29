@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: "https://0xrutts.com/terminal",
+      url: "https://0xrutts.com/interactive",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
