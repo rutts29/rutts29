@@ -804,7 +804,7 @@ export function SimplePortfolio() {
                 Research &amp; notes.
               </h2>
               <p className="simple-body-copy">
-                Publications first; shorter engineering notes over time.
+                Papers and short pieces on AI systems and applied ML.
               </p>
             </header>
 
