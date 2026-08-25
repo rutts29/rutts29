@@ -1,6 +1,11 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useEffect, useRef } from "react";
+import {
+  FormEvent,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+} from "react";
 
 import { commandCatalog } from "@/config/commands";
 import { themeNames } from "@/config/themes";
@@ -148,6 +153,7 @@ export const TerminalShell = ({
   onSubmit,
   embedded = false,
 }: TerminalShellProps) => {
+  const shellRef = useRef<HTMLDivElement>(null);
   const historyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isLive = mode === "interactive";
@@ -166,6 +172,50 @@ export const TerminalShell = ({
       inputRef.current.focus();
     }
   }, [isLive]);
+
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) {
+      return;
+    }
+
+    const routeWheelToHistory = (event: WheelEvent) => {
+      const terminalHistory = historyRef.current;
+      if (!terminalHistory || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
+        return;
+      }
+
+      const maxScrollTop =
+        terminalHistory.scrollHeight - terminalHistory.clientHeight;
+      if (maxScrollTop <= 0) {
+        return;
+      }
+
+      const deltaY =
+        event.deltaMode === 1
+          ? event.deltaY * 16
+          : event.deltaMode === 2
+            ? event.deltaY * terminalHistory.clientHeight
+            : event.deltaY;
+      const canScrollUp = deltaY < 0 && terminalHistory.scrollTop > 0;
+      const canScrollDown =
+        deltaY > 0 && terminalHistory.scrollTop < maxScrollTop - 1;
+
+      // While the pointer is over an overflowing shell, route the gesture to
+      // its history. At either edge, let the surrounding page move normally.
+      if (canScrollUp || canScrollDown) {
+        event.preventDefault();
+        event.stopPropagation();
+        terminalHistory.scrollTop = Math.max(
+          0,
+          Math.min(maxScrollTop, terminalHistory.scrollTop + deltaY),
+        );
+      }
+    };
+
+    shell.addEventListener("wheel", routeWheelToHistory, { passive: false });
+    return () => shell.removeEventListener("wheel", routeWheelToHistory);
+  }, []);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -266,6 +316,7 @@ export const TerminalShell = ({
 
   return (
     <div
+      ref={shellRef}
       data-terminal-shell
       onClick={handleTerminalClick}
       className={
@@ -302,7 +353,9 @@ export const TerminalShell = ({
       <div
         ref={historyRef}
         data-lenis-prevent
-        className="mt-4 sm:mt-6 no-scrollbar min-h-0 flex-1 overflow-y-auto pr-1 sm:pr-2 text-sm sm:text-base"
+        data-lenis-prevent-touch
+        data-lenis-prevent-wheel
+        className="terminal-history mt-4 sm:mt-6 min-h-0 flex-1 overflow-y-auto pr-2 sm:pr-3 text-sm sm:text-base"
       >
         {history.map((entry) => (
           <div key={entry.id} className="mb-3 sm:mb-4 space-y-2 sm:space-y-3">

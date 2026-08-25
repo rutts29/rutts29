@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { SmoothScroll } from "@/components/SmoothScroll";
 import { TerminalExperience } from "@/components/TerminalExperience";
 import { portfolioContent } from "@/config/portfolioContent";
 
@@ -26,9 +25,5 @@ export const metadata: Metadata = {
 };
 
 export default function InteractivePage() {
-  return (
-    <SmoothScroll>
-      <TerminalExperience />
-    </SmoothScroll>
-  );
+  return <TerminalExperience />;
 }

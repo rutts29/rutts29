@@ -316,6 +316,20 @@ body:has(.terminal-experience)::-webkit-scrollbar,
   display: none;
 }
 
+/* The live shell is a nested viewport. Give it native gesture ownership while
+   keeping the scrollbar hidden with the rest of the terminal chrome. */
+.terminal-experience .terminal-history {
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.terminal-experience .terminal-history::-webkit-scrollbar {
+  display: none;
+}
+
 /* Section jumps are handled in JS (snappy). Keep auto so CSS doesn't double-slow. */
 html:has(.simple-portfolio) {
   scroll-behavior: auto;
