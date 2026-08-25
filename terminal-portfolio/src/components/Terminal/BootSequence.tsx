@@ -44,7 +44,7 @@ export const BootSequence = () => {
           {identity.name}
         </p>
         <p className="mt-1.5 text-sm sm:text-base text-[var(--color-text-accent)]">
-          {identity.title} · {identity.location}
+          {identity.title} · {identity.location} · {identity.workAuthorization}
         </p>
         <p className="mt-1.5 flex items-center text-sm sm:text-base text-[var(--color-text-secondary)]">
           {identity.hero}

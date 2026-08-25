@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Fragment,
   useEffect,
   useRef,
   useState,
@@ -12,7 +11,6 @@ import Image from "next/image";
 import { ArrowUpRight, MapPin, SquareTerminal } from "lucide-react";
 
 import {
-  formatOrganizationNames,
   portfolioContent,
   type Project,
 } from "@/config/portfolioContent";
@@ -96,11 +94,6 @@ function parseLocation(location: string) {
   const parts = location.split("·").map((part) => part.trim());
   if (parts.length < 2) return { type: location, place: "" };
   return { type: parts[0], place: parts.slice(1).join(" · ") };
-}
-
-function formatLead(detail: string) {
-  const cleaned = detail.replace(/https?:\/\/\S+/g, "").trim();
-  return cleaned.replace(/\s+/g, " ").replace(/[.:]+$/, "");
 }
 
 function yearsInDuration(duration: string): number[] {
@@ -493,7 +486,7 @@ export function SimplePortfolio() {
           <div className="simple-ink simple-ink-d" />
           <div className="simple-speckle" />
           <p className="simple-watermark simple-watermark-main">R</p>
-          <p className="simple-watermark simple-watermark-sub">AI · ML</p>
+          <p className="simple-watermark simple-watermark-sub">Applied AI</p>
           <div className="simple-atmosphere-grain" />
           <div className="simple-atmosphere-fiber" />
         </div>
@@ -562,13 +555,17 @@ export function SimplePortfolio() {
               <div className="simple-kicker">
                 <p className="simple-label">{identity.title}</p>
                 <p className="simple-location">
-                  <MapPin aria-hidden="true" />
-                  {identity.location}
+                  <span className="simple-location-place">
+                    <MapPin aria-hidden="true" />
+                    {identity.location}
+                  </span>
+                  <span className="simple-location-auth">
+                    {identity.workAuthorization}
+                  </span>
                 </p>
               </div>
               <h1 className="simple-display">{identity.name}</h1>
               <p className="simple-lede">{identity.hero}</p>
-              <p className="simple-body-copy">{identity.summary}</p>
               <div className="simple-actions">
                 <a className="simple-btn-primary" href="#work">
                   Selected work
@@ -611,10 +608,11 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Selected work</p>
               <h2 id="work-title" className="simple-heading">
-                AI systems and research
+                Applied AI systems
               </h2>
               <p className="simple-body-copy">
-                Observability, agent infrastructure, security, and applied ML.
+                Agent infrastructure, controlled workflows, and applied
+                machine-learning research.
               </p>
             </header>
 
@@ -629,7 +627,7 @@ export function SimplePortfolio() {
                 <header className="simple-section-head simple-reveal" style={{ marginTop: "2rem" }}>
                   <p className="simple-label">Additional work</p>
                   <h3 className="simple-title simple-title-lg">
-                    Products and infrastructure
+                    Product and security engineering
                   </h3>
                 </header>
                 <div className="simple-list">
@@ -649,10 +647,11 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Experience</p>
               <h2 id="experience-title" className="simple-heading">
-                Research and engineering roles
+                Roles
               </h2>
               <p className="simple-body-copy">
-                Applied AI, ML research, and product work across industry and academic collaborations.
+                Applied AI in security tooling, plus industry-partnered research
+                at Sheridan.
               </p>
             </header>
 
@@ -678,15 +677,12 @@ export function SimplePortfolio() {
               <ol className="simple-timeline-list">
                 {experience.map((role) => {
                   const { type, place } = parseLocation(role.location);
-                  const lead = role.details[0]
-                    ? formatLead(role.details[0])
-                    : "";
                   const year = startYear(role.duration);
                   return (
                     <li
                       className="simple-timeline-item simple-reveal"
                       data-year={year}
-                      key={`${formatOrganizationNames(role.organizations)}-${role.role}-${role.duration}`}
+                      key={`${role.company.label}-${role.role}-${role.duration}`}
                     >
                       <span className="simple-timeline-year" aria-hidden="true">
                         {year}
@@ -700,17 +696,12 @@ export function SimplePortfolio() {
                           </div>
                           <p className="simple-meta-line">
                             <span className="simple-company-links">
-                              {role.organizations.map((organization, index) => (
-                                <Fragment key={organization.href}>
-                                  {index > 0 ? " & " : null}
-                                  <a
-                                    href={organization.href}
-                                    {...externalLinkProps}
-                                  >
-                                    {organization.label}
-                                  </a>
-                                </Fragment>
-                              ))}
+                              <a
+                                href={role.company.href}
+                                {...externalLinkProps}
+                              >
+                                {role.company.label}
+                              </a>
                             </span>
                             <span className="simple-dot" aria-hidden="true">
                               ·
@@ -728,10 +719,42 @@ export function SimplePortfolio() {
                               <span className="simple-pill">Current</span>
                             ) : null}
                           </p>
+                          {role.unit || role.partner || role.collaboratorNote ? (
+                            <p className="simple-meta-line simple-affiliation-line">
+                              {role.unit ? (
+                                <a href={role.unit.href} {...externalLinkProps}>
+                                  {role.unit.label}
+                                </a>
+                              ) : null}
+                              {role.unit && role.partner ? (
+                                <span className="simple-dot" aria-hidden="true">
+                                  ·
+                                </span>
+                              ) : null}
+                              {role.partner ? (
+                                <span>
+                                  Industry partner:{" "}
+                                  <a
+                                    href={role.partner.href}
+                                    {...externalLinkProps}
+                                  >
+                                    {role.partner.label}
+                                  </a>
+                                </span>
+                              ) : null}
+                              {role.collaboratorNote ? (
+                                <>
+                                  <span className="simple-dot" aria-hidden="true">
+                                    ·
+                                  </span>
+                                  <span>{role.collaboratorNote}</span>
+                                </>
+                              ) : null}
+                            </p>
+                          ) : null}
                         </div>
-                        {lead ? <p className="simple-outcome">{lead}</p> : null}
                         <ul className="simple-bullets">
-                          {role.details.slice(1, 3).map((detail) => (
+                          {role.details.map((detail) => (
                             <li key={detail}>{detail}</li>
                           ))}
                         </ul>
@@ -765,10 +788,10 @@ export function SimplePortfolio() {
             <header className="simple-section-head simple-reveal">
               <p className="simple-label">Skills</p>
               <h2 id="focus-title" className="simple-heading">
-                Core tools
+                Stack
               </h2>
               <p className="simple-body-copy">
-                The languages, frameworks, and infrastructure I use most.
+                A focused view of the technologies I use to build and ship.
               </p>
             </header>
 
@@ -789,11 +812,16 @@ export function SimplePortfolio() {
                           <Image
                             src={item.badgeSrc}
                             alt={item.label}
-                            width={120}
-                            height={28}
+                            width={item.badgeWidth ?? 120}
+                            height={20}
+                            style={{ width: "auto", height: "28px" }}
                           />
                         </li>
-                      ) : null,
+                      ) : (
+                        <li className="simple-skill-text" key={item.label}>
+                          {item.label}
+                        </li>
+                      ),
                     )}
                   </ul>
                 </article>
@@ -807,13 +835,12 @@ export function SimplePortfolio() {
             aria-labelledby="writing-title"
           >
             <header className="simple-section-head simple-reveal">
-              <p className="simple-label">Publications &amp; writing</p>
+              <p className="simple-label">Publications</p>
               <h2 id="writing-title" className="simple-heading">
-                Published results and system notes
+                Published research
               </h2>
               <p className="simple-body-copy">
-                An IEEE conference paper, with concise articles on AI systems,
-                evaluation, and security to follow.
+                Peer-reviewed work, with concise technical articles to follow.
               </p>
             </header>
 
@@ -858,8 +885,8 @@ export function SimplePortfolio() {
             <h2 className="simple-heading">{contact.heading}</h2>
             <p className="simple-body-copy">{contact.intro}</p>
             <div className="simple-actions" style={{ marginTop: "1.25rem" }}>
-              <a className="simple-btn-primary" href={contact.demoCta.mailto}>
-                {contact.demoCta.label}
+              <a className="simple-btn-primary" href={contact.emailCta.mailto}>
+                {contact.emailCta.label}
               </a>
             </div>
           </div>
@@ -901,6 +928,16 @@ function ProjectCard({ project }: { project: Project }) {
     <article className="simple-project simple-reveal">
       <div className="simple-project-top">
         <h3 className="simple-title simple-title-lg">{project.name}</h3>
+        {project.links && project.links.length > 0 ? (
+          <div className="simple-inline-links">
+            {project.links.map((link) => (
+              <a key={link.href} href={link.href} {...externalLinkProps}>
+                {link.prefix ?? link.label}
+                <ArrowUpRight aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+        ) : null}
       </div>
       <p className="simple-outcome">{project.summary}</p>
       <p className="simple-body-copy">{project.description}</p>

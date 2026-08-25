@@ -1,7 +1,4 @@
-import {
-  formatOrganizationNames,
-  portfolioContent,
-} from "@/config/portfolioContent";
+import { portfolioContent } from "@/config/portfolioContent";
 import { themeNames } from "@/config/themes";
 import type { CommandDefinition, TerminalLine } from "@/types/terminal";
 
@@ -12,7 +9,7 @@ export const commandCatalog: CommandDefinition[] = [
   { key: "education", description: "Degree and academic focus" },
   { key: "skills", description: "Technical skills and tools" },
   { key: "experience", description: "Roles and impact" },
-  { key: "projects", description: "AI systems, research, and prototypes" },
+  { key: "projects", description: "Applied AI systems, products, and research" },
   { key: "writing", description: "Publications and writing" },
   { key: "contact", description: "How to reach me" },
   { key: "theme list", description: "List terminal themes" },
@@ -34,7 +31,7 @@ const contactPrefix: Record<string, string> = {
 
 const aboutLines: TerminalLine[] = [
   { type: "heading", text: "About" },
-  ...[identity.hero, identity.summary, ...identity.about].map(
+  ...[identity.hero, ...identity.about].map(
     (text, index): TerminalLine => ({
       type: "text",
       text,
@@ -70,7 +67,7 @@ const experienceLines: TerminalLine[] = [
     ...(index > 0 ? [{ type: "spacer" as const }] : []),
     {
       type: "text",
-      text: `${formatOrganizationNames(role.organizations)} · ${role.role} · ${role.location}`,
+      text: `${role.company.label} · ${role.role} · ${role.location}`,
       tone: "accent",
     },
     {
@@ -79,14 +76,41 @@ const experienceLines: TerminalLine[] = [
       tone: "muted",
     },
     { type: "list", items: role.details },
-    ...role.organizations.map(
-      (organization): TerminalLine => ({
-        type: "link",
-        label: organization.href.replace(/^https?:\/\//, ""),
-        href: organization.href,
-        prefix: organization.label,
-      }),
-    ),
+    {
+      type: "link",
+      label: role.company.href.replace(/^https?:\/\//, ""),
+      href: role.company.href,
+      prefix: role.company.label,
+    },
+    ...(role.unit
+      ? [
+          {
+            type: "link" as const,
+            label: role.unit.href.replace(/^https?:\/\//, ""),
+            href: role.unit.href,
+            prefix: role.unit.label,
+          },
+        ]
+      : []),
+    ...(role.partner
+      ? [
+          {
+            type: "link" as const,
+            label: role.partner.href.replace(/^https?:\/\//, ""),
+            href: role.partner.href,
+            prefix: `Industry partner: ${role.partner.label}`,
+          },
+        ]
+      : []),
+    ...(role.collaboratorNote
+      ? [
+          {
+            type: "text" as const,
+            text: role.collaboratorNote,
+            tone: "muted" as const,
+          },
+        ]
+      : []),
     ...(role.relatedLinks ?? []).map(
       (link): TerminalLine => ({
         type: "link",
@@ -110,6 +134,14 @@ const projectLines: TerminalLine[] = [
       text: `Stack: ${project.stack.join(", ")}`,
       tone: "muted",
     },
+    ...(project.links ?? []).map(
+      (link): TerminalLine => ({
+        type: "link",
+        label: link.label,
+        href: link.href,
+        prefix: link.prefix,
+      }),
+    ),
   ]),
 ];
 
@@ -152,8 +184,8 @@ const contactLines: TerminalLine[] = [
   { type: "spacer" },
   {
     type: "link",
-    label: contact.demoCta.label,
-    href: contact.demoCta.mailto,
+    label: contact.emailCta.label,
+    href: contact.emailCta.mailto,
     prefix: "Email",
   },
 ];
@@ -177,7 +209,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
   welcome: [
     {
       type: "text",
-      text: `Hi, I'm ${identity.shortName}. ${identity.title}, based in ${identity.location}.`,
+      text: `Hi, I'm ${identity.shortName}. ${identity.title} · ${identity.location}.`,
       tone: "accent",
     },
     {

@@ -2,13 +2,13 @@
 
 Personal portfolio for [0xrutts.com](https://www.0xrutts.com).
 
-Positioning: **AI Systems Engineer · Applied ML Researcher**.
+Positioning: **Applied AI Engineer**.
 
 ## Modes
 
 | Route | Experience |
 | --- | --- |
-| `/` | Recruiter-first AI and ML portfolio (default) |
+| `/` | Recruiter-first Applied AI portfolio (default) |
 | `/interactive` | Optional terminal with interactive commands |
 | `/terminal` | Permanent redirect → `/interactive` (legacy) |
 
@@ -53,5 +53,5 @@ The hook runs `bun run check:repo --staged` and rejects environment files, overs
 - `src/config/portfolioContent.ts` is the canonical source for both interfaces, metadata, structured data, and `/llms.txt`.
 - Terminal command outputs in `commands.ts` derive from the same source.
 - Theme for the simple site is bootstrapped before paint (`layout` boot script) to avoid theme FOUC.
-- Demo CTA uses mailto.
+- Email CTA uses mailto.
 - Do not commit `.env` or local screenshot dumps; they are gitignored.

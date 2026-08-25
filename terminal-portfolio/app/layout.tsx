@@ -44,11 +44,11 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const { siteUrl, identity, experience, skills, contact } = portfolioContent;
+const { siteUrl, identity, experience, contact } = portfolioContent;
 const currentRole = experience.find((role) => role.isCurrent);
-const currentOrganization = currentRole?.organizations[0];
+const currentOrganization = currentRole?.company;
 const pageTitle = `${identity.name} | ${identity.title}`;
-const pageDescription = `${identity.name} is an ${identity.title.replace(" · ", " and ")} based in ${identity.location}. ${identity.hero}`;
+const pageDescription = identity.metaDescription;
 const profileUrls = contact.links
   .map((link) => link.href)
   .filter((href) => href.startsWith("https://"));
@@ -143,12 +143,7 @@ export default function RootLayout({
                     }
                   : undefined,
                 knowsAbout: [
-                  "Artificial Intelligence",
-                  "Machine Learning",
                   ...identity.specialties,
-                  ...skills.flatMap((group) =>
-                    group.items.map((item) => item.label),
-                  ),
                 ],
                 sameAs: profileUrls,
                 address: {

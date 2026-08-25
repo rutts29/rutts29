@@ -6,7 +6,7 @@ import { portfolioContent } from "@/config/portfolioContent";
 
 const { identity } = portfolioContent;
 const terminalTitle = `${identity.name} | ${identity.title} | Terminal`;
-const terminalDescription = `Explore ${identity.name}'s AI systems, applied ML research, and experience in an interactive portfolio shell.`;
+const terminalDescription = `Explore ${identity.name}'s applied AI systems, product engineering, research, and experience in an interactive portfolio shell.`;
 
 export const metadata: Metadata = {
   title: terminalTitle,

@@ -1,7 +1,4 @@
-import {
-  formatOrganizationNames,
-  portfolioContent,
-} from "@/config/portfolioContent";
+import { portfolioContent } from "@/config/portfolioContent";
 
 export const dynamic = "force-static";
 
@@ -18,7 +15,7 @@ const lines = (() => {
     "",
     `Role: ${identity.title}`,
     "",
-    `${identity.name} is an ${identity.title.replace(" · ", " and ")} based in ${identity.location}.`,
+    `${identity.name} is an ${identity.title} based in ${identity.location}. ${identity.workAuthorization}.`,
     "",
     "## Canonical URLs",
     "",
@@ -29,7 +26,6 @@ const lines = (() => {
     "## About",
     "",
     identity.hero,
-    identity.summary,
     ...identity.about,
     "",
     "## Core strengths",
@@ -56,11 +52,16 @@ const lines = (() => {
     "",
     ...(currentRole
       ? [
-          `- ${currentRole.role} at ${formatOrganizationNames(currentRole.organizations)} (${currentRole.duration})`,
-          ...currentRole.organizations.map(
-            (organization) =>
-              `  - ${organization.label}: ${organization.href}`,
-          ),
+          `- ${currentRole.role} at ${currentRole.company.label} (${currentRole.duration})`,
+          `  - ${currentRole.company.label}: ${currentRole.company.href}`,
+          ...(currentRole.unit
+            ? [`  - ${currentRole.unit.label}: ${currentRole.unit.href}`]
+            : []),
+          ...(currentRole.partner
+            ? [
+                `  - Industry partner: ${currentRole.partner.label} (${currentRole.partner.href})`,
+              ]
+            : []),
           ...currentRole.details.map((detail) => `  - ${detail}`),
           ...(currentRole.relatedLinks ?? []).map(
             (link) => `  - ${link.prefix ?? link.label}: ${link.href}`,
@@ -71,9 +72,18 @@ const lines = (() => {
     "## Previous roles",
     "",
     ...previousRoles.flatMap((role) => [
-      `- ${role.role} at ${formatOrganizationNames(role.organizations)} (${role.duration})`,
-      ...role.organizations.map(
-        (organization) => `  - ${organization.label}: ${organization.href}`,
+      `- ${role.role} at ${role.company.label} (${role.duration})`,
+      `  - ${role.company.label}: ${role.company.href}`,
+      ...(role.unit ? [`  - ${role.unit.label}: ${role.unit.href}`] : []),
+      ...(role.partner
+        ? [`  - Industry partner: ${role.partner.label} (${role.partner.href})`]
+        : []),
+      ...(role.collaboratorNote
+        ? [`  - ${role.collaboratorNote}`]
+        : []),
+      ...role.details.map((detail) => `  - ${detail}`),
+      ...(role.relatedLinks ?? []).map(
+        (link) => `  - ${link.prefix ?? link.label}: ${link.href}`,
       ),
     ]),
     "",
@@ -83,6 +93,9 @@ const lines = (() => {
       `- ${project.name}: ${project.summary}`,
       `  - ${project.description}`,
       `  - Technologies: ${project.stack.join(", ")}`,
+      ...(project.links ?? []).map(
+        (link) => `  - ${link.prefix ?? link.label}: ${link.href}`,
+      ),
     ]),
     "",
     "## Skills",
@@ -100,7 +113,7 @@ const lines = (() => {
     "",
     "## Contact",
     "",
-    `- ${contact.demoCta.label}: ${contact.demoCta.mailto}`,
+    `- ${contact.emailCta.label}: ${contact.emailCta.mailto}`,
     ...contact.links.map((link) => `- ${link.label}: ${link.href}`),
     `- Location: ${contact.location}`,
   ].join("\n");
