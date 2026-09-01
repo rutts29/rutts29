@@ -139,21 +139,84 @@ export const portfolioContent: PortfolioContent = {
       description:
         "Built read-only adapters and a provenance-aware SQLite ledger that reconcile sessions and revalidate transcript content from canonical local sources, then serve it through a CLI, local dashboard, and read-only MCP tools.",
       stack: ["Python", "TypeScript", "SQLite", "MCP"],
+      links: [
+        {
+          label: "github.com/rutts29/agentlog",
+          href: "https://github.com/rutts29/agentlog",
+          prefix: "GitHub",
+        },
+      ],
     },
     {
-      id: "founder-intelligence",
-      name: "Founder Intelligence",
+      id: "driftctl",
+      name: "driftctl",
+      featured: true,
+      summary: "Opt-in continuity layer for long Codex sessions.",
+      description:
+        "Hackathon MVP with source-linked intent, deterministic validation, and resume and compaction recovery so accepted goals and steering survive long sessions. Evals are published in-repo, including negative results. It is not a security sandbox and currently supports Codex only.",
+      stack: ["Rust", "Codex hooks"],
+      links: [
+        {
+          label: "github.com/rutts29/driftctl",
+          href: "https://github.com/rutts29/driftctl",
+          prefix: "GitHub",
+        },
+      ],
+    },
+    {
+      id: "codex2gpt",
+      name: "codex2gpt",
       featured: true,
       summary:
-        "End-to-end, local-first founder-intelligence workflow delivered through nine bounded MCP tools.",
+        "Local prototype for bounded delegation between ChatGPT and Codex.",
       description:
-        "Manages collection jobs, preserves untrusted evidence in SQLite, and turns it into reviewable context and annotations. Paid X collection requires explicit approval and monthly credit controls.",
-      stack: ["TypeScript", "Node.js", "SQLite", "MCP"],
+        "Uses workspace-scoped context, managed worktrees, OAuth/PKCE, audit records, and explicit approval boundaries without exposing a raw shell by default.",
+      stack: ["Rust", "MCP", "OAuth"],
+      links: [
+        {
+          label: "github.com/rutts29/codex2gpt",
+          href: "https://github.com/rutts29/codex2gpt",
+          prefix: "GitHub",
+        },
+      ],
+    },
+    {
+      id: "local-sec",
+      name: "local-sec",
+      featured: true,
+      summary: "Local-first guard for selected developer-tool installs.",
+      description:
+        "Applies mature-version selection, advisory checks, supported artifact scanning, explicit approvals, and metadata inventory.",
+      stack: ["Go", "Supply-chain security"],
+      links: [
+        {
+          label: "github.com/rutts29/local-sec",
+          href: "https://github.com/rutts29/local-sec",
+          prefix: "GitHub",
+        },
+      ],
+    },
+    {
+      id: "solprobe",
+      name: "SolProbe",
+      featured: false,
+      summary:
+        "Observability prototype for AI-training telemetry, anomaly detection, and recovery suggestions.",
+      description:
+        "Combines a Rust sidecar, FastAPI service, and Next.js dashboard. Apple Silicon collection and simulated paths are verified; cloud, NVIDIA, and live-LLM paths remain prototype or unverified.",
+      stack: ["Rust", "FastAPI", "Next.js"],
+      links: [
+        {
+          label: "github.com/rutts29/solprobe",
+          href: "https://github.com/rutts29/solprobe",
+          prefix: "GitHub",
+        },
+      ],
     },
     {
       id: "smart-contract-thesis",
       name: "Smart-contract vulnerability detection",
-      featured: true,
+      featured: false,
       summary:
         "Undergraduate thesis on CodeBERT and graph-based smart-contract vulnerability analysis.",
       description:
@@ -177,25 +240,6 @@ export const portfolioContent: PortfolioContent = {
         },
       ],
     },
-    {
-      id: "codex2gpt",
-      name: "codex2gpt",
-      featured: false,
-      summary:
-        "Local prototype for bounded delegation between ChatGPT and Codex.",
-      description:
-        "Uses workspace-scoped context, managed worktrees, OAuth/PKCE, audit records, and explicit approval boundaries without exposing a raw shell by default.",
-      stack: ["Rust", "MCP", "OAuth"],
-    },
-    {
-      id: "local-sec",
-      name: "local-sec",
-      featured: false,
-      summary: "Local-first guard for selected developer-tool installs.",
-      description:
-        "Applies mature-version selection, advisory checks, supported artifact scanning, explicit approvals, and metadata inventory.",
-      stack: ["Go", "Supply-chain security"],
-    },
   ],
 
   skills: [
@@ -205,6 +249,7 @@ export const portfolioContent: PortfolioContent = {
         { label: "Python", badgeSrc: "/badges/python.svg", badgeWidth: 67 },
         { label: "TypeScript", badgeSrc: "/badges/typescript.svg", badgeWidth: 87 },
         { label: "Rust", badgeSrc: "/badges/rust.svg", badgeWidth: 53 },
+        { label: "Go", badgeSrc: "/badges/go.svg", badgeWidth: 53 },
       ],
     },
     {

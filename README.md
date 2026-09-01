@@ -44,7 +44,7 @@ Applies mature-version selection, advisory checks, supported artifact scanning, 
 
 `Go`
 
-Also on the site: undergraduate smart-contract vulnerability thesis, and [LoanRef](https://loan-ref.vercel.app/) (product/security SaaS, not an AI runtime).
+Also on the site: [SolProbe](https://github.com/rutts29/solprobe), an undergraduate smart-contract vulnerability thesis, and [LoanRef](https://loan-ref.vercel.app/) (product/security SaaS, not an AI runtime).
 
 ## Experience
 

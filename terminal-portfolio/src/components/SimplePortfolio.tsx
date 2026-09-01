@@ -575,16 +575,6 @@ export function SimplePortfolio() {
                 </a>
               </div>
             </div>
-            <div className="simple-hero-portrait">
-              <Image
-                src="/core-image.jpg"
-                alt={identity.name}
-                width={320}
-                height={320}
-                priority
-                sizes="(max-width: 760px) 160px, 280px"
-              />
-            </div>
           </section>
 
           {/* Fact strip — scannable proof while they scroll the first screen */}
@@ -625,9 +615,9 @@ export function SimplePortfolio() {
             {secondary.length > 0 ? (
               <>
                 <header className="simple-section-head simple-reveal" style={{ marginTop: "2rem" }}>
-                  <p className="simple-label">Additional work</p>
+                  <p className="simple-label">Also built</p>
                   <h3 className="simple-title simple-title-lg">
-                    Product and security engineering
+                    Additional projects
                   </h3>
                 </header>
                 <div className="simple-list">

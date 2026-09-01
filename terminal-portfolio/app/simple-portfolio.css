@@ -436,13 +436,13 @@ html[data-simple-theme="dark"] .simple-portfolio .simple-atmosphere-fiber {
 
 .simple-lede {
   margin: 0;
-  max-width: 22ch;
-  font-family: var(--font-display);
-  font-size: clamp(22px, 3vw, 32px);
-  font-weight: 400;
-  font-style: italic;
+  max-width: 38ch;
+  font-family: var(--font-ui);
+  font-size: clamp(20px, 2.4vw, 28px);
+  font-weight: 450;
+  font-style: normal;
   letter-spacing: -0.02em;
-  line-height: 1.25;
+  line-height: 1.35;
 }
 
 .simple-body-copy {
@@ -590,7 +590,7 @@ button:focus-visible {
   min-height: calc(100svh - var(--simple-header-h));
   min-height: calc(100dvh - var(--simple-header-h));
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(160px, 0.7fr);
+  grid-template-columns: minmax(0, 780px);
   align-items: center;
   gap: 40px 48px;
   /* Tighter top so dark doesn’t open with a dead black void */
@@ -658,24 +658,6 @@ button:focus-visible {
   font-weight: 550;
   letter-spacing: -0.015em;
   line-height: 1.45;
-}
-
-.simple-hero-portrait {
-  justify-self: end;
-  width: min(100%, 280px);
-  aspect-ratio: 1;
-  overflow: hidden;
-  border: 1px solid var(--simple-line);
-  border-radius: 18px;
-  background: var(--simple-soft);
-  box-shadow: 0 18px 50px color-mix(in srgb, var(--simple-text) 10%, transparent);
-}
-
-.simple-hero-portrait img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
 .simple-kicker {
@@ -1355,11 +1337,6 @@ html[data-simple-resolved="dark"] .simple-badges img,
 
 /* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 960px) {
-  .simple-hero {
-    grid-template-columns: minmax(0, 1fr) minmax(140px, 0.55fr);
-    gap: 28px 32px;
-  }
-
   .simple-proof {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1399,13 +1376,6 @@ html[data-simple-resolved="dark"] .simple-badges img,
   .simple-scroll-cue {
     right: max(12px, env(safe-area-inset-right));
     bottom: max(12px, env(safe-area-inset-bottom));
-  }
-
-  .simple-hero-portrait {
-    order: -1;
-    justify-self: start;
-    width: 128px;
-    border-radius: 14px;
   }
 
   .simple-kicker {
