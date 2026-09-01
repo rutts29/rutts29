@@ -11,6 +11,7 @@ export const commandCatalog: CommandDefinition[] = [
   { key: "experience", description: "Roles and impact" },
   { key: "projects", description: "Applied AI systems, products, and research" },
   { key: "writing", description: "Publications and writing" },
+  { key: "resume", description: "View or download my resume" },
   { key: "contact", description: "How to reach me" },
   { key: "theme list", description: "List terminal themes" },
   { key: "theme set <name>", description: "Switch the terminal theme" },
@@ -19,7 +20,7 @@ export const commandCatalog: CommandDefinition[] = [
   { key: "banner", description: "Print the ASCII welcome banner" },
 ];
 
-const { identity, projects, skills, experience, writing, contact } =
+const { identity, projects, skills, experience, writing, contact, resume } =
   portfolioContent;
 
 const contactPrefix: Record<string, string> = {
@@ -122,27 +123,50 @@ const experienceLines: TerminalLine[] = [
   ]),
 ];
 
+const projectEntryLines = (
+  project: (typeof projects)[number],
+  index: number,
+): TerminalLine[] => [
+  ...(index > 0 ? [{ type: "spacer" as const }] : []),
+  { type: "text", text: project.name, tone: "accent" },
+  { type: "text", text: project.summary },
+  { type: "text", text: project.description, tone: "muted" },
+  {
+    type: "text",
+    text: `Tools: ${project.stack.join(", ")}`,
+    tone: "muted",
+  },
+  ...(project.links ?? []).map(
+    (link): TerminalLine => ({
+      type: "link",
+      label: link.label,
+      href: link.href,
+      prefix: link.prefix,
+    }),
+  ),
+];
+
+const selectedProjects = projects.filter(
+  (project) => project.placement === "selected",
+);
+const additionalProjects = projects.filter(
+  (project) =>
+    project.placement === "additional" || project.placement === "more",
+);
+const researchProjects = projects.filter(
+  (project) => project.placement === "research",
+);
+
 const projectLines: TerminalLine[] = [
   { type: "heading", text: "Projects" },
-  ...projects.flatMap((project, index): TerminalLine[] => [
-    ...(index > 0 ? [{ type: "spacer" as const }] : []),
-    { type: "text", text: project.name, tone: "accent" },
-    { type: "text", text: project.summary },
-    { type: "text", text: project.description, tone: "muted" },
-    {
-      type: "text",
-      text: `Stack: ${project.stack.join(", ")}`,
-      tone: "muted",
-    },
-    ...(project.links ?? []).map(
-      (link): TerminalLine => ({
-        type: "link",
-        label: link.label,
-        href: link.href,
-        prefix: link.prefix,
-      }),
-    ),
-  ]),
+  { type: "text", text: "Selected work", tone: "muted" },
+  ...selectedProjects.flatMap(projectEntryLines),
+  { type: "spacer" },
+  { type: "text", text: "Additional projects", tone: "muted" },
+  ...additionalProjects.flatMap(projectEntryLines),
+  { type: "spacer" },
+  { type: "text", text: "Research project", tone: "muted" },
+  ...researchProjects.flatMap(projectEntryLines),
 ];
 
 const writingLines: TerminalLine[] = [
@@ -163,6 +187,27 @@ const writingLines: TerminalLine[] = [
       }),
     ),
   ]),
+];
+
+const resumeLines: TerminalLine[] = [
+  { type: "heading", text: resume.label },
+  {
+    type: "text",
+    text: `${identity.name} · ${identity.title}`,
+    tone: "muted",
+  },
+  {
+    type: "link",
+    label: "Open resume viewer",
+    href: resume.pagePath,
+    prefix: "View",
+  },
+  {
+    type: "link",
+    label: resume.downloadName,
+    href: `${resume.documentPath}?download=1`,
+    prefix: "Download",
+  },
 ];
 
 const contactLines: TerminalLine[] = [
@@ -224,6 +269,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
   experience: experienceLines,
   projects: projectLines,
   writing: writingLines,
+  resume: resumeLines,
   contact: contactLines,
 };
 

@@ -8,12 +8,19 @@ import {
 } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, MapPin, SquareTerminal } from "lucide-react";
+import {
+  ArrowUpRight,
+  ChevronDown,
+  FileText,
+  MapPin,
+} from "lucide-react";
 
 import {
   portfolioContent,
   type Project,
+  type WritingItem,
 } from "@/config/portfolioContent";
+import { PortfolioAtmosphere } from "@/components/PortfolioAtmosphere";
 import { ThemeToggle, type ResolvedTheme } from "@/components/UI/ThemeToggle";
 
 type ThemePreference = ResolvedTheme | "system";
@@ -137,9 +144,22 @@ export function SimplePortfolio() {
     experience,
     writing,
     contact,
+    resume,
   } = portfolioContent;
-  const featured = projects.filter((project) => project.featured);
-  const secondary = projects.filter((project) => !project.featured);
+  const selectedProjects = projects.filter(
+    (project) => project.placement === "selected",
+  );
+  const additionalProjects = projects.filter(
+    (project) => project.placement === "additional",
+  );
+  const moreProjects = projects.filter(
+    (project) => project.placement === "more",
+  );
+  const researchProjects = projects.filter(
+    (project) => project.placement === "research",
+  );
+  const publishedWriting = writing.filter((item) => item.links?.length);
+  const upcomingWriting = writing.filter((item) => !item.links?.length);
   const activeLabel =
     sectionMeta.find((s) => s.id === activeSection)?.label ?? "Intro";
   const yearTrack = buildYearTrack(experience.map((role) => role.duration));
@@ -477,19 +497,7 @@ export function SimplePortfolio() {
       ref={portfolioRef}
       suppressHydrationWarning
     >
-        <div className="simple-atmosphere" aria-hidden="true">
-          <div className="simple-paper" />
-          <div className="simple-band" />
-          <div className="simple-ink simple-ink-a" />
-          <div className="simple-ink simple-ink-b" />
-          <div className="simple-ink simple-ink-c" />
-          <div className="simple-ink simple-ink-d" />
-          <div className="simple-speckle" />
-          <p className="simple-watermark simple-watermark-main">R</p>
-          <p className="simple-watermark simple-watermark-sub">Applied AI</p>
-          <div className="simple-atmosphere-grain" />
-          <div className="simple-atmosphere-fiber" />
-        </div>
+        <PortfolioAtmosphere />
 
         {/* Quiet scroll cues — holds a 30–60s skim without a full HUD */}
         <div
@@ -541,9 +549,14 @@ export function SimplePortfolio() {
                   setThemePreference(theme === "light" ? "dark" : "light")
                 }
               />
-              <Link className="simple-interactive" href="/interactive">
-                <SquareTerminal aria-hidden="true" />
-                <span>Terminal</span>
+              <Link
+                className="simple-interactive"
+                href={resume.pagePath}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                <FileText aria-hidden="true" />
+                <span>{resume.label}</span>
               </Link>
             </div>
           </div>
@@ -601,31 +614,73 @@ export function SimplePortfolio() {
                 Applied AI systems
               </h2>
               <p className="simple-body-copy">
-                Agent infrastructure, controlled workflows, and applied
-                machine-learning research.
+                Observability and control systems that make AI-assisted
+                engineering easier to inspect, steer, and improve.
               </p>
             </header>
 
             <div className="simple-list">
-              {featured.map((project) => (
+              {selectedProjects.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
 
-            {secondary.length > 0 ? (
-              <>
-                <header className="simple-section-head simple-reveal" style={{ marginTop: "2rem" }}>
-                  <p className="simple-label">Also built</p>
-                  <h3 className="simple-title simple-title-lg">
-                    Additional projects
-                  </h3>
-                </header>
-                <div className="simple-list">
-                  {secondary.map((project) => (
-                    <ProjectCard key={project.id} project={project} />
-                  ))}
+            {additionalProjects.length > 0 ? (
+              <details className="simple-project-disclosure simple-reveal">
+                <summary>
+                  <span>
+                    <span className="simple-title simple-title-lg">
+                      Additional projects
+                    </span>
+                  </span>
+                  <span className="simple-disclosure-action">
+                    <span className="simple-disclosure-closed">View projects</span>
+                    <span className="simple-disclosure-open">Hide projects</span>
+                    <ChevronDown aria-hidden="true" />
+                  </span>
+                </summary>
+                <div className="simple-disclosure-body">
+                  <div className="simple-list">
+                    {additionalProjects.map((project) => (
+                      <ProjectCard
+                        key={project.id}
+                        project={project}
+                        reveal={false}
+                      />
+                    ))}
+                  </div>
+
+                  {moreProjects.length > 0 ? (
+                    <details className="simple-more-disclosure">
+                      <summary>
+                        <span>
+                          <span className="simple-disclosure-more-closed">
+                            View more
+                          </span>
+                          <span className="simple-disclosure-more-open">
+                            Show less
+                          </span>
+                          <span className="simple-meta-line">
+                            {moreProjects
+                              .map((project) => project.name)
+                              .join(" and ")}
+                          </span>
+                        </span>
+                        <ChevronDown aria-hidden="true" />
+                      </summary>
+                      <div className="simple-list simple-more-projects">
+                        {moreProjects.map((project) => (
+                          <ProjectCard
+                            key={project.id}
+                            project={project}
+                            reveal={false}
+                          />
+                        ))}
+                      </div>
+                    </details>
+                  ) : null}
                 </div>
-              </>
+              </details>
             ) : null}
           </section>
 
@@ -820,7 +875,7 @@ export function SimplePortfolio() {
           </section>
 
           <section
-            className="simple-shell simple-section"
+            className="simple-shell simple-section simple-publication-section"
             id="writing"
             aria-labelledby="writing-title"
           >
@@ -835,38 +890,45 @@ export function SimplePortfolio() {
             </header>
 
             <div className="simple-list">
-              {writing.map((item) => (
-                <article
-                  className="simple-project simple-reveal"
-                  key={item.id}
-                >
-                  <div className="simple-project-top">
-                    <h3 className="simple-title simple-title-lg">
-                      {item.title}
-                    </h3>
-                    {item.links && item.links.length > 0 ? (
-                      <div className="simple-inline-links">
-                        {item.links.map((link) => (
-                          <a
-                            key={link.href}
-                            href={link.href}
-                            {...externalLinkProps}
-                          >
-                            {link.prefix ?? "Link"}
-                            <ArrowUpRight aria-hidden="true" />
-                          </a>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                  {item.meta ? (
-                    <p className="simple-outcome">{item.meta}</p>
-                  ) : null}
-                  <p className="simple-body-copy">{item.summary}</p>
-                </article>
+              {publishedWriting.map((item) => (
+                <WritingCard key={item.id} item={item} />
               ))}
             </div>
           </section>
+
+          {researchProjects.length > 0 ? (
+            <section
+              className="simple-shell simple-section simple-thesis-section"
+              id="research"
+              aria-labelledby="research-title"
+            >
+              <header className="simple-section-head simple-reveal">
+                <p className="simple-label">Research project</p>
+                <h2 id="research-title" className="simple-heading">
+                  Undergraduate thesis
+                </h2>
+              </header>
+
+              <div className="simple-list">
+                {researchProjects.map((project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {upcomingWriting.length > 0 ? (
+            <section
+              className="simple-shell simple-section simple-articles-section"
+              aria-label="Technical articles"
+            >
+              <div className="simple-list">
+                {upcomingWriting.map((item) => (
+                  <WritingCard key={item.id} item={item} titleLevel={2} />
+                ))}
+              </div>
+            </section>
+          ) : null}
         </main>
 
         <footer className="simple-shell simple-footer" id="contact">
@@ -913,9 +975,15 @@ export function SimplePortfolio() {
   );
 }
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({
+  project,
+  reveal = true,
+}: {
+  project: Project;
+  reveal?: boolean;
+}) {
   return (
-    <article className="simple-project simple-reveal">
+    <article className={`simple-project${reveal ? " simple-reveal" : ""}`}>
       <div className="simple-project-top">
         <h3 className="simple-title simple-title-lg">{project.name}</h3>
         {project.links && project.links.length > 0 ? (
@@ -936,6 +1004,36 @@ function ProjectCard({ project }: { project: Project }) {
           <li key={technology}>{technology}</li>
         ))}
       </ul>
+    </article>
+  );
+}
+
+function WritingCard({
+  item,
+  titleLevel = 3,
+}: {
+  item: WritingItem;
+  titleLevel?: 2 | 3;
+}) {
+  const Title = titleLevel === 2 ? "h2" : "h3";
+
+  return (
+    <article className="simple-project simple-reveal">
+      <div className="simple-project-top">
+        <Title className="simple-title simple-title-lg">{item.title}</Title>
+        {item.links && item.links.length > 0 ? (
+          <div className="simple-inline-links">
+            {item.links.map((link) => (
+              <a key={link.href} href={link.href} {...externalLinkProps}>
+                {link.prefix ?? "Link"}
+                <ArrowUpRight aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      {item.meta ? <p className="simple-outcome">{item.meta}</p> : null}
+      <p className="simple-body-copy">{item.summary}</p>
     </article>
   );
 }

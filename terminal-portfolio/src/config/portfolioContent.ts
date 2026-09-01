@@ -31,7 +31,7 @@ export type ExperienceRole = {
 export type Project = {
   id: string;
   name: string;
-  featured: boolean;
+  placement: "selected" | "additional" | "more" | "research";
   summary: string;
   description: string;
   stack: string[];
@@ -54,6 +54,13 @@ export type ContactLink = {
 
 export type PortfolioContent = {
   siteUrl: string;
+  resume: {
+    label: string;
+    pagePath: string;
+    documentPath: string;
+    downloadName: string;
+    assetUrl: string;
+  };
   identity: {
     name: string;
     shortName: string;
@@ -89,6 +96,14 @@ export type PortfolioContent = {
 
 export const portfolioContent: PortfolioContent = {
   siteUrl: "https://www.0xrutts.com",
+  resume: {
+    label: "Resume",
+    pagePath: "/resume",
+    documentPath: "/resume/document",
+    downloadName: "Ruttansh Bhatelia - Applied AI Resume.pdf",
+    assetUrl:
+      "https://ct1hcdcf6m57dpui.public.blob.vercel-storage.com/Ruttansh-Bhatelia-Applied-AI.pdf",
+  },
   identity: {
     name: "Ruttansh Bhatelia",
     shortName: "Rutts",
@@ -126,18 +141,17 @@ export const portfolioContent: PortfolioContent = {
     { label: "Education", value: "Honours BSc in Computer Science" },
     { label: "Current role", value: "AI Engineer, CredShields" },
     { label: "Published at", value: "IEEE MSWiM 2025" },
-    { label: "Focus", value: "Agentic systems · evals" },
   ],
 
   projects: [
     {
       id: "agentlog",
       name: "agentlog",
-      featured: true,
+      placement: "selected",
       summary:
-        "Local-first observability and evaluation across multiple AI coding harnesses.",
+        "A local observability workspace that shows what AI coding agents did, where sessions broke down, and which working patterns recur across projects and tools.",
       description:
-        "Built read-only adapters and a provenance-aware SQLite ledger that reconcile sessions and revalidate transcript content from canonical local sources, then serve it through a CLI, local dashboard, and read-only MCP tools.",
+        "I built read-only adapters for six coding tools, source-verified session analysis, and reviewable suggestions for improving AGENTS.md and skill files without changing them automatically.",
       stack: ["Python", "TypeScript", "SQLite", "MCP"],
       links: [
         {
@@ -150,10 +164,11 @@ export const portfolioContent: PortfolioContent = {
     {
       id: "driftctl",
       name: "driftctl",
-      featured: true,
-      summary: "Opt-in continuity layer for long Codex sessions.",
+      placement: "selected",
+      summary:
+        "An opt-in continuity layer that keeps long-running Codex sessions aligned with the latest accepted goal across new prompts, interruptions, and context compactions.",
       description:
-        "Hackathon MVP with source-linked intent, deterministic validation, and resume and compaction recovery so accepted goals and steering survive long sessions. Evals are published in-repo, including negative results. It is not a security sandbox and currently supports Codex only.",
+        "I built source-linked intent tracking and deterministic conflict checks, so accepted goals and later instructions survive compaction while ambiguous changes return to the user for review.",
       stack: ["Rust", "Codex hooks"],
       links: [
         {
@@ -166,11 +181,11 @@ export const portfolioContent: PortfolioContent = {
     {
       id: "codex2gpt",
       name: "codex2gpt",
-      featured: true,
+      placement: "additional",
       summary:
-        "Local prototype for bounded delegation between ChatGPT and Codex.",
+        "A local prototype that lets ChatGPT plan and review coding work while Codex carries it out inside approved workspaces.",
       description:
-        "Uses workspace-scoped context, managed worktrees, OAuth/PKCE, audit records, and explicit approval boundaries without exposing a raw shell by default.",
+        "I built the delegation and safety boundaries around that handoff, including managed worktrees, explicit approvals, and audit records, without giving ChatGPT a general-purpose local shell.",
       stack: ["Rust", "MCP", "OAuth"],
       links: [
         {
@@ -183,10 +198,11 @@ export const portfolioContent: PortfolioContent = {
     {
       id: "local-sec",
       name: "local-sec",
-      featured: true,
-      summary: "Local-first guard for selected developer-tool installs.",
+      placement: "additional",
+      summary:
+        "A local supply-chain guard that screens selected developer-tool installs before they run on the host.",
       description:
-        "Applies mature-version selection, advisory checks, supported artifact scanning, explicit approvals, and metadata inventory.",
+        "I built version-maturity checks, advisory and artifact analysis, staged review for supported installs, and explicit approval gates for higher-risk flows.",
       stack: ["Go", "Supply-chain security"],
       links: [
         {
@@ -199,11 +215,11 @@ export const portfolioContent: PortfolioContent = {
     {
       id: "solprobe",
       name: "SolProbe",
-      featured: false,
+      placement: "more",
       summary:
-        "Observability prototype for AI-training telemetry, anomaly detection, and recovery suggestions.",
+        "A local control room for detecting and investigating training instability before a run wastes time or compute.",
       description:
-        "Combines a Rust sidecar, FastAPI service, and Next.js dashboard. Apple Silicon collection and simulated paths are verified; cloud, NVIDIA, and live-LLM paths remain prototype or unverified.",
+        "I built the Apple Silicon telemetry path, repeatable fault simulations, alert workflows, and operations dashboard; NVIDIA and cloud collection remain prototype work.",
       stack: ["Rust", "FastAPI", "Next.js"],
       links: [
         {
@@ -216,21 +232,21 @@ export const portfolioContent: PortfolioContent = {
     {
       id: "smart-contract-thesis",
       name: "Smart-contract vulnerability detection",
-      featured: false,
+      placement: "research",
       summary:
-        "Undergraduate thesis on CodeBERT and graph-based smart-contract vulnerability analysis.",
+        "An undergraduate research project for finding and classifying smart-contract vulnerabilities from both source code and program structure.",
       description:
-        "Fine-tuned CodeBERT, explored AST and CFG graph models, and developed template-based fixes for selected vulnerability classes. Dataset metrics remain in the thesis rather than serving as a homepage trophy.",
+        "I fine-tuned CodeBERT on more than 47,000 smart contracts, explored graph models over abstract syntax trees and control-flow graphs, and built template-based fixes for reentrancy and arithmetic-overflow cases.",
       stack: ["Python", "PyTorch", "Transformers"],
     },
     {
       id: "loanref",
       name: "LoanRef",
-      featured: false,
+      placement: "more",
       summary:
-        "Multi-tenant commercial loan referral SaaS for brokers, partners, and borrowers.",
+        "A multi-tenant commercial loan referral platform for brokers, partners, and borrowers.",
       description:
-        "Shipped a role-isolated Partner, Borrower, and Admin product with a Kanban pipeline and server-enforced stage transitions. Security controls include CSRF checks, rate limiting, hashed tokens, anti-enumeration, and data-layer scoping. It is product and security engineering, not an AI runtime.",
+        "I built role-isolated workflows, a Kanban pipeline with server-enforced stage transitions, and security controls that protect tokens, forms, and tenant data.",
       stack: ["TypeScript", "Next.js", "PostgreSQL", "Security"],
       links: [
         {

@@ -3,12 +3,38 @@ import { portfolioContent } from "@/config/portfolioContent";
 export const dynamic = "force-static";
 
 const lines = (() => {
-  const { siteUrl, identity, projects, skills, experience, writing, contact } =
-    portfolioContent;
+  const {
+    siteUrl,
+    identity,
+    projects,
+    skills,
+    experience,
+    writing,
+    contact,
+    resume,
+  } = portfolioContent;
   const currentRole = experience.find((role) => role.isCurrent);
   const previousRoles = experience.filter((role) => !role.isCurrent);
   const publishedWriting = writing.filter((item) => item.links?.length);
   const upcomingWriting = writing.filter((item) => !item.links?.length);
+  const selectedProjects = projects.filter(
+    (project) => project.placement === "selected",
+  );
+  const additionalProjects = projects.filter(
+    (project) =>
+      project.placement === "additional" || project.placement === "more",
+  );
+  const researchProjects = projects.filter(
+    (project) => project.placement === "research",
+  );
+  const projectDetails = (project: (typeof projects)[number]) => [
+    `- ${project.name}: ${project.summary}`,
+    `  - ${project.description}`,
+    `  - Technologies: ${project.stack.join(", ")}`,
+    ...(project.links ?? []).map(
+      (link) => `  - ${link.prefix ?? link.label}: ${link.href}`,
+    ),
+  ];
 
   return [
     `# ${identity.name} (${identity.handle})`,
@@ -20,8 +46,7 @@ const lines = (() => {
     "## Canonical URLs",
     "",
     `- Portfolio: ${siteUrl}/`,
-    `- Terminal: ${siteUrl}/interactive`,
-    `- Legacy redirect: ${siteUrl}/terminal`,
+    `- Resume: ${siteUrl}${resume.pagePath}`,
     "",
     "## About",
     "",
@@ -89,14 +114,15 @@ const lines = (() => {
     "",
     "## Selected work",
     "",
-    ...projects.flatMap((project) => [
-      `- ${project.name}: ${project.summary}`,
-      `  - ${project.description}`,
-      `  - Technologies: ${project.stack.join(", ")}`,
-      ...(project.links ?? []).map(
-        (link) => `  - ${link.prefix ?? link.label}: ${link.href}`,
-      ),
-    ]),
+    ...selectedProjects.flatMap(projectDetails),
+    "",
+    "## Additional projects",
+    "",
+    ...additionalProjects.flatMap(projectDetails),
+    "",
+    "## Research project",
+    "",
+    ...researchProjects.flatMap(projectDetails),
     "",
     "## Skills",
     "",

@@ -4,21 +4,20 @@ Personal portfolio for [0xrutts.com](https://www.0xrutts.com).
 
 Positioning: **Applied AI Engineer**.
 
-## Modes
+## Routes
 
 | Route | Experience |
 | --- | --- |
 | `/` | Recruiter-first Applied AI portfolio (default) |
-| `/interactive` | Optional terminal with interactive commands |
-| `/terminal` | Permanent redirect → `/interactive` (legacy) |
+| `/resume` | View or download the current one-page resume |
 
 ## Stack
 
 - Next.js 16 (App Router) + React 19
 - TypeScript (strict)
-- Tailwind CSS 4 (terminal UI)
+- Tailwind CSS 4
 - Global CSS for the simple portfolio (FOUC-safe, first paint)
-- GSAP + Lenis on the terminal route only
+- GSAP + Lenis
 - Package manager: **Bun** `1.3.14` (see `packageManager` / `.bun-version`)
 - Node: `>=24.18 <25` (LTS line)
 
@@ -50,8 +49,10 @@ The hook runs `bun run check:repo --staged` and rejects environment files, overs
 
 ## Content architecture
 
-- `src/config/portfolioContent.ts` is the canonical source for both interfaces, metadata, structured data, and `/llms.txt`.
-- Terminal command outputs in `commands.ts` derive from the same source.
+- `src/config/portfolioContent.ts` is the canonical source for portfolio content, metadata, structured data, `/llms.txt`, and resume settings.
+- The dormant terminal implementation also derives command output from this source so it can be restored without content drift.
+- `/interactive` and `/terminal` currently redirect to `/`; their implementation remains in the repository but is not part of the public navigation.
+- The public resume is delivered from Vercel Blob through a same-origin document route, which preserves the inline viewer and download filename.
 - Theme for the simple site is bootstrapped before paint (`layout` boot script) to avoid theme FOUC.
 - Email CTA uses mailto.
 - Do not commit `.env` or local screenshot dumps; they are gitignored.

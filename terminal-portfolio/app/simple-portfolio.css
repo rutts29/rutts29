@@ -579,16 +579,17 @@ a:hover {
 }
 
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+summary:focus-visible {
   outline: 2px solid var(--simple-text);
   outline-offset: 3px;
 }
 
 /* ── Hero ──────────────────────────────────────────────────────── */
 .simple-hero {
-  min-height: calc(100vh - var(--simple-header-h));
-  min-height: calc(100svh - var(--simple-header-h));
-  min-height: calc(100dvh - var(--simple-header-h));
+  min-height: min(640px, calc(100vh - var(--simple-header-h)));
+  min-height: min(640px, calc(100svh - var(--simple-header-h)));
+  min-height: min(640px, calc(100dvh - var(--simple-header-h)));
   display: grid;
   grid-template-columns: minmax(0, 780px);
   align-items: center;
@@ -602,6 +603,7 @@ button:focus-visible {
 #work,
 #experience,
 #focus,
+#research,
 #writing,
 #contact {
   scroll-margin-top: 88px;
@@ -614,7 +616,7 @@ button:focus-visible {
 /* Snapshot strip under hero */
 .simple-proof {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px 24px;
   padding-block: 8px 56px;
 }
@@ -776,6 +778,7 @@ button:focus-visible {
 }
 
 .simple-btn-primary svg,
+.simple-btn-ghost svg,
 .simple-inline-links svg,
 .simple-contact svg {
   width: 15px;
@@ -783,6 +786,114 @@ button:focus-visible {
   flex: 0 0 auto;
   stroke-width: 1.75;
   transition: transform var(--dur) var(--ease-out);
+}
+
+/* ── Resume viewer ────────────────────────────────────────────── */
+.simple-resume-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.simple-resume-shell {
+  position: relative;
+  z-index: 1;
+  padding-block: 28px 64px;
+}
+
+.simple-resume-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+.simple-resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.simple-resume-intro {
+  padding-block: clamp(40px, 7vw, 72px) 28px;
+}
+
+.simple-resume-intro .simple-title-lg {
+  margin: 8px 0 0;
+}
+
+.simple-resume-intro .simple-body-copy {
+  margin-top: 8px;
+}
+
+.simple-resume-document {
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid var(--simple-line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--simple-panel) 78%, transparent);
+  box-shadow: 0 24px 72px color-mix(in srgb, var(--simple-text) 10%, transparent);
+}
+
+.simple-pdf-viewer {
+  position: relative;
+  min-height: min(72vh, 720px);
+  min-height: min(72dvh, 720px);
+  overflow: hidden;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.simple-pdf-pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.simple-pdf-pages[data-ready="true"] {
+  opacity: 1;
+}
+
+.simple-pdf-page {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: #ffffff;
+}
+
+.simple-pdf-status {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  color: #5a5a5a;
+  background: #ffffff;
+  font-family: var(--font-meta);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.simple-resume-fallback,
+.simple-resume-unavailable {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  padding: clamp(28px, 6vw, 56px);
+  border: 1px solid var(--simple-line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--simple-panel) 72%, transparent);
+}
+
+.simple-resume-unavailable {
+  min-height: 280px;
+  justify-content: center;
 }
 
 /* ── Sections ──────────────────────────────────────────────────── */
@@ -795,6 +906,21 @@ button:focus-visible {
   /* One quiet break between sections — not a rule on every block */
   margin-top: 8px;
   padding-top: 88px;
+}
+
+.simple-publication-section {
+  padding-bottom: 24px;
+}
+
+.simple-section.simple-thesis-section {
+  margin-top: 0;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.simple-section.simple-articles-section {
+  margin-top: 0;
+  padding-top: 24px;
 }
 
 .simple-section-head {
@@ -817,6 +943,109 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 36px;
+}
+
+.simple-project-disclosure {
+  margin-top: 52px;
+  border-top: 1px solid var(--simple-line);
+  border-bottom: 1px solid var(--simple-line);
+}
+
+.simple-project-disclosure > summary,
+.simple-more-disclosure > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.simple-project-disclosure > summary {
+  padding: 20px 0;
+}
+
+.simple-project-disclosure > summary::-webkit-details-marker,
+.simple-more-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.simple-project-disclosure > summary > span:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.simple-disclosure-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  color: var(--simple-muted);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.simple-disclosure-action svg,
+.simple-more-disclosure > summary > svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  stroke-width: 1.75;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.simple-disclosure-open,
+.simple-disclosure-more-open {
+  display: none;
+}
+
+.simple-project-disclosure[open]
+  > summary
+  .simple-disclosure-closed,
+.simple-more-disclosure[open]
+  > summary
+  .simple-disclosure-more-closed {
+  display: none;
+}
+
+.simple-project-disclosure[open] > summary .simple-disclosure-open,
+.simple-more-disclosure[open] > summary .simple-disclosure-more-open {
+  display: inline;
+}
+
+.simple-project-disclosure[open] > summary .simple-disclosure-action svg,
+.simple-more-disclosure[open] > summary > svg {
+  transform: rotate(180deg);
+}
+
+.simple-disclosure-body {
+  padding: 12px 0 28px;
+}
+
+.simple-more-disclosure {
+  margin-top: 32px;
+  border-top: 1px solid color-mix(in srgb, var(--simple-line) 75%, transparent);
+}
+
+.simple-more-disclosure > summary {
+  padding: 18px 0 0;
+  color: var(--simple-text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.simple-more-disclosure > summary > span:first-child {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.simple-more-projects {
+  padding-top: 28px;
 }
 
 .simple-row {
@@ -1337,10 +1566,6 @@ html[data-simple-resolved="dark"] .simple-badges img,
 
 /* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 960px) {
-  .simple-proof {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .simple-skill-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -1364,10 +1589,43 @@ html[data-simple-resolved="dark"] .simple-badges img,
     display: none;
   }
 
+  .simple-resume-shell {
+    padding-block: 16px 36px;
+  }
+
+  .simple-resume-toolbar {
+    align-items: flex-start;
+  }
+
+  .simple-resume-actions {
+    gap: 8px;
+  }
+
+  .simple-resume-actions .simple-btn-primary,
+  .simple-resume-actions .simple-btn-ghost {
+    justify-content: center;
+    min-height: 42px;
+    padding-inline: 13px;
+    font-size: 13px;
+  }
+
+  .simple-resume-intro {
+    padding-block: 40px 22px;
+  }
+
+  .simple-resume-document {
+    padding: 6px;
+    border-radius: 12px;
+  }
+
+  .simple-pdf-viewer {
+    min-height: min(68vh, 560px);
+    min-height: min(68dvh, 560px);
+    border-radius: 7px;
+  }
+
   .simple-hero {
-    min-height: calc(100vh - var(--simple-header-h));
-    min-height: calc(100svh - var(--simple-header-h));
-    min-height: calc(100dvh - var(--simple-header-h));
+    min-height: auto;
     grid-template-columns: 1fr;
     gap: 28px;
     padding-block: 48px 64px;
@@ -1406,7 +1664,7 @@ html[data-simple-resolved="dark"] .simple-badges img,
   }
 
   .simple-proof {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 16px;
     padding-bottom: 40px;
   }
