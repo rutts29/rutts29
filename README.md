@@ -3,7 +3,7 @@
   <p><strong>Applied AI Engineer</strong></p>
   <p>Toronto, Ontario · Authorized to work in Canada</p>
   <p>
-    <a href="https://www.0xrutts.com/">Portfolio</a> ·
+    <a href="https://www.0xrutts.com/">0xrutts.com</a> ·
     <a href="https://www.linkedin.com/in/ruttansh">LinkedIn</a> ·
     <a href="https://x.com/0xRutts">X</a> ·
     <a href="mailto:rutts291@gmail.com">Email</a>
@@ -14,16 +14,44 @@ I build the systems around models: agent harnesses, orchestration, and evaluatio
 
 ## Selected work
 
-- **agentlog:** Local-first observability and evaluation across multiple AI coding harnesses, with provenance-aware storage and source-backed transcript revalidation.
-- **Founder Intelligence:** End-to-end, local-first founder-intelligence workflow delivered through nine bounded MCP tools, with SQLite persistence, explicit approval before paid collection, and monthly credit controls.
-- **Smart-contract vulnerability detection:** Undergraduate thesis on CodeBERT and graph-based vulnerability analysis, plus template-based fixes for selected classes.
+### [agentlog](https://github.com/rutts29/agentlog)
 
-Additional work includes [LoanRef](https://loan-ref.vercel.app/), codex2gpt, and local-sec.
+Local-first observability and evaluation across multiple AI coding harnesses.
+
+Built read-only adapters and a provenance-aware SQLite ledger that reconcile sessions and revalidate transcript content from canonical local sources, then serve it through a CLI, local dashboard, and read-only MCP tools.
+
+`Python` · `TypeScript` · `SQLite` · `MCP`
+
+### [driftctl](https://github.com/rutts29/driftctl)
+
+Opt-in continuity layer for long Codex sessions (hackathon MVP). Source-linked intent, deterministic validation, resume/compaction recovery. Evals published in-repo, including negative results.
+
+`Rust` · `Codex hooks`
+
+### [codex2gpt](https://github.com/rutts29/codex2gpt)
+
+Local prototype for bounded delegation between ChatGPT and Codex.
+
+Uses workspace-scoped context, managed worktrees, OAuth/PKCE, audit records, and explicit approval boundaries without exposing a raw shell by default.
+
+`Rust` · `MCP` · `OAuth`
+
+### [local-sec](https://github.com/rutts29/local-sec)
+
+Local-first guard for selected developer-tool installs.
+
+Applies mature-version selection, advisory checks, supported artifact scanning, explicit approvals, and metadata inventory.
+
+`Go`
+
+Also on the site: undergraduate smart-contract vulnerability thesis, and [LoanRef](https://loan-ref.vercel.app/) (product/security SaaS, not an AI runtime).
 
 ## Experience
 
 - **AI Engineer, [CredShields](https://credshields.com/)** · Apr 2025 – Present · Contract, part-time, remote
-  - Products: [CredShields One](https://one.credshields.com/) · [SolidityScan](https://solidityscan.com/)
+  - Own Applied AI systems for [CredShields One](https://one.credshields.com/): agentic workflows, orchestration, and review-friendly outputs for AI-assisted pentesting
+  - Contribute AI components on [SolidityScan](https://solidityscan.com/) for smart-contract analysis with grounded, reviewable findings
+  - Keep clear ownership boundaries between AI modules and the rest of the platform so agent work can be tested and shipped cleanly
 - **Machine Learning Researcher, [Sheridan College](https://www.sheridancollege.ca/)** · [Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai) · Industry partner: [TELUS](https://www.telus.com/) · Jan 2025 – Apr 2025
 - **Full Stack Developer (Cross Platform), [Sheridan College](https://www.sheridancollege.ca/)** · [Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai) · Industry partner: [McMaster University](https://www.mcmaster.ca/) · Sep 2024 – Dec 2024
 - **Machine Learning Researcher, [Sheridan College](https://www.sheridancollege.ca/)** · [Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai) · Industry partner: [Osteoporosis Canada](https://osteoporosis.ca/) · May 2024 – Aug 2024
@@ -34,14 +62,4 @@ Additional work includes [LoanRef](https://loan-ref.vercel.app/), codex2gpt, and
 
 Co-authored work on synthetic RSSI augmentation and hybrid indoor localization from the Sheridan and TELUS collaboration.
 
-## Stack
-
-**Programming languages:** Python · TypeScript · Rust
-
-**AI & ML:** PyTorch · TensorFlow · Hugging Face · Transformers · Pandas · NumPy
-
-**Web & data systems:** FastAPI · Next.js · Node.js · PostgreSQL · SQLite
-
-**Infrastructure & tooling:** Docker · Git · Linux · AWS · Google Cloud · Cloudflare
-
-Technical articles on applied AI systems, evaluation, and security are coming soon.
+Open to Applied AI engineering, LLM and agent systems, and AI deployment roles.
