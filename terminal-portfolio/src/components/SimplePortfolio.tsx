@@ -518,7 +518,7 @@ export function SimplePortfolio() {
               aria-label={`${identity.name}, home`}
             >
               <Image
-                src="/core-image.jpg"
+                src="/icon.png"
                 alt=""
                 width={34}
                 height={34}

@@ -71,24 +71,24 @@ export const metadata: Metadata = {
     description: pageDescription,
     images: [
       {
-        url: "/core-image.jpg",
-        width: 800,
-        height: 800,
-        alt: identity.name,
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: `${identity.name}, ${identity.title}`,
       },
     ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: pageTitle,
     description: pageDescription,
     creator: "@0xRutts",
-    images: ["/core-image.jpg"],
+    images: ["/opengraph-image"],
   },
   icons: {
-    icon: "/core-image.jpg",
-    shortcut: "/core-image.jpg",
-    apple: "/core-image.jpg",
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
   },
   robots: {
     index: true,
@@ -133,7 +133,7 @@ export default function RootLayout({
                 alternateName: [identity.shortName, identity.handle],
                 description: identity.hero,
                 url: siteUrl,
-                image: `${siteUrl}/core-image.jpg`,
+                image: `${siteUrl}/opengraph-image`,
                 jobTitle: identity.title,
                 worksFor: currentOrganization
                   ? {
