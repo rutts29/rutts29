@@ -846,6 +846,10 @@ summary:focus-visible {
   background: #ffffff;
 }
 
+.simple-pdf-viewer[data-status="ready"] {
+  min-height: 0;
+}
+
 .simple-pdf-pages {
   display: flex;
   flex-direction: column;

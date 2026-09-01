@@ -150,6 +150,7 @@ export function ResumePdfViewer({
       className="simple-pdf-viewer"
       ref={containerRef}
       aria-busy={status === "loading"}
+      data-status={status}
     >
       {status === "loading" ? (
         <div className="simple-pdf-status" role="status">
