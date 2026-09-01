@@ -1648,7 +1648,6 @@ html[data-simple-resolved="dark"] .simple-badges img,
 
   .simple-location-auth {
     flex-basis: 100%;
-    padding-left: 20px;
   }
 
   .simple-location-auth::before {
