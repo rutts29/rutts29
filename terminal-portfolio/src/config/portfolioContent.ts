@@ -307,7 +307,7 @@ export const portfolioContent: PortfolioContent = {
       company: { label: "CredShields", href: "https://credshields.com/" },
       role: "AI Engineer",
       duration: "Apr 2025 – Present",
-      location: "Contract · Part-time · Remote",
+      location: "Remote",
       isCurrent: true,
       details: [
         "Own Applied AI systems for CredShields One: agentic workflows, orchestration, and review-friendly outputs for AI-assisted pentesting across web, cloud, API, and mobile.",
@@ -342,7 +342,7 @@ export const portfolioContent: PortfolioContent = {
       partner: { label: "TELUS", href: "https://www.telus.com/" },
       role: "Machine Learning Researcher",
       duration: "Jan 2025 – Apr 2025",
-      location: "Contract · Part-time · Oakville, Ontario",
+      location: "Oakville, Ontario",
       details: [
         "Built generative models (VAE and DDPM) to synthesize RSSI fingerprints for indoor positioning research.",
         "Integrated synthetic data with regression localization pipelines (nearest neighbor, line-shifting baselines) on a 2D apartment setup.",
@@ -370,7 +370,7 @@ export const portfolioContent: PortfolioContent = {
       },
       role: "Full Stack Developer (Cross Platform)",
       duration: "Sep 2024 – Dec 2024",
-      location: "Contract · Part-time · Oakville, Ontario",
+      location: "Oakville, Ontario",
       details: [
         "Ported a research web app to a cross-platform Flutter client (iOS and Android).",
         "Built REST APIs, Strapi CMS integration, and SQL schema with Git-based delivery.",
@@ -393,7 +393,7 @@ export const portfolioContent: PortfolioContent = {
       collaboratorNote: "Project also involved Naryant",
       role: "Machine Learning Researcher",
       duration: "May 2024 – Aug 2024",
-      location: "Co-op · Oakville, Ontario",
+      location: "Oakville, Ontario",
       details: [
         "Built ML pipelines for imminent fracture-risk prediction: cleaning, feature extraction, training, and evaluation.",
         "Designed a soft-voting ensemble (Random Forest, XGBoost, and logistic regression).",
