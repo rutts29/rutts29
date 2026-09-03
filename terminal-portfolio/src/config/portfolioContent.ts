@@ -162,6 +162,28 @@ export const portfolioContent: PortfolioContent = {
       ],
     },
     {
+      id: "cutoff",
+      name: "Cutoff",
+      placement: "selected",
+      summary:
+        "A restaurant shift operations desk where a manager and browser agent coordinate orders, stock, labor, and handoffs using the same revisioned state.",
+      description:
+        "I built 16 page-scoped WebMCP tools with deterministic previews, stale-write protection, and human approval before changes are adopted.",
+      stack: ["TypeScript", "React", "WebMCP"],
+      links: [
+        {
+          label: "cutoff-webmcp.vercel.app",
+          href: "https://cutoff-webmcp.vercel.app/",
+          prefix: "Live",
+        },
+        {
+          label: "github.com/rutts29/cutoff-webmcp",
+          href: "https://github.com/rutts29/cutoff-webmcp",
+          prefix: "GitHub",
+        },
+      ],
+    },
+    {
       id: "driftctl",
       name: "driftctl",
       placement: "selected",
