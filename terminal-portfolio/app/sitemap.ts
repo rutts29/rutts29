@@ -11,10 +11,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
-    {
-      url: `${siteUrl}${resume.pagePath}`,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
+    ...(resume.isPublished
+      ? [
+          {
+            url: `${siteUrl}${resume.pagePath}`,
+            changeFrequency: "monthly" as const,
+            priority: 0.8,
+          },
+        ]
+      : []),
   ];
 }

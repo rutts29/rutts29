@@ -2,7 +2,7 @@ import { portfolioContent } from "@/config/portfolioContent";
 import { themeNames } from "@/config/themes";
 import type { CommandDefinition, TerminalLine } from "@/types/terminal";
 
-export const commandCatalog: CommandDefinition[] = [
+const allCommands: CommandDefinition[] = [
   { key: "help", description: "List available commands" },
   { key: "commands", description: "List available commands" },
   { key: "about", description: "Who I am and what I do" },
@@ -23,6 +23,10 @@ export const commandCatalog: CommandDefinition[] = [
 const { identity, projects, skills, experience, writing, contact, resume } =
   portfolioContent;
 
+export const commandCatalog = allCommands.filter(
+  (command) => command.key !== "resume" || resume.isPublished,
+);
+
 const contactPrefix: Record<string, string> = {
   email: "Email",
   linkedin: "LinkedIn",
@@ -32,7 +36,7 @@ const contactPrefix: Record<string, string> = {
 
 const aboutLines: TerminalLine[] = [
   { type: "heading", text: "About" },
-  ...[identity.hero, ...identity.about].map(
+  ...[identity.headline, identity.hero, identity.heroDetail, ...identity.about].map(
     (text, index): TerminalLine => ({
       type: "text",
       text,
@@ -68,7 +72,7 @@ const experienceLines: TerminalLine[] = [
     ...(index > 0 ? [{ type: "spacer" as const }] : []),
     {
       type: "text",
-      text: `${role.company.label} · ${role.role} · ${role.location}`,
+      text: `${role.company.label} · ${role.role}`,
       tone: "accent",
     },
     {
@@ -103,15 +107,6 @@ const experienceLines: TerminalLine[] = [
           },
         ]
       : []),
-    ...(role.collaboratorNote
-      ? [
-          {
-            type: "text" as const,
-            text: role.collaboratorNote,
-            tone: "muted" as const,
-          },
-        ]
-      : []),
     ...(role.relatedLinks ?? []).map(
       (link): TerminalLine => ({
         type: "link",
@@ -130,12 +125,27 @@ const projectEntryLines = (
   ...(index > 0 ? [{ type: "spacer" as const }] : []),
   { type: "text", text: project.name, tone: "accent" },
   { type: "text", text: project.summary },
-  { type: "text", text: project.description, tone: "muted" },
-  {
-    type: "text",
-    text: `Tools: ${project.stack.join(", ")}`,
-    tone: "muted",
-  },
+  ...(project.status
+    ? [{ type: "text" as const, text: project.status.label, tone: "muted" as const }]
+    : []),
+  ...(project.description
+    ? [
+        {
+          type: "text" as const,
+          text: project.description,
+          tone: "muted" as const,
+        },
+      ]
+    : []),
+  ...(project.stack.length
+    ? [
+        {
+          type: "text" as const,
+          text: `Tools: ${project.stack.join(", ")}`,
+          tone: "muted" as const,
+        },
+      ]
+    : []),
   ...(project.links ?? []).map(
     (link): TerminalLine => ({
       type: "link",
@@ -221,11 +231,6 @@ const contactLines: TerminalLine[] = [
       prefix: contactPrefix[link.icon],
     }),
   ),
-  {
-    type: "text",
-    text: contact.location,
-    tone: "muted",
-  },
   { type: "spacer" },
   {
     type: "link",
@@ -254,7 +259,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
   welcome: [
     {
       type: "text",
-      text: `Hi, I'm ${identity.shortName}. ${identity.title} · ${identity.location}.`,
+      text: `Hi, I'm ${identity.shortName}. ${identity.title}.`,
       tone: "accent",
     },
     {
@@ -269,7 +274,7 @@ export const staticCommandOutputs: Record<string, TerminalLine[]> = {
   experience: experienceLines,
   projects: projectLines,
   writing: writingLines,
-  resume: resumeLines,
+  ...(resume.isPublished ? { resume: resumeLines } : {}),
   contact: contactLines,
 };
 

@@ -85,6 +85,10 @@ async function serveLocalResume(
 }
 
 async function serveResume(request: Request, headOnly = false) {
+  if (!resume.isPublished) {
+    return new Response(null, { status: 404 });
+  }
+
   const download = new URL(request.url).searchParams.get("download") === "1";
   const headers = responseHeaders(download);
   const remoteSource = process.env.RESUME_PDF_URL?.trim() || resume.assetUrl;

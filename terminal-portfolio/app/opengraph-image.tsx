@@ -83,8 +83,7 @@ export default function OpenGraphImage() {
               paddingTop: 24,
             }}
           >
-            <span>{identity.workAuthorization}</span>
-            <span style={{ color: "#62625e" }}>{identity.location}</span>
+            <span>{identity.headline}</span>
           </div>
         </div>
       </div>

@@ -1,194 +1,91 @@
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  ArrowUpRight,
-  ChevronDown,
-  FileText,
-  MapPin,
-} from "lucide-react";
+import { ArrowUpRight, ChevronDown, FileText } from "lucide-react";
 
 import {
+  contactKindLabels,
   portfolioContent,
+  portfolioSections,
   type Project,
+  type StoryChapter,
   type WritingItem,
 } from "@/config/portfolioContent";
-import { PortfolioAtmosphere } from "@/components/PortfolioAtmosphere";
-import { ThemeToggle, type ResolvedTheme } from "@/components/UI/ThemeToggle";
-
-type ThemePreference = ResolvedTheme | "system";
-
-const themeStorageKey = "simple-portfolio-theme";
-const themeEventName = "simple-portfolio-theme-change";
-
-const isThemePreference = (value: string | null): value is ThemePreference =>
-  value === "light" || value === "dark" || value === "system";
-
-const getThemeSnapshot = (): ThemePreference => {
-  try {
-    const storedTheme = window.localStorage.getItem(themeStorageKey);
-    return isThemePreference(storedTheme) ? storedTheme : "system";
-  } catch {
-    return "system";
-  }
-};
-
-const getResolvedThemeSnapshot = (): ResolvedTheme => {
-  const preference = getThemeSnapshot();
-  if (preference !== "system") return preference;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-};
-
-const getServerResolvedThemeSnapshot = (): ResolvedTheme => "light";
-
-const subscribeToTheme = (onChange: () => void) => {
-  const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
-  window.addEventListener("storage", onChange);
-  window.addEventListener(themeEventName, onChange);
-  colorScheme.addEventListener("change", onChange);
-
-  return () => {
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener(themeEventName, onChange);
-    colorScheme.removeEventListener("change", onChange);
-  };
-};
-
-const setThemePreference = (theme: ResolvedTheme) => {
-  try {
-    window.localStorage.setItem(themeStorageKey, theme);
-  } catch {
-    /* private mode */
-  }
-
-  document.documentElement.dataset.simpleTheme = theme;
-  document.documentElement.dataset.simpleResolved = theme;
-  document.documentElement.style.colorScheme = theme;
-  window.dispatchEvent(new Event(themeEventName));
-};
+import { BootIntro } from "@/components/BootIntro";
+import { ThemeToggle } from "@/components/UI/ThemeToggle";
+import { setThemePreference, useSimpleTheme } from "@/hooks/useSimpleTheme";
 
 const externalLinkProps = {
   target: "_blank",
   rel: "noreferrer noopener",
 } as const;
 
-const contactLabels: Record<string, string> = {
-  email: "Email",
-  linkedin: "LinkedIn",
-  github: "GitHub",
-  x: "X",
-};
-
-const sectionMeta = [
+/** Page sections in document order; drives the scroll cue and nav. */
+const sections = [
   { id: "top", label: "Intro" },
+  { id: "story", label: "Story" },
   { id: "work", label: "Work" },
-  { id: "experience", label: "Experience" },
+  { id: "thinking", label: "Thinking" },
+  { id: "next", label: "Next" },
   { id: "focus", label: "Skills" },
   { id: "writing", label: "Publications" },
   { id: "contact", label: "Contact" },
 ] as const;
 
-function parseLocation(location: string) {
-  const parts = location.split("·").map((part) => part.trim());
-  if (parts.length < 2) return { type: location, place: "" };
-  return { type: parts[0], place: parts.slice(1).join(" · ") };
-}
+type SectionId = (typeof sections)[number]["id"];
 
-function yearsInDuration(duration: string): number[] {
-  return [...duration.matchAll(/\b(20\d{2})\b/g)].map((m) => Number(m[1]));
-}
+const sectionLabel = (id: SectionId) =>
+  sections.find((section) => section.id === id)?.label ?? "Intro";
 
-function startYear(duration: string): number {
-  const years = yearsInDuration(duration);
-  return years[0] ?? new Date().getFullYear();
-}
+const {
+  identity,
+  proofFacts,
+  projects,
+  skills,
+  writing,
+  story,
+  contact,
+  resume,
+} = portfolioContent;
 
-function buildYearTrack(durations: string[]): number[] {
-  const years = durations.flatMap(yearsInDuration);
-  if (years.length === 0) {
-    const y = new Date().getFullYear();
-    return [y - 2, y - 1, y];
-  }
-  const min = Math.min(...years);
-  const max = Math.max(...years, new Date().getFullYear());
-  return Array.from({ length: max - min + 1 }, (_, i) => min + i);
-}
+const byPlacement = (placement: Project["placement"]) =>
+  projects.filter((project) => project.placement === placement);
+
+const selectedProjects = byPlacement("selected");
+const additionalProjects = byPlacement("additional");
+const moreProjects = byPlacement("more");
+const researchProjects = byPlacement("research");
 
 export function SimplePortfolio() {
   const portfolioRef = useRef<HTMLDivElement>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const cueLabelRef = useRef<HTMLSpanElement>(null);
   const cuePctRef = useRef<HTMLSpanElement>(null);
-  const [activeSection, setActiveSection] = useState("top");
-  const theme = useSyncExternalStore(
-    subscribeToTheme,
-    getResolvedThemeSnapshot,
-    getServerResolvedThemeSnapshot,
-  );
+  const [activeSection, setActiveSection] = useState<SectionId>("top");
+  const theme = useSimpleTheme();
 
-  const {
-    identity,
-    proofFacts,
-    projects,
-    skills,
-    experience,
-    writing,
-    contact,
-    resume,
-  } = portfolioContent;
-  const selectedProjects = projects.filter(
-    (project) => project.placement === "selected",
-  );
-  const additionalProjects = projects.filter(
-    (project) => project.placement === "additional",
-  );
-  const moreProjects = projects.filter(
-    (project) => project.placement === "more",
-  );
-  const researchProjects = projects.filter(
-    (project) => project.placement === "research",
-  );
-  const publishedWriting = writing.filter((item) => item.links?.length);
-  const upcomingWriting = writing.filter((item) => !item.links?.length);
-  const activeLabel =
-    sectionMeta.find((s) => s.id === activeSection)?.label ?? "Intro";
-  const yearTrack = buildYearTrack(experience.map((role) => role.duration));
-
+  /* Scroll reveal: hide only below-fold nodes, show them as they arrive. */
   useEffect(() => {
     const portfolio = portfolioRef.current;
     if (!portfolio) return;
 
-    /* Mark hydrated chrome (progress / section cue) */
     portfolio.dataset.ready = "true";
 
     const items = () =>
       Array.from(portfolio.querySelectorAll<HTMLElement>(".simple-reveal"));
+    // Keep `simple-reveal-pending`: it carries the transition. Removing it
+    // on reveal would drop the transition and snap the item into place.
+    const reveal = (item: HTMLElement) => item.classList.add("is-visible");
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    if (reduceMotion) {
-      items().forEach((item) => {
-        item.classList.remove("simple-reveal-pending");
-        item.classList.add("is-visible");
-      });
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      items().forEach((item) => item.classList.add("is-visible"));
       return;
     }
 
     const fold = () => window.innerHeight * 0.95;
 
-    /* Only below-fold nodes may hide — never blank the first paint */
     items().forEach((item) => {
       if (item.getBoundingClientRect().top > fold()) {
         item.classList.add("simple-reveal-pending");
@@ -197,19 +94,6 @@ export function SimplePortfolio() {
       }
     });
     portfolio.dataset.motionReady = "true";
-
-    const reveal = (item: HTMLElement) => {
-      item.classList.add("is-visible");
-      item.classList.remove("simple-reveal-pending");
-    };
-
-    const showNear = () => {
-      const line = fold();
-      items().forEach((item) => {
-        if (item.classList.contains("is-visible")) return;
-        if (item.getBoundingClientRect().top < line) reveal(item);
-      });
-    };
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -226,175 +110,97 @@ export function SimplePortfolio() {
       if (!item.classList.contains("is-visible")) observer.observe(item);
     });
 
+    // Belt and braces for fast scrolls or layout shifts the observer misses.
+    const showNear = () => {
+      const line = fold();
+      items().forEach((item) => {
+        if (item.classList.contains("is-visible")) return;
+        if (item.getBoundingClientRect().top < line) reveal(item);
+      });
+    };
+
     window.addEventListener("scroll", showNear, { passive: true });
     window.addEventListener("resize", showNear);
 
-    const failSafe = window.setTimeout(() => {
-      items().forEach((item) => reveal(item));
-    }, 1200);
-
     return () => {
       observer.disconnect();
-      window.clearTimeout(failSafe);
       window.removeEventListener("scroll", showNear);
       window.removeEventListener("resize", showNear);
     };
   }, []);
 
   /*
-   * Scroll-linked UI (page progress + trajectory rail).
-   * Targets update on scroll; rAF lerps values and writes to the DOM so the
-   * rail doesn't hitch on React re-renders.
+   * Page progress and the active-section cue. Targets are sampled on
+   * scroll; a rAF loop eases towards them and writes straight to the DOM
+   * so the bar never waits on a React render.
    */
   useEffect(() => {
-    const portfolio = portfolioRef.current;
-    if (!portfolio) return;
-
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    let targetPage = 0;
-    let currentPage = 0;
-    let targetTimeline = 0;
-    let currentTimeline = 0;
+    let target = 0;
+    let current = 0;
     let rafId = 0;
-    let ticking = false;
-    let lastSection = "top";
-    let lastYearsKey = "";
+    let lastSection: SectionId = "top";
 
-    const sampleTargets = () => {
+    const sample = () => {
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
-      targetPage = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      target = max > 0 ? Math.min(1, window.scrollY / max) : 0;
 
       const marker = window.innerHeight * 0.28;
-      let current = "top";
-      for (const section of sectionMeta) {
+      let active: SectionId = "top";
+      for (const section of sections) {
         const el = document.getElementById(section.id);
-        if (!el) continue;
-        if (el.getBoundingClientRect().top <= marker) current = section.id;
+        if (el && el.getBoundingClientRect().top <= marker) active = section.id;
       }
-      if (current !== lastSection) {
-        lastSection = current;
-        setActiveSection(current);
-      }
-
-      const timeline = timelineRef.current;
-      if (!timeline) return;
-
-      const rect = timeline.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const focus = vh * 0.42;
-      const span = Math.max(1, rect.bottom - rect.top);
-      targetTimeline = Math.min(1, Math.max(0, (focus - rect.top) / span));
-    };
-
-    const applyTimelineNodes = (progress: number) => {
-      const timeline = timelineRef.current;
-      if (!timeline) return;
-
-      const rect = timeline.getBoundingClientRect();
-      const fillY = rect.top + rect.height * progress;
-      const years = new Set<number>();
-
-      timeline.querySelectorAll<HTMLElement>(".simple-timeline-item").forEach((item) => {
-        const node = item.querySelector(".simple-timeline-node");
-        if (!(node instanceof HTMLElement)) return;
-        const nodeRect = node.getBoundingClientRect();
-        const mid = nodeRect.top + nodeRect.height / 2;
-        const reached = mid <= fillY + 8;
-        item.classList.toggle("is-reached", reached);
-        node.classList.toggle("is-active", reached);
-        if (reached) {
-          const y = Number(item.dataset.year);
-          if (!Number.isNaN(y)) years.add(y);
-        }
-      });
-
-      const yearsKey = [...years].sort((a, b) => a - b).join(",");
-      if (yearsKey !== lastYearsKey) {
-        lastYearsKey = yearsKey;
-        portfolio.querySelectorAll<HTMLElement>(".simple-year-tick").forEach((tick) => {
-          const y = Number(tick.dataset.year);
-          tick.classList.toggle("is-active", years.has(y));
-        });
+      if (active !== lastSection) {
+        lastSection = active;
+        setActiveSection(active);
       }
     };
 
     const paint = () => {
-      portfolio.style.setProperty("--scroll", String(currentPage));
       if (progressBarRef.current) {
-        progressBarRef.current.style.transform = `scaleX(${currentPage})`;
+        progressBarRef.current.style.transform = `scaleX(${current})`;
       }
       if (cuePctRef.current) {
-        cuePctRef.current.textContent = `${Math.round(currentPage * 100)}%`;
+        cuePctRef.current.textContent = `${Math.round(current * 100)}%`;
       }
       if (cueLabelRef.current) {
-        const label =
-          sectionMeta.find((s) => s.id === lastSection)?.label ?? "Intro";
-        if (cueLabelRef.current.textContent !== label) {
-          cueLabelRef.current.textContent = label;
-        }
-      }
-
-      const timeline = timelineRef.current;
-      if (timeline) {
-        timeline.style.setProperty(
-          "--timeline-progress",
-          String(currentTimeline),
-        );
-        applyTimelineNodes(currentTimeline);
+        cueLabelRef.current.textContent = sectionLabel(lastSection);
       }
     };
 
     const tick = () => {
-      const ease = reduceMotion ? 1 : 0.16;
-      currentPage += (targetPage - currentPage) * ease;
-      currentTimeline += (targetTimeline - currentTimeline) * ease;
-
-      if (Math.abs(targetPage - currentPage) < 0.0008) currentPage = targetPage;
-      if (Math.abs(targetTimeline - currentTimeline) < 0.0008) {
-        currentTimeline = targetTimeline;
-      }
-
+      current += (target - current) * 0.16;
+      if (Math.abs(target - current) < 0.0008) current = target;
       paint();
-
-      const settled =
-        currentPage === targetPage && currentTimeline === targetTimeline;
-      if (settled) {
-        ticking = false;
-        rafId = 0;
-        return;
-      }
-      rafId = requestAnimationFrame(tick);
+      rafId = current === target ? 0 : requestAnimationFrame(tick);
     };
 
-    const kick = () => {
-      sampleTargets();
+    const onScroll = () => {
+      sample();
       if (reduceMotion) {
-        currentPage = targetPage;
-        currentTimeline = targetTimeline;
+        current = target;
         paint();
         return;
       }
-      if (!ticking) {
-        ticking = true;
-        rafId = requestAnimationFrame(tick);
-      }
+      if (!rafId) rafId = requestAnimationFrame(tick);
     };
 
-    kick();
-    window.addEventListener("scroll", kick, { passive: true });
-    window.addEventListener("resize", kick);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     return () => {
-      window.removeEventListener("scroll", kick);
-      window.removeEventListener("resize", kick);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
-  /* Smooth section jumps (nav, Get in touch, CTAs) — eased, sticky-aware */
+  /* Eased in-page jumps for nav and CTAs, offset for the sticky header. */
   useEffect(() => {
     const portfolio = portfolioRef.current;
     if (!portfolio) return;
@@ -402,85 +208,61 @@ export function SimplePortfolio() {
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-
-    /* Ease-out: moves immediately on click (no slow “wind-up”), soft landing */
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-
     let frameId = 0;
 
     const scrollToId = (id: string) => {
-      const target =
-        id === "top" || id === ""
-          ? (document.getElementById("top") ?? portfolio)
-          : document.getElementById(id);
+      const target = document.getElementById(id);
       if (!target) return;
 
-      const header = portfolio.querySelector(".simple-header");
-      const headerH =
-        header instanceof HTMLElement
-          ? header.getBoundingClientRect().height
-          : 64;
-      const top =
-        window.scrollY +
-        target.getBoundingClientRect().top -
-        headerH -
-        12;
+      const header = portfolio.querySelector<HTMLElement>(".simple-header");
+      const headerH = header?.getBoundingClientRect().height ?? 64;
+      const end = Math.max(
+        0,
+        window.scrollY + target.getBoundingClientRect().top - headerH - 12,
+      );
 
       cancelAnimationFrame(frameId);
-
       if (reduceMotion) {
-        window.scrollTo(0, Math.max(0, top));
+        window.scrollTo(0, end);
         return;
       }
 
       const start = window.scrollY;
-      const end = Math.max(0, top);
       const distance = end - start;
       if (Math.abs(distance) < 2) return;
 
-      /* Same smooth length as before — delay was easing, not duration */
       const duration = Math.min(900, Math.max(420, Math.abs(distance) * 0.48));
       const startTime = performance.now();
-
       const step = (now: number) => {
         const t = Math.min(1, (now - startTime) / duration);
         window.scrollTo(0, start + distance * easeOutCubic(t));
         if (t < 1) frameId = requestAnimationFrame(step);
       };
-
       frameId = requestAnimationFrame(step);
     };
 
     const onClick = (event: MouseEvent) => {
-      const el = event.target;
-      if (!(el instanceof Element)) return;
-      const anchor = el.closest("a[href^='#']");
-      if (!(anchor instanceof HTMLAnchorElement)) return;
-      if (!portfolio.contains(anchor)) return;
+      const anchor =
+        event.target instanceof Element
+          ? event.target.closest<HTMLAnchorElement>("a[href^='#']")
+          : null;
+      if (!anchor || !portfolio.contains(anchor)) return;
 
-      const href = anchor.getAttribute("href");
-      if (!href || href === "#") return;
-
-      const id = href.slice(1);
-      if (!id) return;
-      // Skip links that aren't in-page sections we own
-      if (
-        id !== "main-content" &&
-        !document.getElementById(id) &&
-        id !== "top"
-      ) {
-        return;
-      }
+      const id = anchor.getAttribute("href")?.slice(1);
+      if (!id || !document.getElementById(id)) return;
 
       event.preventDefault();
       const targetId = id === "main-content" ? "top" : id;
       scrollToId(targetId);
-      /* Home/image → clean URL, no #top. Other sections keep their hash. */
-      if (targetId === "top") {
-        history.pushState(null, "", window.location.pathname + window.location.search);
-      } else {
-        history.pushState(null, "", href);
-      }
+      // Home keeps a clean URL; other sections keep their hash.
+      history.pushState(
+        null,
+        "",
+        targetId === "top"
+          ? window.location.pathname + window.location.search
+          : `#${targetId}`,
+      );
     };
 
     portfolio.addEventListener("click", onClick);
@@ -497,485 +279,435 @@ export function SimplePortfolio() {
       ref={portfolioRef}
       suppressHydrationWarning
     >
-        <PortfolioAtmosphere />
+      <BootIntro />
 
-        {/* Quiet scroll cues — holds a 30–60s skim without a full HUD */}
-        <div
-          className="simple-scroll-progress"
-          ref={progressBarRef}
-          aria-hidden="true"
-        />
-        <div className="simple-scroll-cue" aria-live="polite">
-          <span className="simple-scroll-cue-label" ref={cueLabelRef}>
-            {activeLabel}
-          </span>
-          <span className="simple-scroll-cue-pct" ref={cuePctRef}>
-            0%
-          </span>
-        </div>
+      <div
+        className="simple-scroll-progress"
+        ref={progressBarRef}
+        aria-hidden="true"
+      />
+      <div className="simple-scroll-cue" aria-live="polite">
+        <span className="simple-scroll-cue-label" ref={cueLabelRef}>
+          {sectionLabel(activeSection)}
+        </span>
+        <span className="simple-scroll-cue-pct" ref={cuePctRef}>
+          0%
+        </span>
+      </div>
 
-        <a className="simple-skip-link" href="#main-content">
-          Skip to content
-        </a>
+      <a className="simple-skip-link" href="#main-content">
+        Skip to content
+      </a>
 
-        <header className="simple-header">
-          <div className="simple-shell simple-header-inner">
-            <a
-              className="simple-wordmark"
-              href="#top"
-              aria-label={`${identity.name}, home`}
-            >
-              <Image
-                src="/icon.png"
-                alt=""
-                width={34}
-                height={34}
-                className="simple-wordmark-img"
-                priority
-              />
-            </a>
+      <header className="simple-header">
+        <div className="simple-shell simple-header-inner">
+          <a
+            className="simple-wordmark"
+            href="#top"
+            aria-label={`${identity.name}, home`}
+          >
+            <Image
+              src="/icon.png"
+              alt=""
+              width={34}
+              height={34}
+              className="simple-wordmark-img"
+              priority
+            />
+          </a>
 
-            <nav className="simple-nav" aria-label="Primary navigation">
-              <a href="#work">Work</a>
-              <a href="#experience">Experience</a>
-              <a href="#writing">Publications</a>
-              <a href="#contact">Contact</a>
-            </nav>
+          <nav className="simple-nav" aria-label="Primary navigation">
+            <a href="#story" aria-current={activeSection === "story" ? "location" : undefined}>Story</a>
+            <a href="#work" aria-current={activeSection === "work" ? "location" : undefined}>Work</a>
+            <a href="#writing" aria-current={activeSection === "writing" ? "location" : undefined}>Publications</a>
+            <a href="#contact" aria-current={activeSection === "contact" ? "location" : undefined}>Contact</a>
+          </nav>
 
-            <div className="simple-controls">
-              <ThemeToggle
-                theme={theme}
-                onToggle={() =>
-                  setThemePreference(theme === "light" ? "dark" : "light")
-                }
-              />
+          <div className="simple-controls">
+            <ThemeToggle
+              theme={theme}
+              onToggle={() =>
+                setThemePreference(theme === "light" ? "dark" : "light")
+              }
+            />
+            {resume.isPublished ? (
               <Link
-                className="simple-interactive"
+                className="simple-btn-ghost"
                 href={resume.pagePath}
-                target="_blank"
-                rel="noreferrer noopener"
+                {...externalLinkProps}
               >
                 <FileText aria-hidden="true" />
                 <span>{resume.label}</span>
               </Link>
+            ) : null}
+          </div>
+        </div>
+      </header>
+
+      <main id="main-content">
+        <section className="simple-shell simple-hero simple-reveal" id="top">
+          <div className="simple-hero-copy">
+            <p className="simple-label">{identity.title}</p>
+            <h1 className="simple-display">{identity.name}</h1>
+            <p className="simple-lede">
+              <Headline text={identity.headline} />
+              <span className="simple-cursor" aria-hidden="true" />
+            </p>
+            <p className="simple-body-copy">{identity.hero}</p>
+            <p className="simple-body-copy">{identity.heroDetail}</p>
+            <p className="simple-meta-line simple-hero-aside">
+              {identity.personal}
+            </p>
+            <div className="simple-actions">
+              <a className="simple-btn-primary" href="#work">
+                Selected work
+              </a>
+              <a className="simple-btn-ghost" href="#contact">
+                Get in touch
+              </a>
+              {resume.isPublished ? (
+                <Link className="simple-btn-ghost" href={resume.pagePath} {...externalLinkProps}>
+                  <FileText aria-hidden="true" />
+                  {resume.label}
+                </Link>
+              ) : null}
             </div>
           </div>
-        </header>
 
-        <main id="main-content">
-          <section className="simple-shell simple-hero simple-reveal" id="top">
-            <div className="simple-hero-copy">
-              <div className="simple-kicker">
-                <p className="simple-label">{identity.title}</p>
-                <p className="simple-location">
-                  <span className="simple-location-place">
-                    <MapPin aria-hidden="true" />
-                    {identity.location}
-                  </span>
-                  <span className="simple-location-auth">
-                    {identity.workAuthorization}
-                  </span>
-                </p>
-              </div>
-              <h1 className="simple-display">{identity.name}</h1>
-              <p className="simple-lede">{identity.hero}</p>
-              <div className="simple-actions">
-                <a className="simple-btn-primary" href="#work">
-                  Selected work
-                </a>
-                <a className="simple-btn-ghost" href="#contact">
-                  Get in touch
-                </a>
-              </div>
-            </div>
-          </section>
-
-          {/* Fact strip — scannable proof while they scroll the first screen */}
-          <section
-            className="simple-shell simple-proof simple-reveal"
-            aria-label="Snapshot"
-          >
+          <dl className="simple-proof" aria-label="Snapshot">
             {proofFacts.map((fact) => (
               <div className="simple-proof-item" key={fact.label}>
-                <p className="simple-label">{fact.label}</p>
-                <p className="simple-proof-value">{fact.value}</p>
+                <dt className="simple-label">{fact.label}</dt>
+                <dd className="simple-proof-value">{fact.value}</dd>
               </div>
             ))}
-          </section>
+          </dl>
+        </section>
 
-          <section
-            className="simple-shell simple-section"
-            id="work"
-            aria-labelledby="work-title"
-          >
-            <header className="simple-section-head simple-reveal">
-              <p className="simple-label">Selected work</p>
-              <h2 id="work-title" className="simple-heading">
-                Applied AI systems
-              </h2>
-              <p className="simple-body-copy">
-                Observability and control systems that make AI-assisted
-                engineering easier to inspect, steer, and improve.
-              </p>
-            </header>
-
-            <div className="simple-list">
-              {selectedProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
-
-            {additionalProjects.length > 0 ? (
-              <details className="simple-project-disclosure simple-reveal">
-                <summary>
-                  <span>
-                    <span className="simple-title simple-title-lg">
-                      Additional projects
-                    </span>
-                  </span>
-                  <span className="simple-disclosure-action">
-                    <span className="simple-disclosure-closed">View projects</span>
-                    <span className="simple-disclosure-open">Hide projects</span>
-                    <ChevronDown aria-hidden="true" />
-                  </span>
-                </summary>
-                <div className="simple-disclosure-body">
-                  <div className="simple-list">
-                    {additionalProjects.map((project) => (
-                      <ProjectCard
-                        key={project.id}
-                        project={project}
-                        reveal={false}
-                      />
-                    ))}
-                  </div>
-
-                  {moreProjects.length > 0 ? (
-                    <details className="simple-more-disclosure">
-                      <summary>
-                        <span>
-                          <span className="simple-disclosure-more-closed">
-                            View more
-                          </span>
-                          <span className="simple-disclosure-more-open">
-                            Show less
-                          </span>
-                          <span className="simple-meta-line">
-                            {moreProjects
-                              .map((project) => project.name)
-                              .join(" and ")}
-                          </span>
-                        </span>
-                        <ChevronDown aria-hidden="true" />
-                      </summary>
-                      <div className="simple-list simple-more-projects">
-                        {moreProjects.map((project) => (
-                          <ProjectCard
-                            key={project.id}
-                            project={project}
-                            reveal={false}
-                          />
-                        ))}
-                      </div>
-                    </details>
-                  ) : null}
-                </div>
-              </details>
-            ) : null}
-          </section>
-
-          <section
-            className="simple-shell simple-section"
-            id="experience"
-            aria-labelledby="experience-title"
-          >
-            <header className="simple-section-head simple-reveal">
-              <p className="simple-label">Experience</p>
-              <h2 id="experience-title" className="simple-heading">
-                Roles
-              </h2>
-              <p className="simple-body-copy">
-                Applied AI in security tooling, plus industry-partnered research
-                at Sheridan.
-              </p>
-            </header>
-
-            <div
-              className="simple-year-track simple-reveal"
-              aria-label="Years of experience"
-            >
-              {yearTrack.map((year) => (
-                <span
-                  className="simple-year-tick"
-                  data-year={year}
-                  key={year}
-                >
-                  {year}
-                </span>
-              ))}
-            </div>
-
-            <div className="simple-timeline" ref={timelineRef}>
-              <div className="simple-timeline-rail" aria-hidden="true">
-                <div className="simple-timeline-rail-fill" />
-              </div>
-              <ol className="simple-timeline-list">
-                {experience.map((role) => {
-                  const { type, place } = parseLocation(role.location);
-                  const year = startYear(role.duration);
-                  return (
-                    <li
-                      className="simple-timeline-item simple-reveal"
-                      data-year={year}
-                      key={`${role.company.label}-${role.role}-${role.duration}`}
-                    >
-                      <span className="simple-timeline-year" aria-hidden="true">
-                        {year}
-                      </span>
-                      <span className="simple-timeline-node" aria-hidden="true" />
-                      <div className="simple-timeline-card">
-                        <div className="simple-role-head">
-                          <div className="simple-role-title-line">
-                            <h3 className="simple-title">{role.role}</h3>
-                            <p className="simple-meta-line">{role.duration}</p>
-                          </div>
-                          <p className="simple-meta-line">
-                            <span className="simple-company-links">
-                              <a
-                                href={role.company.href}
-                                {...externalLinkProps}
-                              >
-                                {role.company.label}
-                              </a>
-                            </span>
-                            <span className="simple-dot" aria-hidden="true">
-                              ·
-                            </span>
-                            <span>{type}</span>
-                            {place ? (
-                              <>
-                                <span className="simple-dot" aria-hidden="true">
-                                  ·
-                                </span>
-                                <span>{place}</span>
-                              </>
-                            ) : null}
-                            {role.isCurrent ? (
-                              <span className="simple-pill">Current</span>
-                            ) : null}
-                          </p>
-                          {role.unit || role.partner || role.collaboratorNote ? (
-                            <p className="simple-meta-line simple-affiliation-line">
-                              {role.unit ? (
-                                <a href={role.unit.href} {...externalLinkProps}>
-                                  {role.unit.label}
-                                </a>
-                              ) : null}
-                              {role.unit && role.partner ? (
-                                <span className="simple-dot" aria-hidden="true">
-                                  ·
-                                </span>
-                              ) : null}
-                              {role.partner ? (
-                                <span>
-                                  Industry partner:{" "}
-                                  <a
-                                    href={role.partner.href}
-                                    {...externalLinkProps}
-                                  >
-                                    {role.partner.label}
-                                  </a>
-                                </span>
-                              ) : null}
-                              {role.collaboratorNote ? (
-                                <>
-                                  <span className="simple-dot" aria-hidden="true">
-                                    ·
-                                  </span>
-                                  <span>{role.collaboratorNote}</span>
-                                </>
-                              ) : null}
-                            </p>
-                          ) : null}
-                        </div>
-                        <ul className="simple-bullets">
-                          {role.details.map((detail) => (
-                            <li key={detail}>{detail}</li>
-                          ))}
-                        </ul>
-                        {role.relatedLinks && role.relatedLinks.length > 0 ? (
-                          <div className="simple-inline-links simple-role-links">
-                            {role.relatedLinks.map((link) => (
-                              <a
-                                key={link.href}
-                                href={link.href}
-                                {...externalLinkProps}
-                              >
-                                {link.prefix ?? link.label}
-                                <ArrowUpRight aria-hidden="true" />
-                              </a>
-                            ))}
-                          </div>
-                        ) : null}
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-          </section>
-
-          <section
-            className="simple-shell simple-section"
-            id="focus"
-            aria-labelledby="focus-title"
-          >
-            <header className="simple-section-head simple-reveal">
-              <p className="simple-label">Skills</p>
-              <h2 id="focus-title" className="simple-heading">
-                Stack
-              </h2>
-              <p className="simple-body-copy">
-                A focused view of the technologies I use to build and ship.
-              </p>
-            </header>
-
-            <div className="simple-skill-grid">
-              {skills.map((group) => (
-                <article
-                  className="simple-skill-card simple-reveal"
-                  key={group.title}
-                >
-                  <h3 className="simple-title">{group.title}</h3>
-                  <ul
-                    className="simple-badges"
-                    aria-label={`${group.title} tools`}
-                  >
-                    {group.items.map((item) =>
-                      item.badgeSrc ? (
-                        <li key={item.label}>
-                          <Image
-                            src={item.badgeSrc}
-                            alt={item.label}
-                            width={item.badgeWidth ?? 120}
-                            height={20}
-                            style={{ width: "auto", height: "28px" }}
-                          />
-                        </li>
-                      ) : (
-                        <li className="simple-skill-text" key={item.label}>
-                          {item.label}
-                        </li>
-                      ),
-                    )}
-                  </ul>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section
-            className="simple-shell simple-section simple-publication-section"
-            id="writing"
-            aria-labelledby="writing-title"
-          >
-            <header className="simple-section-head simple-reveal">
-              <p className="simple-label">Publications</p>
-              <h2 id="writing-title" className="simple-heading">
-                Published research
-              </h2>
-              <p className="simple-body-copy">
-                Peer-reviewed work, with concise technical articles to follow.
-              </p>
-            </header>
-
-            <div className="simple-list">
-              {publishedWriting.map((item) => (
-                <WritingCard key={item.id} item={item} />
-              ))}
-            </div>
-          </section>
-
-          {researchProjects.length > 0 ? (
-            <section
-              className="simple-shell simple-section simple-thesis-section"
-              id="research"
-              aria-labelledby="research-title"
-            >
-              <header className="simple-section-head simple-reveal">
-                <p className="simple-label">Research project</p>
-                <h2 id="research-title" className="simple-heading">
-                  Undergraduate thesis
-                </h2>
-              </header>
-
-              <div className="simple-list">
-                {researchProjects.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
-                ))}
-              </div>
-            </section>
-          ) : null}
-
-          {upcomingWriting.length > 0 ? (
-            <section
-              className="simple-shell simple-section simple-articles-section"
-              aria-label="Technical articles"
-            >
-              <div className="simple-list">
-                {upcomingWriting.map((item) => (
-                  <WritingCard key={item.id} item={item} titleLevel={2} />
-                ))}
-              </div>
-            </section>
-          ) : null}
-        </main>
-
-        <footer className="simple-shell simple-footer" id="contact">
-          <div className="simple-reveal">
-            <p className="simple-label">Contact</p>
-            <h2 className="simple-heading">{contact.heading}</h2>
-            <p className="simple-body-copy">{contact.intro}</p>
-            <div className="simple-actions" style={{ marginTop: "1.25rem" }}>
-              <a className="simple-btn-primary" href={contact.emailCta.mailto}>
-                {contact.emailCta.label}
-              </a>
-            </div>
+        <section
+          className="simple-shell simple-section"
+          id="story"
+          aria-labelledby="story-title"
+        >
+          <SectionHead id="story-title" {...portfolioSections.story} />
+          <div className="simple-list">
+            {story.chapters.map((chapter) => (
+              <ChapterRow key={chapter.meta} chapter={chapter} />
+            ))}
           </div>
-          <ul className="simple-contact simple-reveal">
-            {contact.links.map((link) => {
-              const isMail = link.href.startsWith("mailto:");
-              return (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    {...(isMail || !link.href.startsWith("http")
-                      ? {}
-                      : externalLinkProps)}
-                  >
-                    <span className="simple-contact-main">
-                      <span className="simple-contact-kind">
-                        {contactLabels[link.icon] ?? link.label}
+        </section>
+
+        <section
+          className="simple-shell simple-section"
+          id="work"
+          aria-labelledby="work-title"
+        >
+          <SectionHead
+            id="work-title"
+            {...portfolioSections.work}
+          />
+
+          <div className="simple-list">
+            {selectedProjects.map((project) => (
+              <ProjectRow key={project.id} project={project} />
+            ))}
+          </div>
+
+          {additionalProjects.length > 0 ? (
+            <details className="simple-project-disclosure simple-reveal">
+              <summary>
+                <span className="simple-label">Additional projects</span>
+                <span className="simple-disclosure-action">
+                  <span className="simple-disclosure-closed">View projects</span>
+                  <span className="simple-disclosure-open">Hide projects</span>
+                  <ChevronDown aria-hidden="true" />
+                </span>
+              </summary>
+              <div className="simple-disclosure-body">
+                <div className="simple-list">
+                  {additionalProjects.map((project) => (
+                    <ProjectRow
+                      key={project.id}
+                      project={project}
+                      reveal={false}
+                    />
+                  ))}
+                </div>
+
+                {moreProjects.length > 0 ? (
+                  <details className="simple-more-disclosure">
+                    <summary>
+                      <span>
+                        <span className="simple-disclosure-more-closed">
+                          View more
+                        </span>
+                        <span className="simple-disclosure-more-open">
+                          Show less
+                        </span>
+                        <span className="simple-meta-line">
+                          {moreProjects.map((project) => project.name).join(" and ")}
+                        </span>
                       </span>
-                      <span className="simple-contact-detail">
-                        {link.label}
-                      </span>
-                    </span>
-                    <ArrowUpRight aria-hidden="true" />
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <p className="simple-meta-line simple-copyright">
-            © {new Date().getFullYear()} {identity.name}
-          </p>
-        </footer>
+                      <ChevronDown aria-hidden="true" />
+                    </summary>
+                    <div className="simple-list simple-more-projects">
+                      {moreProjects.map((project) => (
+                        <ProjectRow
+                          key={project.id}
+                          project={project}
+                          reveal={false}
+                        />
+                      ))}
+                    </div>
+                  </details>
+                ) : null}
+              </div>
+            </details>
+          ) : null}
+        </section>
+
+        <EssaySection
+          id="thinking"
+          {...portfolioSections.thinking}
+          paragraphs={story.thinking}
+        />
+        <EssaySection
+          id="next"
+          {...portfolioSections.next}
+          paragraphs={story.next}
+        />
+
+        <section
+          className="simple-shell simple-section"
+          id="focus"
+          aria-labelledby="focus-title"
+        >
+          <SectionHead
+            id="focus-title"
+            {...portfolioSections.focus}
+          />
+
+          {skills.map((group) => (
+            <article
+              className="simple-skill-card simple-reveal"
+              key={group.title}
+            >
+              <h3 className="simple-title">{group.title}</h3>
+              <ul className="simple-badges" aria-label={`${group.title} tools`}>
+                {group.items.map((item) => (
+                  <li key={item.label}>
+                    <Image
+                      src={item.badgeSrc}
+                      alt=""
+                      aria-hidden="true"
+                      width={item.badgeWidth}
+                      height={20}
+                      style={{ width: "auto", height: "30px" }}
+                    />
+                    <span className="sr-only">{item.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </section>
+
+        <section
+          className="simple-shell simple-section simple-publication-section"
+          id="writing"
+          aria-labelledby="writing-title"
+        >
+          <SectionHead
+            id="writing-title"
+            {...portfolioSections.writing}
+          />
+          <div className="simple-list">
+            {writing.map((item) => (
+              <WritingRow key={item.id} item={item} />
+            ))}
+          </div>
+        </section>
+
+        {researchProjects.length > 0 ? (
+          <section
+            className="simple-shell simple-section simple-thesis-section"
+            id="research"
+            aria-labelledby="research-title"
+          >
+            <SectionHead
+              id="research-title"
+              {...portfolioSections.research}
+            />
+            <div className="simple-list">
+              {researchProjects.map((project) => (
+                <ProjectRow key={project.id} project={project} />
+              ))}
+            </div>
+          </section>
+        ) : null}
+      </main>
+
+      <footer className="simple-shell simple-footer" id="contact">
+        <div className="simple-reveal">
+          <p className="simple-label">Contact</p>
+          <h2 className="simple-heading">{contact.heading}</h2>
+          <p className="simple-body-copy">{story.contactInvite}</p>
+          <p className="simple-body-copy">{contact.intro}</p>
+          <div className="simple-actions">
+            <a className="simple-btn-primary" href={contact.emailCta.mailto}>
+              {contact.emailCta.label}
+            </a>
+          </div>
+        </div>
+        <ul className="simple-contact simple-reveal">
+          {contact.links.map((link) => (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                {...(link.href.startsWith("http") ? externalLinkProps : {})}
+              >
+                <span className="simple-contact-main">
+                  <span className="simple-contact-kind">
+                    {contactKindLabels[link.icon]}
+                  </span>
+                  <span className="simple-contact-detail">{link.label}</span>
+                </span>
+                <ArrowUpRight aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className="simple-meta-line simple-copyright">
+          © {new Date().getFullYear()} {identity.name}
+        </p>
+      </footer>
     </div>
   );
 }
 
-function ProjectCard({
+/** Colours the first word of each sentence, like a highlighted keyword. */
+function Headline({ text }: { text: string }) {
+  return text.split(/(?<=\.)\s+/).map((sentence, index) => {
+    const [first, ...rest] = sentence.split(" ");
+    return (
+      <span key={sentence}>
+        {index > 0 ? " " : null}
+        <span className={`simple-keyword-${index % 2}`}>{first}</span>{" "}
+        {rest.join(" ")}
+      </span>
+    );
+  });
+}
+
+function SectionHead({
+  id,
+  label,
+  title,
+  intro,
+}: {
+  id: string;
+  label: string;
+  title: string;
+  intro?: string;
+}) {
+  return (
+    <header className="simple-section-head simple-reveal">
+      <p className="simple-label">{label}</p>
+      <h2 id={id} className="simple-heading">
+        {title}
+      </h2>
+      {intro ? <p className="simple-body-copy">{intro}</p> : null}
+    </header>
+  );
+}
+
+function EssaySection({
+  id,
+  label,
+  title,
+  paragraphs,
+}: {
+  id: SectionId;
+  label: string;
+  title: string;
+  paragraphs: string[];
+}) {
+  return (
+    <section
+      className="simple-shell simple-section simple-essay"
+      id={id}
+      aria-labelledby={`${id}-title`}
+    >
+      <SectionHead id={`${id}-title`} label={label} title={title} />
+      {paragraphs.map((paragraph) => (
+        <p className="simple-lede simple-reveal" key={paragraph}>
+          {paragraph}
+        </p>
+      ))}
+    </section>
+  );
+}
+
+function ExternalLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a href={href} {...externalLinkProps}>
+      {label}
+      <ArrowUpRight aria-hidden="true" />
+    </a>
+  );
+}
+
+function ChapterRow({ chapter }: { chapter: StoryChapter }) {
+  return (
+    <article className="simple-project simple-reveal">
+      <p className="simple-meta-line">{chapter.meta}</p>
+      <h3 className="simple-title simple-title-lg">{chapter.lead}</h3>
+      <p className="simple-body-copy">{chapter.body}</p>
+      {chapter.highlights?.length ? (
+        <ul className="simple-story-highlights" aria-label="Selected contributions">
+          {chapter.highlights.map((highlight) => (
+            <li key={highlight}>{highlight}</li>
+          ))}
+        </ul>
+      ) : null}
+      {chapter.roles.length > 0 ? (
+        <ul className="simple-roles" aria-label="Roles">
+          {chapter.roles.map((role) => (
+            <li key={`${role.title} ${role.dates}`}>
+              <span className="simple-role-title">{role.title}</span>
+              <span className="simple-role-sep">·</span>
+              <a href={role.org.href} {...externalLinkProps}>
+                {role.org.label}
+              </a>
+              {role.partner ? (
+                <>
+                  <span className="simple-role-sep">×</span>
+                  <a href={role.partner.href} {...externalLinkProps}>
+                    {role.partner.label}
+                  </a>
+                </>
+              ) : null}
+              <span className="simple-role-sep">·</span>
+              <span className="simple-role-dates">{role.dates}</span>
+              {role.links?.map((link) => (
+                <span key={link.href}>
+                  <span className="simple-role-sep">·</span>
+                  <ExternalLink href={link.href} label={link.label} />
+                </span>
+              ))}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <a className="simple-roles-link" href="#work">
+          See the work below
+        </a>
+      )}
+    </article>
+  );
+}
+
+function ProjectRow({
   project,
   reveal = true,
 }: {
@@ -984,56 +716,60 @@ function ProjectCard({
 }) {
   return (
     <article className={`simple-project${reveal ? " simple-reveal" : ""}`}>
+      <p className="simple-meta-line">~/work/{project.id}</p>
       <div className="simple-project-top">
         <h3 className="simple-title simple-title-lg">{project.name}</h3>
-        {project.links && project.links.length > 0 ? (
+        {project.status ? (
+          <span className="simple-pill" data-tone={project.status.tone}>
+            {project.status.label}
+          </span>
+        ) : null}
+      </div>
+      <p className="simple-outcome">{project.summary}</p>
+      {project.description ? (
+        <p className="simple-body-copy">{project.description}</p>
+      ) : null}
+      <div className="simple-project-foot">
+        {project.stack.length > 0 ? (
+          <ul className="simple-chips" aria-label={`${project.name} technologies`}>
+            {project.stack.map((technology) => (
+              <li key={technology}>{technology}</li>
+            ))}
+          </ul>
+        ) : null}
+        {project.links?.length ? (
           <div className="simple-inline-links">
             {project.links.map((link) => (
-              <a key={link.href} href={link.href} {...externalLinkProps}>
-                {link.prefix ?? link.label}
-                <ArrowUpRight aria-hidden="true" />
-              </a>
+              <ExternalLink
+                key={link.href}
+                href={link.href}
+                label={link.prefix ?? link.label}
+              />
             ))}
           </div>
         ) : null}
       </div>
-      <p className="simple-outcome">{project.summary}</p>
-      <p className="simple-body-copy">{project.description}</p>
-      <ul className="simple-chips" aria-label={`${project.name} technologies`}>
-        {project.stack.slice(0, 5).map((technology) => (
-          <li key={technology}>{technology}</li>
-        ))}
-      </ul>
     </article>
   );
 }
 
-function WritingCard({
-  item,
-  titleLevel = 3,
-}: {
-  item: WritingItem;
-  titleLevel?: 2 | 3;
-}) {
-  const Title = titleLevel === 2 ? "h2" : "h3";
-
+function WritingRow({ item }: { item: WritingItem }) {
   return (
     <article className="simple-project simple-reveal">
-      <div className="simple-project-top">
-        <Title className="simple-title simple-title-lg">{item.title}</Title>
-        {item.links && item.links.length > 0 ? (
-          <div className="simple-inline-links">
-            {item.links.map((link) => (
-              <a key={link.href} href={link.href} {...externalLinkProps}>
-                {link.prefix ?? "Link"}
-                <ArrowUpRight aria-hidden="true" />
-              </a>
-            ))}
-          </div>
-        ) : null}
-      </div>
-      {item.meta ? <p className="simple-outcome">{item.meta}</p> : null}
+      <p className="simple-meta-line">{item.meta}</p>
+      <h3 className="simple-title simple-title-lg">{item.title}</h3>
       <p className="simple-body-copy">{item.summary}</p>
+      <div className="simple-project-foot">
+        <div className="simple-inline-links">
+          {item.links.map((link) => (
+            <ExternalLink
+              key={link.href}
+              href={link.href}
+              label={link.prefix ?? link.label}
+            />
+          ))}
+        </div>
+      </div>
     </article>
   );
 }

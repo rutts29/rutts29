@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import pdfjsPackage from "pdfjs-dist/package.json";
 
 import type {
   PDFDocumentLoadingTask,
@@ -9,6 +10,7 @@ import type {
 } from "pdfjs-dist";
 
 type ViewerStatus = "loading" | "ready" | "error";
+const pdfjsVersion = pdfjsPackage.version;
 
 export function ResumePdfViewer({
   source,
@@ -29,11 +31,11 @@ export function ResumePdfViewer({
 
     const load = async () => {
       try {
-        const pdfjs = await import("pdfjs-dist");
-        pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-          "pdfjs-dist/build/pdf.worker.min.mjs",
-          import.meta.url,
-        ).toString();
+        const moduleUrl = `/pdfjs/${pdfjsVersion}/pdf.min.mjs`;
+        const pdfjs: typeof import("pdfjs-dist") = await import(
+          /* webpackIgnore: true */ moduleUrl
+        );
+        pdfjs.GlobalWorkerOptions.workerSrc = `/pdfjs/${pdfjsVersion}/pdf.worker.min.mjs`;
 
         // The Blob is replaced in place when the resume changes. A unique
         // query keeps each newly opened tab fresh without requiring visitors

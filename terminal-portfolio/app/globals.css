@@ -18,7 +18,7 @@
 
 @theme inline {
   --font-sans: var(--font-portfolio-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-mono: var(--font-portfolio-mono), ui-monospace, monospace;
 }
 
 body {
@@ -337,15 +337,13 @@ html:has(.simple-portfolio) {
 
 html:has(.simple-portfolio),
 body:has(.simple-portfolio) {
-  background: #f7f7f5;
+  background: #000000;
   transition: background-color 380ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-html[data-simple-resolved="dark"]:has(.simple-portfolio),
-html[data-simple-resolved="dark"] body:has(.simple-portfolio),
-html[data-simple-theme="dark"]:has(.simple-portfolio),
-html[data-simple-theme="dark"] body:has(.simple-portfolio) {
-  background: #0c0c0b;
+html[data-simple-resolved="light"]:has(.simple-portfolio),
+html[data-simple-resolved="light"] body:has(.simple-portfolio) {
+  background: #f6f5f1;
 }
 
 /* Header control cluster — globals so Next Link never falls back to display:block */
@@ -508,48 +506,10 @@ html[data-simple-resolved="dark"] .simple-portfolio .simple-interactive:focus-vi
   }
 }
 
-/*
- * Scroll reveal: only below-fold .simple-reveal-pending is hidden.
- * Above-the-fold stays fully visible on first paint (no FOUC).
- */
-.simple-reveal {
-  opacity: 1;
-  transform: none;
-}
-
-.simple-portfolio[data-motion-ready="true"] .simple-reveal-pending:not(.is-visible) {
-  opacity: 0;
-  transform: translateY(14px);
-  pointer-events: none;
-  transition:
-    opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.simple-portfolio[data-motion-ready="true"] .simple-reveal-pending.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.simple-portfolio:not([data-ready="true"]) .simple-scroll-progress,
-.simple-portfolio:not([data-ready="true"]) .simple-scroll-cue {
-  opacity: 0;
-  visibility: hidden;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .simple-portfolio .portfolio-theme-toggle,
   .simple-portfolio .simple-interactive,
   .simple-portfolio .portfolio-theme-toggle-icon {
     transition: none !important;
-  }
-
-  .simple-portfolio[data-motion-ready="true"] .simple-reveal-pending,
-  .simple-portfolio[data-motion-ready="true"] .simple-reveal-pending.is-visible {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-    pointer-events: auto !important;
   }
 }

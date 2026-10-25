@@ -58,10 +58,7 @@ export const TopBar = ({
             {identity.handle}
           </p>
           <p className="mt-1 text-[0.6rem] text-[var(--color-text-secondary)] sm:mt-2 sm:text-sm md:text-base lg:text-lg">
-            <span className="sm:hidden">{identity.title}</span>
-            <span className="hidden sm:inline">
-              {identity.title} · {identity.location}
-            </span>
+            {identity.title}
           </p>
         </div>
       </div>

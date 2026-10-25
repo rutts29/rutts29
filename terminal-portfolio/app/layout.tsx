@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Instrument_Sans, Newsreader } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 
 import { portfolioContent } from "@/config/portfolioContent";
+import { markdownPaths } from "@/lib/portfolioMarkdown";
 
 import "./globals.css";
 
@@ -25,21 +26,14 @@ const themeBootScript = `
 })();
 `;
 
-const instrumentSans = Instrument_Sans({
+const inter = Inter({
   variable: "--font-portfolio-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-const newsreader = Newsreader({
-  variable: "--font-portfolio-display",
-  subsets: ["latin"],
-  display: "swap",
-  style: ["normal", "italic"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-portfolio-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -61,6 +55,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
+    types: {
+      "text/markdown": markdownPaths.index,
+    },
   },
   openGraph: {
     type: "website",
@@ -146,19 +143,13 @@ export default function RootLayout({
                   ...identity.specialties,
                 ],
                 sameAs: profileUrls,
-                address: {
-                  "@type": "PostalAddress",
-                  addressLocality: "Toronto",
-                  addressRegion: "Ontario",
-                  addressCountry: "CA",
-                },
               },
             }),
           }}
         />
       </head>
       <body
-        className={`${instrumentSans.variable} ${newsreader.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
       >
         {children}
       </body>

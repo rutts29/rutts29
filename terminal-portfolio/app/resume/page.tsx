@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ArrowLeft, Download } from "lucide-react";
 
-import { PortfolioAtmosphere } from "@/components/PortfolioAtmosphere";
 import { ResumePdfViewer } from "@/components/ResumePdfViewer";
 import { portfolioContent } from "@/config/portfolioContent";
 
@@ -30,12 +30,10 @@ export const metadata: Metadata = {
 };
 
 export default function ResumePage() {
-  const hasResumeSource = Boolean(resume.assetUrl);
+  if (!resume.isPublished) notFound();
 
   return (
-    <div className="simple-portfolio simple-resume-page">
-      <PortfolioAtmosphere />
-
+    <div className="simple-portfolio">
       <main className="simple-shell simple-resume-shell">
         <header className="simple-resume-toolbar">
           <Link className="simple-btn-ghost" href="/">
@@ -65,7 +63,7 @@ export default function ResumePage() {
           </p>
         </section>
 
-        {hasResumeSource ? (
+        {resume.assetUrl ? (
           <div className="simple-resume-document">
             <ResumePdfViewer
               source={resume.assetUrl}
