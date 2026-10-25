@@ -213,15 +213,19 @@ export const portfolioContent: PortfolioContent = {
   projects: [
     {
       id: "keeping-agents-honest",
-      name: "Keeping Agents Honest (EH)",
+      name: "Keeping Agents Honest (kah)",
       placement: "selected",
-      status: { label: "Open-sourcing soon", tone: "waiting" },
       summary:
         "A supervisor for unmodified Claude Code and Codex. It records the developer's instructions word for word, checks every commit against them, and corrects the agent mid-task.",
       description:
-        "Untrusted repository commands run in gVisor sandboxes on a VPS with no nested virtualization, where microVMs like Firecracker can't run. In planted-violation tests it flagged 7 of 8 violations, with 0 false alarms across 5 control runs. Built solo, end to end.",
+        "Third-party repo commands run in gVisor sandboxes on a VPS with no nested virtualization, where microVMs like Firecracker can't run. In a 31-commit replay, kah's commit screen escalated 7 of 8 planted violations with 0 of 23 normal commits flagged. On real work (safetensors #878), kah caught three defects in Codex's commits, each fixed in the next commit. Built solo, end to end.",
       stack: ["Rust", "gVisor", "Claude Code", "Codex"],
       links: [
+        {
+          label: "github.com/rutts29/keeping-agents-honest",
+          href: "https://github.com/rutts29/keeping-agents-honest",
+          prefix: "GitHub",
+        },
         {
           label: "Case study",
           href: "https://keeping-agents-honest.rutts291.chatgpt.site/",
@@ -234,7 +238,7 @@ export const portfolioContent: PortfolioContent = {
       name: "Agent Hub",
       placement: "selected",
       summary:
-        "A personal agent platform. A coordinator agent with file-based memory picks the model for each job and dispatches work to cloud workers, an always-on server or a private local lane.",
+        "An always-on agent platform. A coordinator agent with file-based memory picks the model for each job and dispatches work to cloud workers, an always-on server or a private local lane.",
       description:
         "An exit gateway built into Claude Code's and Codex's own permission layer checks every outward action before it runs.",
       stack: ["Claude Projects", "Claude Code", "T3 Code", "MCP", "Tailscale"],
@@ -270,7 +274,7 @@ export const portfolioContent: PortfolioContent = {
       name: "driftctl",
       placement: "additional",
       summary:
-        "The hackathon prototype that grew into Keeping Agents Honest: an opt-in continuity layer that keeps long-running Codex sessions aligned with the latest accepted goal across new prompts, interruptions, and context compactions.",
+        "The Codex continuity layer that grew into Keeping Agents Honest.",
       description:
         "I built source-linked intent tracking and deterministic conflict checks, so accepted goals and later instructions survive compaction while ambiguous changes return to the user for review.",
       stack: ["Rust", "Codex hooks"],
@@ -309,7 +313,7 @@ export const portfolioContent: PortfolioContent = {
       name: "codex2gpt",
       placement: "additional",
       summary:
-        "A local prototype that lets ChatGPT plan and review coding work while Codex carries it out inside approved workspaces.",
+        "Lets ChatGPT plan and review coding work while Codex carries it out inside approved workspaces.",
       description:
         "I built the delegation and safety boundaries around that handoff, including managed worktrees, explicit approvals, and audit records, without giving ChatGPT a general-purpose local shell.",
       stack: ["Rust", "MCP", "OAuth"],
@@ -343,9 +347,9 @@ export const portfolioContent: PortfolioContent = {
       name: "SolProbe",
       placement: "more",
       summary:
-        "A local control room for detecting and investigating training instability before a run wastes time or compute.",
+        "Detects and investigates training instability before a run wastes compute.",
       description:
-        "I built the Apple Silicon telemetry path, repeatable fault simulations, alert workflows, and operations dashboard; NVIDIA and cloud collection remain prototype work.",
+        "I built the Apple Silicon telemetry path, repeatable fault simulations, alert workflows, and operations dashboard.",
       stack: ["Rust", "FastAPI", "Next.js"],
       links: [
         {

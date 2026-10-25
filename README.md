@@ -1,65 +1,59 @@
 <div align="center">
   <h1>Ruttansh Bhatelia</h1>
-  <p><strong>Applied AI Engineer</strong></p>
-  <p>Toronto, Ontario · Authorized to work in Canada</p>
+  <p><strong>AI Engineer</strong> · Curious by default. Rigorous in practice.</p>
   <p>
-    <a href="https://www.0xrutts.com/">0xrutts.com</a> ·
-    <a href="https://www.linkedin.com/in/ruttansh">LinkedIn</a> ·
-    <a href="https://x.com/0xRutts">X</a> ·
-    <a href="mailto:rutts291@gmail.com">Email</a>
+    <a href="https://www.0xrutts.com/" title="Website"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/website-dark-1e8d0855.svg"><img src="assets/readme/website-light-2a1d4257.svg" alt="Website" width="28" height="28"></picture></a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="https://www.linkedin.com/in/ruttansh" title="LinkedIn"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/linkedin-dark-9a6ef6e1.svg"><img src="assets/readme/linkedin-light-ed1ba4c6.svg" alt="LinkedIn" width="28" height="28"></picture></a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="https://x.com/0xRutts" title="X"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/x-dark.svg"><img src="assets/readme/x-light.svg" alt="X" width="28" height="28"></picture></a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="mailto:rutts291@gmail.com" title="Email"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/email-dark-060b84ad.svg"><img src="assets/readme/email-light-1f9cd172.svg" alt="Email" width="28" height="28"></picture></a>
   </p>
 </div>
 
-I build the systems around models: agent harnesses, orchestration, and evaluation-minded controls that make AI work reliable and reviewable, not just impressive demos.
+I'm an AI engineer who needs to know why things are the way they are. Right now that means coding agents: letting them run long and unattended while they stay sandboxed, honest and on what the person actually asked for, without someone watching every step.
 
 ## Selected work
 
-### [agentlog](https://github.com/rutts29/agentlog)
+### [Keeping Agents Honest (kah)](https://github.com/rutts29/keeping-agents-honest)
 
-Local-first observability and evaluation across multiple AI coding harnesses.
+A supervisor for unmodified Claude Code and Codex. [Case study](https://keeping-agents-honest.rutts291.chatgpt.site/)
 
-Built read-only adapters and a provenance-aware SQLite ledger that reconcile sessions and revalidate transcript content from canonical local sources, then serve it through a CLI, local dashboard, and read-only MCP tools.
+- Keeps the developer's exact words and later corrections in an intent history, so instructions survive context compaction.
+- Checks every commit against that intent and steers the agent back through its native hooks, quoting the developer's own words.
+- In a 31-commit replay, kah's commit screen escalated 7 of 8 planted violations with 0 of 23 normal commits flagged. On real work (safetensors #878), kah caught three defects in Codex's commits, each fixed in the next commit.
+- Runs third-party repo commands in gVisor on a commodity VPS where KVM microVMs can't run: read-only root, all capabilities dropped, network off by default, model logins kept on the host.
+- Runs unattended tasks in their own Git worktrees and tests each agent commit from a fresh checkout. Each run lands as a branch with a report, and merging, pushing and deploying stay a human decision by design.
 
-`Python` · `TypeScript` · `SQLite` · `MCP`
+`Rust` · `gVisor` · `Claude Code` · `Codex`
 
-### [driftctl](https://github.com/rutts29/driftctl)
+### [agentlog](https://github.com/rutts29/agentlog) & Agent Hub
 
-Opt-in continuity layer for long Codex sessions (hackathon MVP). Source-linked intent, deterministic validation, resume/compaction recovery. Evals published in-repo, including negative results.
+Local-first observability for coding agents, and the always-on agent platform built on top of it.
 
-`Rust` · `Codex hooks`
+- agentlog normalizes sessions from 7 coding-agent tools (Codex, Claude Code, Cursor, Grok and more) into a provenance-tracked SQLite ledger, served through a CLI, a dashboard and read-only MCP tools.
+- The hub's file-memory coordinator picks the model per job and routes work to cloud workers, an always-on server or a local lane. An exit gateway checks every outward action before it runs.
+- No public ports (Tailscale only), and credentials are injected at the network proxy, never stored on worker VMs.
 
-### [codex2gpt](https://github.com/rutts29/codex2gpt)
-
-Local prototype for bounded delegation between ChatGPT and Codex.
-
-Uses workspace-scoped context, managed worktrees, OAuth/PKCE, audit records, and explicit approval boundaries without exposing a raw shell by default.
-
-`Rust` · `MCP` · `OAuth`
-
-### [local-sec](https://github.com/rutts29/local-sec)
-
-Local-first guard for selected developer-tool installs.
-
-Applies mature-version selection, advisory checks, supported artifact scanning, explicit approvals, and metadata inventory.
-
-`Go`
-
-Also on the site: [SolProbe](https://github.com/rutts29/solprobe), an undergraduate smart-contract vulnerability thesis, and [LoanRef](https://loan-ref.vercel.app/) (product/security SaaS, not an AI runtime).
+`Python` · `TypeScript` · `SQLite` · `MCP` · `Tailscale`
 
 ## Experience
 
-- **AI Engineer, [CredShields](https://credshields.com/)** · Apr 2025 – Present · Contract, part-time, remote
-  - Own Applied AI systems for [CredShields One](https://one.credshields.com/): agentic workflows, orchestration, and review-friendly outputs for AI-assisted pentesting
-  - Contribute AI components on [SolidityScan](https://solidityscan.com/) for smart-contract analysis with grounded, reviewable findings
-  - Keep clear ownership boundaries between AI modules and the rest of the platform so agent work can be tested and shipped cleanly
-- **Machine Learning Researcher, [Sheridan College](https://www.sheridancollege.ca/)** · [Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai) · Industry partner: [TELUS](https://www.telus.com/) · Jan 2025 – Apr 2025
-- **Full Stack Developer (Cross Platform), [Sheridan College](https://www.sheridancollege.ca/)** · [Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai) · Industry partner: [McMaster University](https://www.mcmaster.ca/) · Sep 2024 – Dec 2024
-- **Machine Learning Researcher, [Sheridan College](https://www.sheridancollege.ca/)** · [Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai) · Industry partner: [Osteoporosis Canada](https://osteoporosis.ca/) · May 2024 – Aug 2024
+- **AI Engineer & ML Researcher, [CredShields](https://credshields.com/)** · Apr 2025 – Sep 2026 · Remote
+  - Built the production foundation of [CredShields One](https://one.credshields.com/), an AI-assisted penetration-testing platform with sandboxed scans and an orchestrator/sub-agent architecture.
+  - Owned [SolidityScan](https://solidityscan.com/)'s RAG and function-level AI pipeline, and extended its LLM false-positive checks from 2–3 vulnerability categories to all of them.
+  - Built OpenHands agents over the Agent Communication Protocol (ACP) for Slack debugging, issues and pull requests.
+  - Fine-tuned and published Solidity-CodeGen-v0.1 (Qwen3-4B) with LoRA, served with vLLM in an OpenZeppelin MCP workflow.
+- **[Sheridan Centre for Applied AI](https://www.sheridancollege.ca/research/centres/applied-ai)** · May 2024 – Apr 2025 · Applied research with industry partners
+  - ML Researcher with [TELUS](https://www.telus.com/) · Jan – Apr 2025: VAE and DDPM models that synthesize RSSI fingerprints for indoor localization.
+  - Full Stack Developer with [McMaster University](https://www.mcmaster.ca/) · Sep – Dec 2024: a cross-platform Flutter client for a research app handling sensitive health data.
+  - ML Researcher with [Osteoporosis Canada](https://osteoporosis.ca/) · May – Aug 2024: fracture-risk prediction with a soft-voting ensemble.
 
-## Published research
+## Research
 
 **[Low-Error Indoor Positioning via Synthetic RSSI Augmentation and Zx–WKNN Hybrid Model](https://doi.org/10.1109/MSWiM67937.2025.11309178)** · IEEE MSWiM 2025 · [DBLP](https://dblp.org/rec/conf/mswim/AhmedSCDZB25)
 
-Co-authored work on synthetic RSSI augmentation and hybrid indoor localization from the Sheridan and TELUS collaboration.
+Honours BSc in Computer Science, Sheridan College. Thesis on smart-contract vulnerability detection with CodeBERT and graph models.
 
-Open to Applied AI engineering, LLM and agent systems, and AI deployment roles.
+Open to applied AI, agent infrastructure and Forward-Deployed roles.
