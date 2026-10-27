@@ -18,7 +18,7 @@ I'm an AI engineer who needs to know why things are the way they are. Right now 
 
 ### [Keeping Agents Honest (kah)](https://github.com/rutts29/keeping-agents-honest)
 
-A supervisor for unmodified Claude Code and Codex. [Case study](https://keeping-agents-honest.rutts291.chatgpt.site/)
+A supervisor for unmodified Claude Code and Codex. [Case study](https://claude.ai/artifact/FH7Z6LcgcEcdKGEY9S689h#overview)
 
 - Keeps the developer's exact words and later corrections in an intent history, so instructions survive context compaction.
 - Checks every commit against that intent and steers the agent back through its native hooks, quoting the developer's own words.
