@@ -79,7 +79,6 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: pageTitle,
     description: pageDescription,
-    creator: "@0xRutts",
     images: ["/opengraph-image"],
   },
   icons: {

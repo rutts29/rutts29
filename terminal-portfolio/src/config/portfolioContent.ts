@@ -47,7 +47,7 @@ export type WritingItem = {
   links: PortfolioLink[];
 };
 
-export type ContactKind = "email" | "linkedin" | "github" | "x";
+export type ContactKind = "email" | "linkedin" | "github";
 
 export type ContactLink = {
   label: string;
@@ -59,7 +59,6 @@ export const contactKindLabels: Record<ContactKind, string> = {
   email: "Email",
   linkedin: "LinkedIn",
   github: "GitHub",
-  x: "X",
 };
 
 /** Section copy shared by the visible page and its Markdown representation. */
@@ -228,7 +227,7 @@ export const portfolioContent: PortfolioContent = {
         },
         {
           label: "Case study",
-          href: "https://keeping-agents-honest.rutts291.chatgpt.site/",
+          href: "https://claude.ai/artifact/FH7Z6LcgcEcdKGEY9S689h#overview",
           prefix: "Case study",
         },
       ],
@@ -652,11 +651,6 @@ export const portfolioContent: PortfolioContent = {
         label: "github.com/rutts29",
         href: "https://github.com/rutts29",
         icon: "github",
-      },
-      {
-        label: "x.com/0xRutts",
-        href: "https://x.com/0xRutts",
-        icon: "x",
       },
     ],
     emailCta: {

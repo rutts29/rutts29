@@ -31,7 +31,6 @@ const contactPrefix: Record<string, string> = {
   email: "Email",
   linkedin: "LinkedIn",
   github: "GitHub",
-  x: "X",
 };
 
 const aboutLines: TerminalLine[] = [
