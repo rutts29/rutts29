@@ -6,8 +6,6 @@
     &nbsp;&nbsp;&nbsp;
     <a href="https://www.linkedin.com/in/ruttansh" title="LinkedIn"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/linkedin-dark-9a6ef6e1.svg"><img src="assets/readme/linkedin-light-ed1ba4c6.svg" alt="LinkedIn" width="28" height="28"></picture></a>
     &nbsp;&nbsp;&nbsp;
-    <a href="https://x.com/0xRutts" title="X"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/x-dark.svg"><img src="assets/readme/x-light.svg" alt="X" width="28" height="28"></picture></a>
-    &nbsp;&nbsp;&nbsp;
     <a href="mailto:rutts291@gmail.com" title="Email"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/readme/email-dark-060b84ad.svg"><img src="assets/readme/email-light-1f9cd172.svg" alt="Email" width="28" height="28"></picture></a>
   </p>
 </div>
