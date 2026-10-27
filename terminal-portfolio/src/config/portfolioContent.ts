@@ -161,7 +161,7 @@ export const portfolioContent: PortfolioContent = {
     documentPath: "/resume/document",
     downloadName: "Ruttansh Bhatelia - Applied AI Resume.pdf",
     assetUrl:
-      "https://ct1hcdcf6m57dpui.public.blob.vercel-storage.com/Ruttansh-resume.pdf",
+      "https://ct1hcdcf6m57dpui.public.blob.vercel-storage.com/ruttansh-resume.pdf",
   },
   identity: {
     name: "Ruttansh Bhatelia",
